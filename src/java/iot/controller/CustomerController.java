@@ -112,13 +112,13 @@ public class CustomerController {
 
         List list_table = new ArrayList();
         //将查询结果保存在LIST中
-        for (int i =0;i<customerList.size();i++) {
+        for (Customer customer:customerList) {
             List list_row = new ArrayList();
-            list_row.add(customerList.get(i).getCustomerId());
-            list_row.add(customerList.get(i).getCustomerName());
-            list_row.add(customerList.get(i).getCustomerMail());
-            list_row.add(customerList.get(i).getCustomerPhone());
-            list_row.add(customerList.get(i).getCustomerMasterId());
+            list_row.add(customer.getCustomerId());
+            list_row.add(customer.getCustomerName());
+            list_row.add(customer.getCustomerMail());
+            list_row.add(customer.getCustomerPhone());
+            list_row.add(customer.getCustomerMasterId());
             list_table.add(list_row); 
         }
         return list_table;

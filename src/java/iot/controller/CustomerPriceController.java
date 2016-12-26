@@ -100,15 +100,15 @@ public class CustomerPriceController {
 
         List list_table = new ArrayList();
         //将查询结果保存在LIST中
-        for (int i =0;i<customerPriceList.size();i++) {
+        for (CustomerPrice customerPrice:customerPriceList) {
             List list_row = new ArrayList();
-            list_row.add(customerPriceList.get(i).getCustomerPriceId());
-             list_row.add(customerPriceList.get(i).getCustomerMasterId().getCustomerId());
-             list_row.add(customerPriceList.get(i).getCustomerMasterId().getCustomerName());
-             list_row.add(customerPriceList.get(i).getProductMasterId().getProductId());
-             list_row.add(customerPriceList.get(i).getProductMasterId().getProductName());
-             list_row.add(customerPriceList.get(i).getRangeMin() + "~" + customerPriceList.get(i).getRangeMax());
-             list_row.add(customerPriceList.get(i).getRangePrice());
+            list_row.add(customerPrice.getCustomerPriceId());
+             list_row.add(customerPrice.getCustomerMasterId().getCustomerId());
+             list_row.add(customerPrice.getCustomerMasterId().getCustomerName());
+             list_row.add(customerPrice.getProductMasterId().getProductId());
+             list_row.add(customerPrice.getProductMasterId().getProductName());
+             list_row.add(customerPrice.getRangeMin() + "~" + customerPrice.getRangeMax());
+             list_row.add(customerPrice.getRangePrice());
             list_table.add(list_row); 
         }
         return list_table;
