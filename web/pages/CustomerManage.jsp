@@ -416,8 +416,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     });
@@ -476,8 +476,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $("#pageNo").val(pageNo);
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
         }
@@ -501,10 +501,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $("#addCustomer").modal("toggle");
                     
                     $("#alter_message").html(data.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                     $("#customer_id").val(data.data.customerId);
-                    setTimeout("$(\"#addCustomerPrice\").modal(\"toggle\")",2000); 
+                    setTimeout("$(\"#addCustomerPrice\").modal(\"show\")",2000); 
                     $("#addCustomerPrice").bind('hide', function() {
                         window.location = "<%=basePath%>CustomerManage/CustomerQuery";
                     });
@@ -513,8 +513,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
@@ -588,8 +588,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
@@ -643,8 +643,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     });
@@ -700,11 +700,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     });
                 },  
                 error : function(data) { 
-                    console.dir("data");
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
@@ -750,8 +749,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             }); 
     }
@@ -781,8 +780,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
@@ -830,8 +829,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
@@ -860,8 +859,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
