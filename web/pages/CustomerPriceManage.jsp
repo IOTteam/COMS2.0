@@ -319,8 +319,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     });
@@ -372,8 +372,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     });
@@ -433,8 +433,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) {  
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
         }
@@ -524,8 +524,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
