@@ -5,154 +5,229 @@
  */
 package iot.controller;
 
-import com.google.code.kaptcha.Constants;
 import iot.dao.entity.User;
-import com.google.code.kaptcha.Producer;
-import iot.dao.repository.UserDAO;
-import java.awt.image.BufferedImage;
-import java.util.Enumeration;
-import javax.imageio.ImageIO;
-import javax.persistence.EntityManagerFactory;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import iot.service.LoginService;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.portlet.ModelAndView;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Random;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
- * @author hatanococoro
+ * @author SWM Lee
  */
 @Controller
 @RequestMapping("/login")
+@SessionAttributes({"user"})
 public class LoginController {
-    
-    @Autowired  
-    private Producer captchaProducer = null;  
-    
+
     @Autowired
-    private EntityManagerFactory emf;
-    
-    //进入登录页面
+    private LoginService loginService;
+
+    //生成驗證碼方法的參數
+    private final int width = 130;//定義圖片的width
+    private final int height = 44;//定義圖片的height
+    private final int codeCount = 4;//定義圖片上顯示驗證碼的個數
+    private final int xx = 30;//圖片驗證碼數字x軸間隔
+    private final int fontHeight = 40;//字體大小
+    private final int codeY = 36;//y軸
+    //驗證碼由哪些內容組成（大寫英文字母和數字）
+    char[] codeSequence = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+        'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+        'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+    //載入登陸介面
     @RequestMapping(method = RequestMethod.GET)
-    public String loginPage(){ 
+    public String loadLoginPage() {
         return "login";
     }
-    
-    //用户登录
+
+    //用戶登入
     @RequestMapping(method = RequestMethod.POST)
-    public String loginAction(@RequestParam("username") String username,@RequestParam("password") String password,
-            @RequestParam("kaptcha") String kaptcha,HttpServletRequest request,ModelMap model){
-        //由请求获取session
-        HttpSession session = request.getSession();  
-        //获取验证码文字
-        String code = (String)session.getAttribute(Constants.KAPTCHA_SESSION_KEY); 
-        //判断验证码是否正确
-//        if (!code.equals(kaptcha)) {
-//            model.addAttribute("message_k", "验证码错误");
-//            return "login";
-//        }
-        //实例化UserDaoImpl，通过账户名、密码查询用户
-        UserDAO ud = new UserDAO(emf);
-        User user = ud.getUserByNameAndPassword(username,password);
-        
-        if (user == null){//未查询到用户，返回错误信息
-            model.addAttribute("message", "用户名或密码错误");
+    public String userLogin(@RequestParam("userName") String username,
+            @RequestParam("userPass") String userpass,
+            @RequestParam("kaptcha") String kaptcha,
+            HttpServletRequest request, ModelMap model) {
+        //由請求獲取session
+        HttpSession session = request.getSession();
+        //獲取驗證碼文字
+        String code = (String) session.getAttribute("code");
+        //判斷驗證碼是否正確，區分大小寫   
+        if (!code.equals(kaptcha)) {
+            model.addAttribute("message_k", "验证码错误");
             return "login";
-        }else{//将user实体存储到session，重定向到首页
-            model.addAttribute("user", user);
+        }
+        //調用service層的UserLogin方法
+        String umn = loginService.UserLogin(username, userpass);
+
+        //根據UserLogin中返回的不同字串，打印不同的反饋內容給前臺
+        if ("isNull".equals(umn)) { //賬號不存在
+            model.addAttribute("message", "帳號或密碼錯誤，請重試");
+            return "login";
+        } else if ("isLocked".equals(umn)) { //帳號被鎖定了
+            model.addAttribute("message", "帳號目前是被鎖定的，請稍候再試");
+            return "login";
+        } else if ("willBeLocked".equals(umn)) { //密碼輸錯次數過多，賬號將被鎖定
+            model.addAttribute("message", "密碼輸錯次數過多，帳號將被鎖定1小時");
+            return "login";
+        } else if ("tryAgain".equals(umn)) { //密碼輸入錯誤，請重新輸入
+            model.addAttribute("message", "帳號或密碼錯誤，請重試");
+            return "login";
+        } else {//將user實體存儲到session，重定向到首頁
+            User um = loginService.getUserInfo(username, userpass);
+            model.addAttribute("user", um);
             return "redirect:/index";
         }
     }
-    
-   //生成验证码
-    @RequestMapping(value = "captcha-image")  
-    public ModelAndView getKaptchaImage(HttpServletRequest request, HttpServletResponse response) throws Exception {  
-        //获取session
-        HttpSession session = request.getSession();  
-        //禁用浏览器缓存
-        response.setDateHeader("Expires", 0); 
-        //设置不存储请求和响应信息、不缓存页面信息、客户机每次请求验证缓存是否过期
-        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");  
-        response.addHeader("Cache-Control", "post-check=0, pre-check=0");  
-        response.setHeader("Pragma", "no-cache"); 
-        //响应类型为jpeg图片
-        response.setContentType("image/jpeg");          
-        //生成验证码文字，存入session
-        String capText = captchaProducer.createText();  
-        session.setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);         
-        //由验证码文字生成图像
-        BufferedImage bi = captchaProducer.createImage(capText); 
-        //输出图像
-        ServletOutputStream out = response.getOutputStream();  
-        ImageIO.write(bi, "jpg", out);  
-        //强制清空缓冲区，立即输出图像
-        try {  
-            out.flush();  
-        } finally {  
-            out.close();  
-        }  
-        return null;  
-    }
-    
-    //查询用户信息
-    @RequestMapping(value = "userInfo",method = RequestMethod.GET)
-    public String getUserInfo(@ModelAttribute("user") User user, ModelMap model){
-        
-        model.addAttribute("user", user);
-        return "userInfo";
-        
-    }
 
-    //修改密码
-    @RequestMapping(value = "editPassword",method = RequestMethod.POST)
-    @ResponseBody
-    public String editPassword(@ModelAttribute("user") User user,@RequestParam("passwordOld") String passwordOld,@RequestParam("passwordNew") String passwordNew,
-            @RequestParam("passwordConfirm") String passwordConfirm,ModelMap model) throws Exception{
+    //生成驗證碼方法
+    @RequestMapping("/captcha-image")
+    public void getCode(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
 
-        //原密码是否正确
-        if(passwordOld.equals(user.getUserPass())){
-            //两次输入的密码是否相同
-            if(passwordNew.equals(passwordConfirm)){
-                //设置新密码，并更新到数据库
-                user.setUserPass(passwordNew);
-                UserDAO ud = new UserDAO(emf);
-                ud.edit(user);   
-            }else{
-            //两次输入的密码不同
-            return "confirm error";    
-            }           
-        }else{
-            //原密码错误
-             return "password error";
+        //定義圖像buffer
+        BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        //Graphics2D gd = buffImg.createGraphics();
+        //Graphics2D gd = (Graphics2D) buffImg.getGraphics();
+        Graphics gd = buffImg.getGraphics();
+
+        // 創建一個隨機數產生器類
+        Random random = new Random();
+
+        //將圖像填充為白色
+        gd.setColor(Color.WHITE);
+        gd.fillRect(0, 0, width, height);
+
+        //創建字體，字體的大小應該根據圖片的高度來定。
+        Font font = new Font("Fixedsys", Font.BOLD, fontHeight);
+
+        //設置字體。
+        gd.setFont(font);
+
+        //畫邊框。
+        gd.setColor(Color.BLACK);
+        gd.drawRect(0, 0, width - 1, height - 1);
+
+        //隨機產生10條干擾線，使圖像中的認證碼不易被其它程式探測到。
+        gd.setColor(Color.BLACK);
+        for (int i = 0; i < 10; i++) {
+            int x = random.nextInt(width);
+            int y = random.nextInt(height);
+            int xl = random.nextInt(12);
+            int yl = random.nextInt(12);
+            gd.drawLine(x, y, x + xl, y + yl);
         }
-        //修改密码成功
+
+        //randomCode用於保存隨機產生的驗證碼，以便用戶登錄後進行驗證。
+        StringBuffer randomCode = new StringBuffer();
+        int red = 0, green = 0, blue = 0;
+
+        //隨機產生codeCount數字的驗證碼。
+        for (int i = 0; i < codeCount; i++) {
+
+            //得到隨機產生的驗證碼數位。
+            String code = String.valueOf(codeSequence[random.nextInt(36)]);
+
+            //產生隨機的顏色分量來構造顏色值，這樣輸出的每位數字的顏色值都將不同。
+            red = random.nextInt(255);
+            green = random.nextInt(255);
+            blue = random.nextInt(255);
+
+            // 用隨機產生的顏色將驗證碼繪製到圖像中
+            gd.setColor(new Color(red, green, blue));
+            //gd.drawString(code, (i + 1) * xx, codeY);
+            gd.drawString(code, (i) * xx + 10, codeY);
+
+            // 將產生的4個隨機數結合到一起
+            randomCode.append(code);
+        }
+
+        // 將4位數的驗證碼保存到Session中
+        HttpSession session = req.getSession();
+        System.out.print(randomCode);
+        session.setAttribute("code", randomCode.toString());
+
+        //禁止圖像緩存
+        resp.setHeader("Pragma", "no-cache");
+        resp.setHeader("Cache-Control", "no-cache");
+        resp.setDateHeader("Expires", 0);
+        resp.setContentType("image/jpeg");
+
+        //將圖像輸出到Servlet輸出流中
+        ServletOutputStream sos = resp.getOutputStream();
+        ImageIO.write(buffImg, "jpeg", sos);
+        sos.close();
+    }
+
+    //修改密碼
+    @RequestMapping(value = "editPassword", method = RequestMethod.POST)
+    //@ResponseBody註解，將return的值轉化爲json格式
+    @ResponseBody
+    public String editPassword(@ModelAttribute("user") User user,
+            @RequestParam("userPassOld") String userPassOld,
+            @RequestParam("userPassNew") String userPassNew,
+            @RequestParam("userPassConfirm") String userPassConfirm, ModelMap model) throws Exception {
+
+        System.out.println(userPassOld);
+        //如果原密碼輸入正確
+        if (userPassOld.equals(user.getUserPass())) {
+            //如果兩次輸入的密碼一致
+            if (userPassNew.equals(userPassConfirm)) {
+                //如果新舊密碼不一致
+                if (!userPassNew.equals(userPassOld)) {
+                    //設置新密碼，並更新到數據庫
+                    user.setUserPass(userPassNew);
+                    loginService.editPasswordService(user);
+                } //新舊密碼不一致的否則，即新舊密碼一致 
+                else {
+                    return "same old new";
+                }
+            }//兩次輸入密碼一致的否則，兩次輸入的密碼不一致 
+            else {
+                //兩次輸入密碼不一致
+                return "confirm error";
+            }
+        }//原密碼輸入正確的否則，即原密碼輸入 
+        else {
+            //原密碼錯誤
+            return "password error";
+        }
+        //修改密碼成功
+
         return "success";
     }
-    //注销
-    @RequestMapping(value = "logout",method = RequestMethod.GET)
-    public String logout(HttpServletRequest request,ModelMap model){
-        //获取session中的key
+
+    //登出
+    @RequestMapping(value = "logout", method = RequestMethod.GET)
+    public String logout(HttpServletRequest request, ModelMap model) {
+        //獲取session中的key
         Enumeration<String> em = request.getSession().getAttributeNames();
-        //遍历删除session中的信息
-        while(em.hasMoreElements()){
+        //遍歷刪除session中的信息
+        while (em.hasMoreElements()) {
             request.getSession().removeAttribute(em.nextElement());
         }
-        //销毁session
+        //銷燬session
         request.getSession().invalidate();
         //清空model
         model.clear();
         return "redirect:/login";
-        
-    } 
-    
+
+    }
 }

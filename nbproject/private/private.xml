@@ -3,13 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/hatanococoro/Documents/NetBeansProjects/coms2.0/src/java/iot/controller/CustomerPriceController.java</file>
-            <file>file:/C:/Users/hatanococoro/Documents/NetBeansProjects/coms2.0/web/pages/CustomerPriceManage.jsp</file>
-            <file>file:/C:/Users/hatanococoro/Documents/NetBeansProjects/coms2.0/src/java/iot/dao/repository/CustomerPriceDAO.java</file>
-            <file>file:/C:/Users/hatanococoro/Documents/NetBeansProjects/coms2.0/src/java/iot/service/CustomerPriceService.java</file>
-            <file>file:/C:/Users/hatanococoro/Documents/NetBeansProjects/coms2.0/src/java/iot/exceptionHandle/ExceptionAdvice.java</file>
-            <file>file:/C:/Users/hatanococoro/Documents/NetBeansProjects/coms2.0/src/java/iot/dao/entity/CustomerPrice.java</file>
-            <file>file:/C:/Users/hatanococoro/Documents/NetBeansProjects/coms2.0/web/pages/CustomerManage.jsp</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0/src/java/iot/dao/repository/CustomerDAO.java</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0/web/pages/index.jsp</file>
         </group>
     </open-files>
 </project-private>
