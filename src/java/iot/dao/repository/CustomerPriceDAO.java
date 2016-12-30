@@ -517,4 +517,33 @@ public class CustomerPriceDAO implements Serializable {
         }
     }
     
+    public Response queryCustomerPriceByOrderQty(int orderQty,Product product){
+    EntityManager em = getEntityManager();
+        try {
+            //创建安全查询工厂
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            //创建查询主语句
+            CriteriaQuery<CustomerPrice> cq = cb.createQuery(CustomerPrice.class);
+            //定义实体类型
+            Root<CustomerPrice> customerPrice = cq.from(CustomerPrice.class);
+
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(cb.equal(customerPrice.get(CustomerPrice_.productMasterId), product));
+            predicatesList.add(cb.le(customerPrice.get(CustomerPrice_.rangeMin), orderQty));
+            predicatesList.add(cb.ge(customerPrice.get(CustomerPrice_.rangeMax), orderQty));
+            predicatesList.add(cb.equal(customerPrice.get(CustomerPrice_.deleteStatus), false));
+            
+            cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            Query q = em.createQuery(cq);
+            
+
+            return new Response().success("查詢產品實體成功", q.getSingleResult());
+
+        } catch(NoResultException e){
+            return new Response().Empty("1");
+        }finally {
+            em.close();
+        }
+    }
+    
 }

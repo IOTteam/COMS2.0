@@ -304,6 +304,38 @@ public class ProductDAO implements Serializable {
         }
     }
         
+    public Response findProducts(String productId) {
+        EntityManager em = getEntityManager();
+        try {
+            //创建安全查询工厂
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            //创建查询主语句
+            CriteriaQuery<Product> cq = cb.createQuery(Product.class);
+            //定义实体类型
+            Root<Product> product = cq.from(Product.class);
+            
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(cb.like(product.get(Product_.productId), "%" + productId + "%"));
+            predicatesList.add(cb.equal(product.get(Product_.deleteStatus), false));
+
+            cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            Query q = em.createQuery(cq);
+            
+            q.setMaxResults(10);
+            
+            List list = q.getResultList();
+            
+            if(list.isEmpty()){
+                return findProductByProductName(productId, false, 0, 10);
+            }
+            return new Response().success("產品查詢成功", q.getResultList(),0);
+
+        } finally {
+            em.close();
+        }
+    }
+        
+        
     /*******************************************************************************
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：通過產品編號獲取產品實體

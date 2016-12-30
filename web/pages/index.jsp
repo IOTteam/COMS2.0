@@ -67,7 +67,7 @@
             </ul>
             <ul>
                 <li>
-                    <a href="<%=basePath%>orderList/queryList">订单列表</a>
+                    <a href="<%=basePath%>OrderManage/queryOrderHeadList">訂單管理</a>
                 </li>
             </ul>
             <ul>
