@@ -81,7 +81,7 @@ public class OrderHeadDAO implements Serializable {
                 }
             }
             em.getTransaction().commit();
-            return new Response().success("新增客戶產品單價資訊成功", orderHead);
+            return new Response().success("新增訂單頭檔成功", orderHead);
 
         } catch (Exception ex) {
             if (findOrderHead(orderHead.getOrdheadMasterId()) != null) {
