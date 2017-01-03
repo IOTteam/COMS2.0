@@ -84,7 +84,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </ul>
               <ul>
                 <li>
-                    <a href="#">客戶產品單價管理</a>
+                    <a href="#">產品管理</a>
                 </li>
             </ul>
 	</div>
@@ -310,13 +310,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <tr height="48px"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
             <tr height="48px"><td></td><td></td><td></td><td></td><td></td><td></td></tr>-->
             </table>
-<!--            <div align="center">
-            <p> <input type="button" value="上一頁" onclick="getODPageData(this)"/>
-            <input class="input-text radius" type="text" id="odpageNo" value="${pageNo}" readonly="true" style="width:30px" />/
-            <input class="input-text radius" type="text" id="odtotalPage" value="${totalPage}" readonly="true" style="width:30px" />
-            <input type="button" value="下一頁" onclick="getODPageData(this)"/>
+            <div align="center">
+            <p> <input type="button" value="上一頁" id="odPrePage" />
+            <input class="input-text radius" type="text" id="odpageNo" value="1" readonly="true" style="width:30px" />/
+            <input class="input-text radius" type="text" id="odtotalPage"  readonly="true" style="width:30px" />
+            <input type="button" value="下一頁" id="odNextPage"/>
             </p>
-        </div>-->
+        </div>
         </div>
         <div class="modal-footer">
             <a data-toggle="modal" class="btn btn-primary radius" href="#addODInfo"/>新增</a>
@@ -464,62 +464,86 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="<%=basePath%>pages/lib/bootstrap-modal/2.2.4/bootstrap-modalmanager.js"></script>
 <script type="text/javascript" src="<%=basePath%>pages/lib/bootstrap-modal/2.2.4/bootstrap-modal.js"></script>
 <script type="text/javascript">
-$(document).ready(function(){
-    $("#orderHeadTable tr").click(function(){
-        $(this).css({"background":"#99ffff"}).siblings().css({"background":"white"});
-    });
-});
+//單獨使點擊id=orderHeadTable的表格的行時，使底色變色
+//$(document).ready(function(){
+//    $("#orderHeadTable tr").click(function(){
+//        $(this).css({"background":"#99ffff"}).siblings().css({"background":"white"});
+//    });
+//});
 
 </script>    
 <script>
-    
-    /**
+  
+  /**
      * 顯示訂單頭檔信息列表
      * @@author David
      */
-    //在class=showOrderDetail觸發此函數
+    //在class=showOrderDetail觸發此函數   
     $(document).ready(function(){
                 $(".showOrderDetail").click(function(){ //只能是class，不能用id
                   //把showOrderDetail這個class的上一級的上一級的下一級的第一列的值付給orderHeadId（<a> -> <td> -> <tr>,再 -> <td>的第一個）
-                   var orderHeadId = $(this).parent().parent()
-                            .children().eq(0).text();
-                 
-                //把取到的orderHeadId的值賦值給id=orderHeadId_4addDetail的標籤位置
-                 $("#orderHeadId_4addDetail").val(orderHeadId);                   
+                    orderHeadId4OD = $(this).parent().parent()
+                            .children().eq(0).text(); 
+                    dealWithOD();
+                });
+              });
+     
+
+//點擊訂單詳細時，分頁顯示訂單身檔內容
+    function dealWithOD(value){
+         //把取到的orderHeadId的值賦值給id=orderHeadId_4addDetail的標籤位置
+                 $("#orderHeadId_4addDetail").val(orderHeadId4OD);                   
                  
                 $.ajax({  
                 url : "queryOrderDetailList",  
                 type : "post",  
                 datatype:"json",  
-                data:{orderHeadId:orderHeadId},
-                success : function(data) { 
-                    var list=data;             
-                $("#orderDetail").modal("toggle");         
+                data:{orderHeadId:orderHeadId4OD,pageNo:value},
+                success : function(data) {
+                 
+                $("#odtotalPage").val(data.count);               
+                
+                var list=data.data;               
+                
+                $("#orderDetail").modal("show");  
+                
+                var i=0;
+                        $("#orderDetailTable").find("tr").each(function (){       
+                            if(i>0){
+                                $(this).remove();
+                                }
+                            i++;   
+                            });
+                
                 for(var i=0;i<list.length;i++){
                     //table中新建行列
                     //繪製顯示訂單詳細的表格
-                    $("#orderDetailTable").append("<tr><td>"+list[i].orderDetailId+"</td><td>"+list[i].ordheadMasterId.orderHeadId+"</td><td>"+list[i].productMasterId.productId+"</td><td>"+list[i].productMasterId.productName+"</td><td>"+list[i].orderQty+"</td><td>"+list[i].orderPrice+"</td></tr>");
-                    
+                    //
+                    //$("#orderDetailTable").append("<tr><td>"+list[i].orderDetailId+"</td><td>"+list[i].ordheadMasterId.orderHeadId+"</td><td>"+list[i].productMasterId.productId+"</td><td>"+list[i].productMasterId.productName+"</td><td>"+list[i].orderQty+"</td><td>"+list[i].orderPrice+"</td></tr>");
+                      $("#orderDetailTable").append("<tr><td>"+list[i][0]+"</td><td>"+list[i][1]+"</td><td>"+list[i][2]+"</td><td>"+list[i][3]+"</td><td>"+list[i][4]+"</td><td>"+list[i][5]+"</td></tr>");
                     //在訂單身檔信息列中，點擊行事件獲取到第一列的值（OrderDetailId），並把值放到了 orderInfo 變量中
-                    orderHeadId4Refresh=list[i].ordheadMasterId.orderHeadId;
+                    orderHeadId4Refresh=list[i][1];
                     
                     //在訂單身檔信息列表中，點擊行，將行底色加深
-                    $(document).ready(function(){
-                        $("#orderDetailTable tr").click(function(){
-                        $(this).css({"background":"#99ffff"}).siblings().css({"background":"white"});
-                        });
-                    });
-                    
-                    
-                    
+//                    $(document).ready(function(){
+//                        $("#orderDetailTable tr").click(function(){
+//                        $(this).css({"background":"#99ffff"}).siblings().css({"background":"white"});
+//                        });
+//                    });
+                                                            
                     $("tr").click(function(){
                         $(this).find("td").each(function(i){
                             var text = $(this).text();
+                            if(/ORDD[0-9]{11}/g.test(text)){
+                                console.dir(text+"hahahah");
                             orderInfo[0] = text;
+                            $(this).parent("tr").css({"background":"#99ffff"}).siblings().css({"background":"white"});
                             return false;
-                        }); 
-                        //訂單身檔彈窗按鈕置灰
-                        if(orderInfo[0] !== ""){   
+                        }
+                    }); 
+                    
+                        //訂單身檔彈窗按鈕置灰                        
+                        if(/ORDD[0-9]{11}/g.test(orderInfo[0])){   
                         $('#orderDetailDelBtn').attr('href',"#deleteODInfo");//添加标签中的href属
                         $("#orderDetailDelBtn").removeClass("btn btn-default radius");
                         $("#orderDetailDelBtn").addClass("btn btn-primary radius");
@@ -546,12 +570,50 @@ $(document).ready(function(){
                     $("#modal-message").modal("toggle");
                     setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
                 }  
-            });
-    
-                });
-                 
-              });
+            });                        
+     }
      
+     //刷新訂單身檔列表
+      function refreshOrderDetailList(){
+        //var orderHeadId=orderInfo[1];
+        var orderHeadId= orderHeadId4Refresh;
+        var pageNo = parseInt( $("#odpageNo").val())-1;
+        console.dir(orderHeadId+"在公共");
+        console.dir(pageNo+"在公共");
+        dealWithOD(pageNo);
+        //刷新之後把功能按鈕顏色重置
+                        $('#orderDetailDelBtn').removeAttr('href');//清除标签中的href属
+                        $("#orderDetailDelBtn").removeClass("btn btn-primary radius");
+                        $("#orderDetailDelBtn").addClass("btn btn-default radius");
+                        
+                        $('#orderDetailUpBtn').removeAttr('href');//清除标签中的href属
+                        $("#orderDetailUpBtn").removeClass("btn btn-primary radius");
+                        $("#orderDetailUpBtn").addClass("btn btn-default radius");
+    }
+     
+     //綁定id點擊觸發函數
+      $("#odPrePage,#odNextPage").bind('click', function() {
+        getODPageData(this.id);
+    });
+    //獲取分頁信息
+    function getODPageData(value){
+       
+        var pageNo = parseInt( $("#odpageNo").val());
+        var pageNo_ = "";
+        var totalPage = parseInt($("#odtotalPage").val());
+        if(value === "odPrePage"){
+            if(pageNo <= 1) return ;
+            pageNo_ = pageNo - 2;
+            $("#odpageNo").val(pageNo - 1);
+        }
+        if(value === "odNextPage"){
+           if(pageNo >= totalPage) return ;
+           pageNo_ = pageNo;
+           $("#odpageNo").val(pageNo + 1);
+        }
+        dealWithOD(pageNo_);
+    }
+    
     /**
      * 將顯示訂單詳細時動態繪製的表格行刪除，避免在點擊其他選項時，還保留之前的數據      
      * @@author David
@@ -634,19 +696,24 @@ $(document).ready(function(){
         //訂單頭檔頁面,行點擊事件讀取到行的值
         $(this).find("td").each(function(i){
            var text = $(this).text();
+           if(/ORDH[0-9]{11}/g.test(text)){
            orderInfo[num] = text;
+            $(this).parent("tr").css({"background":"#99ffff"}).siblings().css({"background":"white"});
            num++;
-           });
+            }
+        });
            
-        if(orderInfo[0] !== ""){   
+        if(/ORDH[0-9]{11}/g.test(orderInfo[0])){   
             $('#orderHeadDelBtn').attr('href',"#deleteOHInfo");//添加标签中的href属
             $("#orderHeadDelBtn").removeClass("btn btn-default radius");
-            $("#orderHeadDelBtn").addClass("btn btn-primary radius");                        
+            $("#orderHeadDelBtn").addClass("btn btn-primary radius");     
+           
         }else{
             $('#orderHeadDelBtn').removeAttr('href');//清除标签中的href属
             $("#orderHeadDelBtn").removeClass("btn btn-primary radius");
             $("#orderHeadDelBtn").addClass("btn btn-default radius");                        
         }
+       
     });
      
      //订单获取下一页数据
@@ -978,75 +1045,80 @@ $(document).ready(function(){
         }
     
 //    暫時無法成功正確獲取到自動繪製的表格中對應的列中的值
-    function refreshOrderDetailList(){
-        //var orderHeadId=orderInfo[1];
-        var orderHeadId= orderHeadId4Refresh;
-        console.dir(orderHeadId+"在公共");
-            $.ajax({  
-                url : "queryOrderDetailList",  
-                type : "post",  
-                datatype:"json",  
-                data:{orderHeadId:orderHeadId},
-                success : function(data) { 
-                   var list = data;              
-                   
-                   var i=0;
-                        $("#orderDetailTable").find("tr").each(function (){       
-                            if(i>0){
-                                $(this).remove();
-                                }
-                            i++;   
-                            });   
-               
-                for(var i=0;i<list.length;i++){
-                    //table中新建行列
-                    //繪製顯示訂單詳細的表格
-                    $("#orderDetailTable").append("<tr><td>"+list[i].orderDetailId+"</td><td>"+list[i].ordheadMasterId.orderHeadId+"</td><td>"+list[i].productMasterId.productId+"</td><td>"+list[i].productMasterId.productName+"</td><td>"+list[i].orderQty+"</td><td>"+list[i].orderPrice+"</td></tr>");
-                    
-                    //在訂單身檔信息列表中，點擊行，將行底色加深
-                    $(document).ready(function(){
-                        $("#orderDetailTable tr").click(function(){
-                        $(this).css({"background":"#99ffff"}).siblings().css({"background":"white"});
-                        });
-                    });
-                    
-                    //在訂單身檔信息列中，點擊行事件獲取到第一列的值（OrderDetailId），並把值放到了 orderInfo 變量中                                       
-                    $("tr").click(function(){
-                        $(this).find("td").each(function(i){
-                            var text = $(this).text();
-                            orderInfo[0] = text;
-                            console.dir(orderInfo[0]);
-                            return false;
-                        }); 
-                         //訂單身檔彈窗按鈕置灰
-                        if(orderInfo[0] !== ""){   
-                        $('#orderDetailDelBtn').attr('href',"#deleteODInfo");//添加标签中的href属
-                        $("#orderDetailDelBtn").removeClass("btn btn-default radius");
-                        $("#orderDetailDelBtn").addClass("btn btn-primary radius");
-                        
-                        $('#orderDetailUpBtn').attr('href',"#updateODInfo");//添加标签中的href属
-                        $("#orderDetailUpBtn").removeClass("btn btn-default radius");
-                        $("#orderDetailUpBtn").addClass("btn btn-primary radius");
-                        }else{
-                        $('#orderDetailDelBtn').removeAttr('href');//清除标签中的href属
-                        $("#orderDetailDelBtn").removeClass("btn btn-primary radius");
-                        $("#orderDetailDelBtn").addClass("btn btn-default radius");
-                        
-                        $('#orderDetailUpBtn').removeAttr('href');//清除标签中的href属
-                        $("#orderDetailUpBtn").removeClass("btn btn-primary radius");
-                        $("#orderDetailUpBtn").addClass("btn btn-default radius");
-                        }
-                    });
-                    }    
-                },  
-                error : function(data) { 
-                    var str = data.responseText.toString();
-                    $("#alter_message").html(str.split("##")[1]);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
-                }  
-            });
-        }
+//    function refreshOrderDetailList(){
+//        //var orderHeadId=orderInfo[1];
+//        var orderHeadId= orderHeadId4Refresh;
+//        var pageNo = parseInt( $("#odpageNo").val())-1;
+//        console.dir(orderHeadId+"在公共");
+//        console.dir(pageNo+"在公共");
+//        dealWithOD();
+        
+        
+//            $.ajax({  
+//                url : "queryOrderDetailList",  
+//                type : "post",  
+//                datatype:"json",  
+//                data:{orderHeadId:orderHeadId,pageNo:pageNo},
+//                success : function(data) { 
+//                   var list = data;              
+//                   
+//                   var i=0;
+//                        $("#orderDetailTable").find("tr").each(function (){       
+//                            if(i>0){
+//                                $(this).remove();
+//                                }
+//                            i++;   
+//                            });   
+//               
+//                for(var i=0;i<list.length;i++){
+//                    //table中新建行列
+//                    //繪製顯示訂單詳細的表格
+//                    $("#orderDetailTable").append("<tr><td>"+list[i][0]+"</td><td>"+list[i][1]+"</td><td>"+list[i][2]+"</td><td>"+list[i][3]+"</td><td>"+list[i][4]+"</td><td>"+list[i][5]+"</td></tr>");
+//                    
+//                    //在訂單身檔信息列表中，點擊行，將行底色加深
+//                    $(document).ready(function(){
+//                        $("#orderDetailTable tr").click(function(){
+//                        $(this).css({"background":"#99ffff"}).siblings().css({"background":"white"});
+//                        });
+//                    });
+//                    
+//                    //在訂單身檔信息列中，點擊行事件獲取到第一列的值（OrderDetailId），並把值放到了 orderInfo 變量中                                       
+//                    $("tr").click(function(){
+//                        $(this).find("td").each(function(i){
+//                            var text = $(this).text();
+//                            orderInfo[0] = text;
+//                            console.dir(orderInfo[0]);
+//                            return false;
+//                        }); 
+//                         //訂單身檔彈窗按鈕置灰
+//                        if(orderInfo[0] !== ""){   
+//                        $('#orderDetailDelBtn').attr('href',"#deleteODInfo");//添加标签中的href属
+//                        $("#orderDetailDelBtn").removeClass("btn btn-default radius");
+//                        $("#orderDetailDelBtn").addClass("btn btn-primary radius");
+//                        
+//                        $('#orderDetailUpBtn').attr('href',"#updateODInfo");//添加标签中的href属
+//                        $("#orderDetailUpBtn").removeClass("btn btn-default radius");
+//                        $("#orderDetailUpBtn").addClass("btn btn-primary radius");
+//                        }else{
+//                        $('#orderDetailDelBtn').removeAttr('href');//清除标签中的href属
+//                        $("#orderDetailDelBtn").removeClass("btn btn-primary radius");
+//                        $("#orderDetailDelBtn").addClass("btn btn-default radius");
+//                        
+//                        $('#orderDetailUpBtn').removeAttr('href');//清除标签中的href属
+//                        $("#orderDetailUpBtn").removeClass("btn btn-primary radius");
+//                        $("#orderDetailUpBtn").addClass("btn btn-default radius");
+//                        }
+//                    });
+//                    }    
+//                },  
+//                error : function(data) { 
+//                    var str = data.responseText.toString();
+//                    $("#alter_message").html(str.split("##")[1]);
+//                    $("#modal-message").modal("toggle");
+//                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+//                }  
+//            });
+//       }
    
 </script>
 </body>

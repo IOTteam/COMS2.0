@@ -442,6 +442,7 @@ public class OrderHeadDAO implements Serializable {
      * @param orderHeadId
      * @return
      */
+
     public OrderHead queryOrderHeadByOrderHeadId(String orderHeadId) {
         EntityManager em = getEntityManager();
         try {
@@ -466,6 +467,7 @@ public class OrderHeadDAO implements Serializable {
             em.close();
         }
     }
+    
 
     /**
      * 生成訂單頭檔字串的函數

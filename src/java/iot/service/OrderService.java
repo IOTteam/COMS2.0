@@ -19,6 +19,7 @@ import iot.dao.repository.exceptions.PreexistingEntityException;
 import javax.persistence.EntityManagerFactory;
 import iot.response.Response;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -76,6 +77,7 @@ public class OrderService {
      * @param orderHeadId
      * @return
      */
+    /*
     public List queryOrderDetailListService(String orderHeadId) {
         OrderDetailDAO oddao = new OrderDetailDAO(emf);
         OrderHeadDAO ohdao = new OrderHeadDAO(emf);
@@ -87,6 +89,42 @@ public class OrderService {
         List<OrderDetail> odlList = oddao.queryOrderDetailByOrderHeadMasterId(oh);
         //將存放有orderDetail信息的list返回給controller
         return odlList;
+    }
+    */
+    //查詢訂單身檔列表++++
+     public Response queryOrderDetailListService(String orderHeadId,int pageNo) {
+        OrderDetailDAO oddao = new OrderDetailDAO(emf);
+        OrderHeadDAO ohdao = new OrderHeadDAO(emf);
+        //調用OrderHeadDAO中通過orderHeadId查詢orderHead實體的方法查詢到OrderHead實體
+        OrderHead oh = ohdao.queryOrderHeadByOrderHeadId(orderHeadId);
+
+        List<OrderDetail> odList = (List<OrderDetail>)oddao.queryOrderDetailByOrderHeadMasterId(oh).getData();
+        
+        int count = 0;
+        List responseList = new ArrayList<>();
+        int size=odList.size();
+        
+        for(int j = 1; j <= size; j++){
+            OrderDetail od = odList.get(size - j);
+            if(od.getDeleteStatus() == false){
+                ++count;
+                if(count > pageNo*5){
+                    List list_row = new ArrayList();
+                    list_row.add(od.getOrderDetailId());
+                    list_row.add(od.getOrdheadMasterId().getOrderHeadId());
+                    list_row.add(od.getProductMasterId().getProductId());
+                    list_row.add(od.getProductMasterId().getProductName());
+                    list_row.add(od.getOrderQty());
+                    list_row.add(od.getOrderPrice());
+                    responseList.add(list_row);
+                }
+            }
+            if(responseList.size() == 5){
+                break;
+            }
+        }
+        
+        return new Response().success("通過外鍵關聯獲取客戶產品單價",responseList,((size-1)/5) + 1);
     }
 
    

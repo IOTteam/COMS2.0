@@ -71,10 +71,10 @@ public class OrderController {
         queryCondition.put("pageNo", pageNo);
 
         //調用查詢函數  
-        Response queryOrderHeadListResult = orderService.queryOrderHeadListService(orderHeadIdMin, orderHeadIdMax, customerName, orderDateMin, orderDateMax,pageNo);
+        Response queryOrderHeadListResult = orderService.queryOrderHeadListService(orderHeadIdMin, orderHeadIdMax, customerName, orderDateMin, orderDateMax, pageNo);
 
         Response queryCountOrderHeadListResult = orderService.queryCountOrderHeadListService(orderHeadIdMin, orderHeadIdMax, customerName, orderDateMin, orderDateMax);
-       
+
         if (queryOrderHeadListResult.isEmpty()) {
             model.addAttribute("message", queryOrderHeadListResult.getMessage());
             return "OrderManage";
@@ -121,30 +121,24 @@ public class OrderController {
      *
      * @author David
      * @param orderHeadId
+     * @param pageNo
      * @param model
      * @return
      */
+    /*
     @RequestMapping(value = "queryOrderDetailList")
     @ResponseBody
     public List queryOrderDetaillList(@RequestParam("orderHeadId") String orderHeadId) {
         List<OrderDetail> orderDetails = orderService.queryOrderDetailListService(orderHeadId);
-        //model.addAttribute("orderDetails", orderDetails);,ModelMap model
         return orderDetails;
-//        List listTable =new ArrayList();
-//        for(int i=0;i<orderDetails.size();i++){
-//            List listRow=new ArrayList();
-//
-//            //訂單身檔編號/訂單頭檔編號/產品編號/產品名稱/下單數量/下單單價</th> 
-//
-//            listRow.add(orderDetails.get(i).getOrderDetailId());
-//            listRow.add(orderDetails.get(i).getOrdheadMasterId().getOrderHeadId());
-//            listRow.add(orderDetails.get(i).getProductMasterId().getProductId());
-//            listRow.add(orderDetails.get(i).getProductMasterId().getProductName());
-//            listRow.add(orderDetails.get(i).getOrderQty());
-//            listRow.add(orderDetails.get(i).getOrderPrice());
-//            listTable.add(listRow);        
-//        }
-//        return listTable;
+    }
+     */
+    //查詢訂單身檔++++
+    @RequestMapping(value = "queryOrderDetailList")
+    @ResponseBody
+    public Response queryOrderDetaillList(@RequestParam("orderHeadId") String orderHeadId,@RequestParam(value = "pageNo",defaultValue = "0") int pageNo) {
+        Response orderDetails = orderService.queryOrderDetailListService(orderHeadId,pageNo);
+        return orderDetails;
     }
 
     /**

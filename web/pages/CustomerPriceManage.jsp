@@ -77,12 +77,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </ul>
             <ul>
                 <li>
-                    <a href="<%=basePath%>orderList/queryList">订单列表</a>
+                    <a href="<%=basePath%>OrderManage/queryOrderHeadList">訂單管理</a>
                 </li>
             </ul>
               <ul>
                 <li>
-                    <a href="<%=basePath%>productMaster/loadProductMaster">产品信息</a>
+                    <a href="#">產品管理</a>
                 </li>
             </ul>
 	</div>

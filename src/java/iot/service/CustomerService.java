@@ -88,7 +88,7 @@ public class CustomerService {
     
         CustomerDAO customerDAO = new CustomerDAO(emf);
         
-        customer.setCustomerMasterId(UUID.randomUUID().toString());
+        customer.setCustomerMasterId(UUID.randomUUID().toString().toUpperCase());
         customer.setCustomerId(customerDAO.getCustomerId());
         
         return customerDAO.create(customer);
