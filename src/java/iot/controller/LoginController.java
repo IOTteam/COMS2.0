@@ -70,10 +70,10 @@ public class LoginController {
         //獲取驗證碼文字
         String code = (String) session.getAttribute("code");
         //判斷驗證碼是否正確，區分大小寫   
-        if (!code.equals(kaptcha)) {
-            model.addAttribute("message_k", "验证码错误");
-            return "login";
-        }
+//        if (!code.equals(kaptcha)) {
+//            model.addAttribute("message_k", "验证码错误");
+//            return "login";
+//        }
         //調用service層的UserLogin方法
         String umn = loginService.UserLogin(username, userpass);
 

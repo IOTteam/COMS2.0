@@ -6,6 +6,7 @@
 package iot.dao.repository;
 
 import iot.dao.entity.OrderDetail;
+import iot.dao.entity.OrderDetail_;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -15,9 +16,16 @@ import iot.dao.entity.OrderHead;
 import iot.dao.entity.Product;
 import iot.dao.repository.exceptions.NonexistentEntityException;
 import iot.dao.repository.exceptions.PreexistingEntityException;
+import iot.response.Response;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
 
 /**
  *
@@ -34,7 +42,7 @@ public class OrderDetailDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(OrderDetail orderDetail) throws PreexistingEntityException, Exception {
+    public Response create(OrderDetail orderDetail) throws PreexistingEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -59,6 +67,9 @@ public class OrderDetailDAO implements Serializable {
                 productMasterId = em.merge(productMasterId);
             }
             em.getTransaction().commit();
+
+            return new Response().success("新增訂單身檔成功", orderDetail);
+
         } catch (Exception ex) {
             if (findOrderDetail(orderDetail.getOrddetailMasterId()) != null) {
                 throw new PreexistingEntityException("OrderDetail " + orderDetail + " already exists.", ex);
@@ -71,7 +82,7 @@ public class OrderDetailDAO implements Serializable {
         }
     }
 
-    public void edit(OrderDetail orderDetail) throws NonexistentEntityException, Exception {
+    public Response edit(OrderDetail orderDetail) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -107,6 +118,9 @@ public class OrderDetailDAO implements Serializable {
                 productMasterIdNew = em.merge(productMasterIdNew);
             }
             em.getTransaction().commit();
+
+            return new Response().success("修改訂單身檔成功", orderDetail);
+
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
@@ -199,5 +213,144 @@ public class OrderDetailDAO implements Serializable {
             em.close();
         }
     }
-    
+
+    /**
+     * 通過orderHeadMasterId查詢訂單詳細列表
+     *
+     * @author David
+     * @param orderHeadMasterId
+     * @return
+     */
+    /*
+    public List<OrderDetail> queryOrderDetailByOrderHeadMasterId(OrderHead orderHeadMasterId) {
+        EntityManager em = getEntityManager();
+        try {
+            //创建安全查询工厂
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            //创建查询主语句
+            CriteriaQuery<OrderDetail> cq = cb.createQuery(OrderDetail.class);
+            //定义实体类型
+            Root<OrderDetail> od = cq.from(OrderDetail.class);
+
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(cb.equal(od.get(OrderDetail_.ordheadMasterId), orderHeadMasterId));
+            predicatesList.add(cb.equal(od.get(OrderDetail_.deleteStatus), false));
+
+            cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            cq.orderBy(cb.asc(od.get(OrderDetail_.orderDetailId)));
+            Query q = em.createQuery(cq); 
+            List<OrderDetail> list = q.getResultList();
+
+            return list;
+
+        } finally {
+            em.close();
+        }
+    }
+     */
+    //通過訂單頭檔實體查詢訂單身檔
+    public Response queryOrderDetailByOrderHeadMasterId(OrderHead orderHeadMasterId) {
+        EntityManager em = getEntityManager();
+        try {
+            //创建安全查询工厂
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            //创建查询主语句
+            CriteriaQuery<OrderDetail> cq = cb.createQuery(OrderDetail.class);
+            //定义实体类型
+            Root<OrderDetail> od = cq.from(OrderDetail.class);
+
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(cb.equal(od.get(OrderDetail_.ordheadMasterId), orderHeadMasterId));
+            predicatesList.add(cb.equal(od.get(OrderDetail_.deleteStatus), false));
+
+            cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            cq.orderBy(cb.asc(od.get(OrderDetail_.orderDetailId)));
+            Query q = em.createQuery(cq);
+
+            return new Response().success("查詢訂單身檔成功", q.getResultList());
+
+        } catch (NoResultException e) {
+            return new Response().Empty("查詢結果不存在");
+        } finally {
+            em.close();
+        }
+    }
+
+    //生成訂單身檔編號
+    public String generateOrderDetailId() {
+        EntityManager em = getEntityManager();
+        try {
+            //创建安全查询工厂
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            //创建查询主语句
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+            //定义实体类型
+            Root<OrderDetail> od = cq.from(OrderDetail.class);
+            cq.select(cb.count(od));
+
+            //獲取當前時間
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String odId = "ORDD" + sdf.format(date);
+
+            //構造過濾條件
+            Predicate predicate = cb.like(od.get(OrderDetail_.orderDetailId), "%" + odId + "%");
+            cq.where(predicate);
+
+            Query count = em.createQuery(cq);
+            int count_int = ((Long) count.getSingleResult()).intValue() + 1;
+
+            return odId + String.format("%03d", count_int);
+
+        } finally {
+            em.close();
+        }
+    }
+
+    //通過訂單身檔編號查詢訂單身檔
+    public Response queryOrderDetailByOrderDetailId(String orderDetailId) {
+        EntityManager em = getEntityManager();
+        try {
+            //创建安全查询工厂
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            //创建查询主语句
+            CriteriaQuery<OrderDetail> cq = cb.createQuery(OrderDetail.class);
+            //定义实体类型
+            Root<OrderDetail> od = cq.from(OrderDetail.class);
+
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(cb.equal(od.get(OrderDetail_.orderDetailId), orderDetailId));
+            predicatesList.add(cb.equal(od.get(OrderDetail_.deleteStatus), false));
+            cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            Query q = em.createQuery(cq);
+
+            return new Response().success("查詢訂單身檔實體成功", q.getSingleResult());
+
+        } catch (NoResultException e) {
+            throw new NoResultException("##要查詢的訂單身檔不存在##");
+        } finally {
+            em.close();
+        }
+    }
+
+    public Response deleteOrderDetail(OrderDetail orderDetail) throws PreexistingEntityException {
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+
+            try {
+                orderDetail.setDeleteStatus(true);
+                em.merge(orderDetail);
+                em.getTransaction().commit();
+
+            } catch (Exception e) {
+                em.getTransaction().rollback();
+                throw new PreexistingEntityException("删除訂單身檔檔失败");
+            }
+            return new Response().success("刪除訂單身檔成功");
+
+        } finally {
+            em.close();
+        }
+    }
 }

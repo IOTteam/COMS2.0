@@ -77,22 +77,22 @@ $(function(){
 	<div class="menu_dropdown">
 	    <ul>
                 <li>
-                    <a href="<%=basePath%>CustInfo/CustQuery">客户信息</a>
+                    <a href="<%=basePath%>CustomerManage/CustomerQuery">客戶管理</a>
+                </li>
+            </ul>
+              <ul>
+                <li>
+                    <a href="<%=basePath%>CustomerPriceManage/queryCustomerPrice">客戶產品單價管理</a>
                 </li>
             </ul>
             <ul>
                 <li>
-                    <a href="<%=basePath%>orderList/queryList">订单列表</a>
+                    <a href="<%=basePath%>OrderManage/queryOrderHeadList">訂單管理</a>
                 </li>
             </ul>
               <ul>
                 <li>
-                    <a href="<%=basePath%>productMaster/loadProductMaster">产品信息</a>
-                </li>
-            </ul>
-              <ul>
-                <li>
-                    <a href="<%=basePath%>CustPrice/queryCustPrice">客户产品单价</a>
+                    <a href="#">產品管理</a>
                 </li>
             </ul>
 	</div>

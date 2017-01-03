@@ -1,7 +1,7 @@
 <%-- 
-    Document   : CustInfo
-    Created on : 2016-8-10, 15:04:43
-    Author     : lxp
+    Document   : OrderManage
+    Created on : 2016-12-21, 15:04:43
+    Author     : David
 --%>
 <%@page import="iot.dao.entity.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -38,36 +38,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
 <![endif]-->
-<title>客户订单管理系统</title>
- <style type="text/css">
-.color {
-    background-color: #99ffff;
-}
-</style>
-<script type="text/javascript">
-var temptr = $();
-$(function(){
-    $("#orderTable,#orderDetailTable").on("click","tr",function(event){
-        temptr.removeClass("color");
-        temptr = $(this);
-        temptr.addClass("color")
-    });
-});
-</script>       
+<title>客戶訂單管理系統</title>  
 </head>
 <body>
     <!--导航栏-->
     <header class="navbar-wrapper">
 	<div class="navbar navbar-fixed-top">
-            <div class="container-fluid cl"> <a href="<%=basePath%>index" class="logo navbar-logo f-l mr-10 hidden-xs" style="font-family: LiSu; font-size: 30px">客户订单管理系统</a>
+            <div class="container-fluid cl"> <a href="<%=basePath%>index" class="logo navbar-logo f-l mr-10 hidden-xs" style="font-family: LiSu; font-size: 30px">客戶訂單管理系統</a>
 		<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                     <ul class="cl">
-			<li id="time">欢迎登陆,</li>
+                        <li>今天是</li>
+                        <li>&nbsp;&nbsp;&nbsp;</li>
+                        <li id="timeday" style=" color: red"></li>
+                        <li>&nbsp;&nbsp;&nbsp;</li>
+			<li id="time"></li>                        
 			<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A" style="color: red">${user.userName}</a>
                             <ul class="dropDown-menu menu radius box-shadow">
-                                <li><a data-toggle="modal" href="#userInfo">个人信息</a></li>
-                                <li><a data-toggle="modal" href="#passwordEdit">修改密码</a></li>
-				<li><a href="<%=basePath%>login/logout">退出</a></li>
+                                <li><a data-toggle="modal" href="#userInfo">個人資訊</a></li>
+                                <li><a data-toggle="modal" href="#passwordEdit">修改密碼</a></li>
+				<li><a href="<%=basePath%>login/logout">登出</a></li>
                             </ul>
 			</li>
                     </ul>
@@ -80,22 +69,22 @@ $(function(){
 	<div class="menu_dropdown">
 	    <ul>
                 <li>
-                    <a href="<%=basePath%>CustInfo/CustQuery">客户信息</a>
+                    <a href="<%=basePath%>CustomerManage/CustomerQuery">客戶管理</a>
                 </li>
             </ul>
             <ul>
                 <li>
-                    <a href="<%=basePath%>orderList/queryList">订单列表</a>
+                    <a href="<%=basePath%>CustomerPriceManage/queryCustomerPrice">客戶產品單價管理</a> 
                 </li>
             </ul>
               <ul>
                 <li>
-                    <a href="<%=basePath%>productMaster/loadProductMaster">产品信息</a>
+                   <a href="<%=basePath%>OrderManage/queryOrderHeadList">訂單管理</a>
                 </li>
             </ul>
               <ul>
                 <li>
-                    <a href="<%=basePath%>CustPrice/queryCustPrice">客户产品单价</a>
+                    <a href="#">產品管理</a>
                 </li>
             </ul>
 	</div>
@@ -103,19 +92,19 @@ $(function(){
     <!--管理员信息-->
     <div id="userInfo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">
-            <h3 id="myModalLabel">用户信息</h3>
+            <h3 id="myModalLabel">個人資訊</h3>
             <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
         </div>
         <div class="modal-body">
             <form action="" class="form form-horizontal responsive">
             	<div class="row cl">
-                    <label class="form-label col-xs-3">用户编号：</label>
+                    <label class="form-label col-xs-3">用戶編號：</label>
                     <div class="formControls col-xs-5">
                         <input type="text" class="input-text" autocomplete="off" value="${user.userId}" name="username" />
                     </div>
 		</div>
 		<div class="row cl">
-                    <label class="form-label col-xs-3">用户姓名：</label>
+                    <label class="form-label col-xs-3">用戶姓名：</label>
                     <div class="formControls col-xs-5">
                         <input type="text" class="input-text" autocomplete="off"  value="${user.userName}" name="password" />
                     </div>
@@ -123,10 +112,47 @@ $(function(){
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">确定</button>
+            <button class="btn" data-dismiss="modal" aria-hidden="true">確定</button>
         </div>
     </div>
 
+     <!--使用者修改密碼-->
+    <div id="passwordEdit" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <h3 id="myModalLabel">修改密碼</h3><a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+        </div>
+        <div class="modal-body">
+            <form action="login/editPassword" method="post" class="form form-horizontal responsive">
+                <div class="row cl">
+                    <label class="form-label col-xs-3">原密碼：</label>
+                    <div class="formControls col-xs-5">
+                        <input type="password" class="input-text" id="userPassOld" autocomplete="off" name="userPassOld" />
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-3">新密碼：</label>
+                    <div class="formControls col-xs-5">
+                        <input type="password" class="input-text" id="userPassNew" autocomplete="off" name="userPassNew" />
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-3">確認新密碼：</label>
+                    <div class="formControls col-xs-5">
+                        <input type="password" class="input-text" id="userPassConfirm" autocomplete="off"  name="userPassConfirm" />
+                        <p id="message" class="c-error text-l"></p>
+                    </div>
+                </div>              
+                <div class="row cl">
+                    <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                        <input class="btn btn-primary radius"  type="button"  id="savePassword" onclick="editPassword()" value="確定" >    
+                        <input type="button" class="btn btn-primary radius" value="取消" data-dismiss="modal" aria-hidden="true">
+                    </div>
+                </div>
+            </form>        
+        </div>
+    </div>
+                    
+                    
     <!--菜单缩进--> 
     <div class="dislpayArrow"> 
         <a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a>
@@ -134,92 +160,97 @@ $(function(){
     <!--订单信息列表-->           
     <section class="Hui-article-box">
         <div class="page-container">
-            <form action="orderQuery" method="post">
-		<h3 align="center">订单信息列表</h3>
+            <form action="queryOrderHeadList" method="post">
+		<h3 align="center">訂單頭檔信息列表</h3>
                 <br/>
                 <p align="center">
-                    订单编号：<input type="text" name="orderId" class="input-text radius" value="${queryCondition.orderId}" style="width:100px"  id="orderRequiredID" />
-                    下单日期：<input type="date" name="firstOrderDate" class="input-text radius" value="${queryCondition.firstDate}" style="width:150px" />
-                    下单日期：<input type="date" name="lastOrderDate" class="input-text radius" value="${queryCondition.lastDate}" style="width:150px" />
+                    訂單編號起點：<input type="text" name="orderHeadIdMin" class="input-text radius" value="${queryCondition.orderHeadIdMin}" style="width:100px"  id="orderHeadIdMin" autocomplete="off"/>
+                    訂單編號終點：<input type="text" name="orderHeadIdMax" class="input-text radius" value="${queryCondition.orderHeadIdMax}" style="width:100px"  id="orderHeadIdMax" autocomplete="off" />
+                    下單日期起點：<input type="date" name="orderDateMin" class="input-text radius" value="${queryCondition.orderDateMin}" style="width:150px" id="orderDateMin" autocomplete="off"/>
+                    下單日期終點：<input type="date" name="orderDateMax" class="input-text radius" value="${queryCondition.orderDateMax}" style="width:150px" id="orderDateMax" autocomplete="off"/>
+                    下單客戶名字：<input type="text" name="customerName" class="input-text radius" value="${queryCondition.customerName}" style="width:100px"  id="customerName" autocomplete="off"/>
                     <input class="btn btn-primary radius"  type="submit" value="查询"/>
-                    <a data-toggle="modal" class="btn btn-primary radius" href="#add_list" onclick="ADD()"/>新增</a>
-                    <a data-toggle="modal" id="del_list" class="btn btn-default radius">删除</a>
+                    <a data-toggle="modal" class="btn btn-primary radius" href="#addOrderHeadWindow"/>新增</a>
+                    <a data-toggle="modal" id="orderHeadDelBtn" class="btn btn-default radius">删除</a>
                 </p>
             </form>
-            <table class="table table-border table-bordered table-hover" id="orderTable">
+            <table class="table table-border table-bordered table-hover" id="orderHeadTable">
 		<tr>
-                    <th style="width:100px">订单编号</th> 
-                    <th style="width:100px">下单日期</th>  
-                    <th style="width:100px">下单客户</th> 
+                    <th style="width:100px">訂單頭檔編號</th> 
+                    <th style="width:100px">下單日期</th>  
+                    <th style="width:100px">下單客戶</th> 
                     <th style="width:100px">操作</th> 
 		</tr>
-                <c:forEach items="${orderList}" var ="order">
-                <c:set var="date" value="${order.orderDate}" />
-                <tr class="orderInfo" style=" height: 38px">
-                    <td style="width:100px"><c:out value="${order.orderId}"></c:out></td>
+                <c:forEach items="${orderHeadList}" var ="orderHead"> 
+                    <c:set var="date" value="${orderHead.orderDate}" />
+                <tr style=" height: 38px">
+                    <td style="width:100px"><c:out value="${orderHead.orderHeadId}"></c:out></td>
                     <td style="width:100px"><fmt:formatDate type="both" value="${date}"></fmt:formatDate></td> 
-                    <td style="width:100px"><c:out value="${order.customerName}"></c:out></td>
+                    <td style="width:100px"><c:out value="${orderHead.customerMasterId.customerName}"></c:out></td>
                     <td>
-                        <a data-toggle="modal" class="radius" href="#orderDetail">订单详细</a>
+                        <a data-toggle="modal" class="showOrderDetail" class="radius" >查看訂單身檔</a>
                     </td>
-                    <td hidden="true"><c:out value="${order.orderMasterId}"></c:out></td>
+                    <td hidden="true"><c:out value="${orderHead.orderHeadId}"></c:out></td>
                 </tr>
+                
                 </c:forEach> 
             </table>
             <br/>
-            <div align="center">
-            <p> <input type="button" value="上一页" onclick="order_pre()"/>
-            <input class="input-text radius" type="text" id="pageNo" value="${pageNo}" readonly="true" style="width:30px" />/
-            <input class="input-text radius" type="text" id="totalPage" value="${pageNum}" readonly="true" style="width:30px" />
-            <input type="button" value="下一页" onclick="order_next()"/>
+           <div align="center">
+            <p> <input type="button" value="上一頁" onclick="OHprePage()"/>
+            <input class="input-text radius" type="text" id="pageNo" value="${queryCondition.pageNo}" readonly="true" style="width:30px" />/
+            <input class="input-text radius" type="text" id="totalPage" value="${totalPage}" readonly="true" style="width:30px" />
+            <input type="button" value="下一頁" onclick="OHnextPage()"/>
             </p>
         </div>
         </div>
         </section> 
+            
+            
     <!--删除订单头档-->
-    <div id="deleteInfo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div id="deleteOHInfo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">
-            <h4 id="myModalLabel">信息提示！</h4><a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+            <h4 id="myModalLabel">訂單頭檔刪除信息提示！</h4><a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
         </div>
         <div class="modal-body">
-            <h4 id="myModalLabel" align="center">确定删除该订单？</h4>
+            <h4 id="myModalLabel" align="center">確定刪除該訂單頭檔？</h4>
         </div>
         <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true" onclick="del()">确定</button>
+            <button class="btn" data-dismiss="modal" aria-hidden="true"  onclick="deleteOrderHead()">確定</button>
             <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
         </div>
     </div>
+    
+    
+    
     <!--新增订单头档-->            
-    <div id="add_list" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div id="addOrderHeadWindow" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header" align="center">
-            <h2 id="myModalLabel"><small>新增订单</small></h2>
+            <h2 id="myModalLabel"><small>新增訂單頭檔</small></h2>
             <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
         </div>
         <div class="modal-body">
-            <form action="orderAdd" method="post" class="form form-horizontal responsive">
+            <form action="addOrderHead" method="post" class="form form-horizontal responsive">
             	<div class="row cl">
-                    <label class="form-label col-xs-3">订单编号：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">訂單頭檔編號：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" class="input-text disabled" autocomplete="off" readonly="true" name="orderId" id="order_id" value=""/>
+                        <input type="text" class="input-text disabled" autocomplete="off" readonly="true" placeholder="自動生成訂單頭檔編號" name="orderHeadId" id="orderHeadId_4add"/>
                     </div>
 		</div>
                 <div class="row cl">
-                    <label class="form-label col-xs-3">客户名称：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">客戶信息：</label>
                         <div class="formControls col-xs-5"  id="master_div">
                         <span class="select-box">
-                            <select class="select" size="1" name="customername" id="customerSelect" onchange="getCustomer(this.options[this.options.selectedIndex].value)">
-                                <option  id="customerOption" value="" selected>请选择客户</option>
-                            </select>
+                            <input class="select" size="1" name="customerId" id="customerId_4add" list="customer_list" /> <!--onchange="setupCustomer()" -->
+                                <datalist id="customer_list"> 
+                                </datalist>
                         </span>
-                    <div class="formControls col-xs-5">
-                        <input type="text" id="customer_Id" style="width:100px" class="input-text" hidden="true" utocomplete="off"name="customerId" value=""/>
-                    </div>
                     </div>
 		</div>
                 <div class="row cl">
-                    <label class="form-label col-xs-3">下单日期：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">下單日期：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" class="input-text disabled" readonly="true" autocomplete="off"  name="orderDate" id="orderdate_id" value=""/>
+                        <input   type="text" class="input-text disabled" readonly="true"placeholder="系統自動獲取當前時間" autocomplete="off" />
                     </div>
 		</div>
                 <div class="row cl">
@@ -227,81 +258,108 @@ $(function(){
 		</div>
                 <div class="row cl">
                     <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" align="right">
-                        <input class="btn btn-primary radius" type="submit"  id="master_required" value="确定" >
+                        <input class="btn btn-primary radius" type="button"  value="確定"  onclick="addOrderHead()">
                         <input type="button" class="btn btn-primary radius" value="取消" data-dismiss="modal" aria-hidden="true">
                     </div>
                 </div>
             </form>
         </div>
     </div>   
+    
+    
     <!--订单详细列表-->  
     <div id="orderDetail" class="modal1 hide fade"style="width:500px" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">
-            <h3 align="center" id="myModalLabel">订单详细信息列表</h3>
-            <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();" onclick="refresh()">×</a>
+            <h3 align="center" id="myModalLabel">訂單身檔信息列表</h3>
+       
+            <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+            <div align="right">
+                <a data-toggle="modal" class="btn btn-primary radius" onclick="refreshOrderDetailList()" />刷新</a>  
+            </div>
         </div>
         <div class="modal-body">
             <table id="orderDetailTable" class="table table-border table-bordered table-hover">
 		<tr>
-                    <th style="width:100px">订单详细编号</th>
-                    <th style="width:100px">订单编号</th> 
-                    <th style="width:100px">产品ID</th>
-                    <th style="width:100px">产品名称</th> 
-                    <th style="width:100px">订单数量</th>  
-                    <th style="width:100px">订单单价</th>   
+                    <th style="width:150px">訂單身檔編號</th>
+                    <th style="width:150px">訂單頭檔編號</th> 
+                    <th style="width:150px">產品編號</th>
+                    <th style="width:150px">產品名稱</th> 
+                    <th style="width:60px">下單數量</th>  <!--訂單產品下單數量-->
+                    <th style="width:60px">下單單價</th>   <!--訂單產品下單單價-->
 		</tr>
+                
+                <tr>
+                    <c:forEach items="${orderDetails}" var ="orderDetails"> 
+
+                <tr style=" height: 38px">
+                    <td style="width:150px"><c:out value="${orderDetails.orderHeadMasterId.orderHeadId}"></c:out></td>
+                    <td style="width:150px"><c:out value="${orderDetails.orderDetailId}"></c:out></td> 
+                    <td style="width:150px"><c:out value="${orderDetails.productMasterId.productId}"></c:out></td>
+                    <td style="width:150px"><c:out value="${orderDetails.productMasterId.productName}"></c:out></td>
+                    <td style="width:60px"><c:out value="${orderDetails.orderQty}"></c:out></td> 
+                    <td style="width:60px"><c:out value="${orderDetails.orderPrice}"></c:out></td>
+                    
+                    <td hidden="true"><c:out value="${orderDetails.orderDetailMasterId}"></c:out></td>
+                </tr>
+                </c:forEach> 
+                </tr>
+
+<!--            <tr height="48px"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr height="48px"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr height="48px"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr height="48px"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr height="48px"><td></td><td></td><td></td><td></td><td></td><td></td></tr>-->
             </table>
             <div align="center">
-            <p> <input type="button" value="上一页" onclick="detail_pre()"/>
-            <input class="input-text radius" type="text" id="detailPageNo" value="1" readonly="true" style="width:30px" />/
-            <input class="input-text radius" type="text" id="detailTotalPage" readonly="true" style="width:30px" />
-            <input type="button" value="下一页" onclick="detail_next()"/>
+            <p> <input type="button" value="上一頁" id="odPrePage" />
+            <input class="input-text radius" type="text" id="odpageNo" value="1" readonly="true" style="width:30px" />/
+            <input class="input-text radius" type="text" id="odtotalPage"  readonly="true" style="width:30px" />
+            <input type="button" value="下一頁" id="odNextPage"/>
             </p>
         </div>
         </div>
         <div class="modal-footer">
-            <a data-toggle="modal" class="btn btn-primary radius" href="#add_detaillist" onclick="addDetail()"/>新增</a>
-        <a data-toggle="modal" id="up_detailList" class="btn btn-default radius" onclick="updateDetail()"/>修改</a>
-        </div>
+            <a data-toggle="modal" class="btn btn-primary radius" href="#addODInfo"/>新增</a>
+            <a data-toggle="modal" class="btn btn-default radius" id="orderDetailUpBtn" onclick="getOrderDetailForUpdate()"/>修改</a>
+            <a data-toggle="modal" class="btn btn-default radius" id="orderDetailDelBtn"/>刪除</a>
+        </div> 
     </div>
+    
+    
     <!--新增订单身档-->     
-     <div id="add_detaillist" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div id="addODInfo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header" align="center">
-            <h2 id="myModalLabel"><small>新增订单详细</small></h2>
+            <h2 id="myModalLabel"><small>新增訂單身檔</small></h2>
             <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
         </div>
         <div class="modal-body">
-            <form action="orderDetailAdd" method="post" class="form form-horizontal responsive">
-            	<div class="row cl" hidden="true">
-                    <label class="form-label col-xs-3">订单编号：</label>
+            <form action="addOrderDetail" method="post" class="form form-horizontal responsive">
+            	 <div class="row cl">
+                    <label class="form-label col-xs-3">訂單頭檔編號：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" style="width:300px" id="order_id1" value="" readonly="true" name="orderMasterId" class="input-text disabled radius" />
+                        <input type="text"  id="orderHeadId_4addDetail" name="orderHeadId" class="input-text disabled" readonly="true"/>
                     </div>
 		</div>
 		<div class="row cl">
-                    <label class="form-label col-xs-3">产品名称：</label>
-                    <div class="formControls col-xs-5" id="detail_div">
+                    <label class="form-label col-xs-3">產品信息：</label>
+                    <div class="formControls col-xs-5">
                         <span class="select-box">
-                        <select class="select" name="productId" id="productId_add" onchange="getProduct(this.options[this.options.selectedIndex].value)">
-                            <option value="" selected>请选择产品</option>
-                            <c:forEach items="${productMaster}" var ="product">
-                                <option value="${product.productId}" ><c:out value="${product.productId}"></c:out><c:out value="${product.productName}"></c:out></option>
-                            </c:forEach> 
-                        </select>
-                        </span>
-                         
+                        <input class="select" name="productId" id="productId_4add" list="product_list" />
+                           <datalist id="product_list"> 
+                           </datalist>
+                        </span>   
                     </div>
 		</div>
-                <div class="row cl" >
-                    <label class="form-label col-xs-3">下单数量：</label>
+                <div class="row cl">
+                    <label class="form-label col-xs-3">下單數量：</label>
                     <div class="formControls col-xs-5" id="add_div">
-                        <input type="text"  value="" id="orderQty_add" name="orderQty" class="input-text radius"/>
+                        <input type="text"  value="" id="orderQty_4add" name="orderQty" class="input-text radius"/>
                     </div>
 		</div>
                 
                 <div class="row cl">
                     <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" align="right">
-                        <input class="btn btn-primary radius" type="button" value="确定" id="detail_required">
+                        <input class="btn btn-primary radius" type="button" value="确dada定" onclick="addOrderDetail()">
                         <input type="button" class="btn btn-primary radius" value="取消" data-dismiss="modal" aria-hidden="true">
                     </div>
                 </div>
@@ -309,44 +367,66 @@ $(function(){
         </div>
     </div>   
     <!--修改订单身档-->     
-     <div id="up_detaillist" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div id="updateODInfo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header" align="center">
-            <h2 id="myModalLabel"><small>修改订单详细</small></h2>
+            <h2 id="myModalLabel"><small>修改訂單身檔</small></h2>
             <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
         </div>
         <div class="modal-body">
             <form action="orderDetailUpdate" method="post" class="form form-horizontal responsive">
-            	<div class="row cl">
-                    <label class="form-label col-xs-3">订单编号：</label>
+            	<div class="row cl" hidden="true">
+                    <label class="form-label col-xs-3">訂單頭檔編號：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" id="order_id2" value="" readonly="true" name="orderMasterId" class="input-text disabled radius" />
+                        <input type="text" id="OrderHeadId4Update"  readonly="true" name="orderHeadId" class="input-text disabled radius"/>
+                    </div>
+		</div>
+                <div class="row cl">
+                    <label class="form-label col-xs-3">訂單身檔編號：</label>
+                    <div class="formControls col-xs-5">
+                        <input type="text" id="orderDetailId4Update"   name="orderDetailId" readonly="true" class="input-text disabled radius" />
+                    </div>
+		</div>
+                <div class="row cl" hidden="true">
+                    <label class="form-label col-xs-3">產品編號：</label>
+                    <div class="formControls col-xs-5">
+                        <input type="text" id="productId4Update"  readonly="true" name="productId" class="input-text disabled radius"/>
                     </div>
 		</div>
 		<div class="row cl">
-                    <label class="form-label col-xs-3">产品名称：</label>
+                    <label class="form-label col-xs-3">產品名稱：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" id="productName" value="" readonly="true" name="productName" class="input-text disabled radius"/>
+                        <input type="text" id="productName4Update"  readonly="true" name="productName" class="input-text disabled radius"/>
                     </div>
 		</div>
                 <div class="row cl">
-                    <label class="form-label col-xs-3">下单数量：</label>
-                    <div class="formControls col-xs-5" id="qty_div">
-                        <input type="text" id="orderQty" value="" name="orderQty" class="input-text radius"/>
-                    </div>
+                    <label class="form-label col-xs-3">下單數量：</label>
+                    <div class="formControls col-xs-5">
+                        <input type="text"  id="orderQty4Update"  name="orderQty" class="input-text radius" onblur="getPriceByQtyForUpdate()"/>
+                    </div>                    
 		</div>
                 <div class="row cl">
+                    <label class="form-label col-xs-3">產品價格：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" id="orderDetailId" hidden="true" value="" name="orderDetailId" readonly="true" />
+                        <input type="text"  id="productPrice4Update"  name="productPrice"  readonly="true" class="input-text disabled radius"/>
+                    </div>
+                </div>
+               <div class="row cl">
+                   <label class="form-label col-xs-3" style="color: red">自定義下單價格：</label>
+                    <div class="formControls col-xs-5">
+                        <input type="text" id="userDefinedPrice4Update"  name="userDefinedPrice" class="input-text radius"/>
+                    </div>
+                   <label class="form-label col-xs-3" style="color: red">*管理員權限*</label>
+		</div>
+                <div class="row cl" hidden="true">
+                    <label class="form-label col-xs-3">修改次數：</label>
+                    <div class="formControls col-xs-5">
+                        <input type="text" id="versionNumber4Update"  name="versionNumber" class="input-text radius"/>
                     </div>
 		</div>
-                <div class="row cl">
-                    <div class="formControls col-xs-5">
-                        <input type="text" id="productId" hidden="true" value="" name="productId" readonly="true" />
-                    </div>
-		</div>
+             
                 <div class="row cl">
                     <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" align="right">
-                        <input class="btn btn-primary radius" type="button" id="editdetail" value="确定">
+                        <input class="btn btn-primary radius" type="button" onclick="updateOrderDetail()" value="确定">
                         <input type="button" class="btn btn-primary radius" value="取消" data-dismiss="modal" aria-hidden="true">
                     </div>
                 </div>
@@ -354,587 +434,692 @@ $(function(){
         </div>
     </div> 
     
-    <!--修改管理员密码-->            
-<div id="passwordEdit" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header" align="center">
-        <h3 id="myModalLabel"><small>修改密码</small></h3>
-        <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+    <!--刪除訂單身檔-->
+    <div id="deleteODInfo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <h4 id="myModalLabel">訂單身檔刪除信息提示！</h4><a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+        </div>
+        <div class="modal-body">
+            <h4 id="myModalLabel" align="center">確定刪除該訂單身檔？</h4>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true"  onclick="deleteOrderDetail()">確定</button>
+            <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+        </div>
     </div>
-    <div class="modal-body">
-    	<form action="login/editPassword" method="post" class="form form-horizontal responsive">
-            	<div class="row cl">
-		<label class="form-label col-xs-3">原密码：</label>
-		<div class="formControls col-xs-5">
-                   <input type="password" class="input-text" id="passwordOld" autocomplete="off" name="passwordOld" />
-		</div>
-		</div>
-		<div class="row cl">
-		<label class="form-label col-xs-3">新密码：</label>
-		<div class="formControls col-xs-5">
-                    <input type="password" class="input-text" id="passwordNew" autocomplete="off" name="passwordNew" />
-		</div>
-		</div>
-                <div class="row cl">
-		<label class="form-label col-xs-3">确认新密码：</label>
-		<div class="formControls col-xs-5">
-                    <input type="password" class="input-text" id="passwordConfirm" autocomplete="off"  name="passwordConfirm" />
-                     <p id="message" class="c-error text-l"></p>
-		</div>
-		</div>
-                
-                <div class="row cl">
-		<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-                    <input class="btn btn-primary radius" type="button" id="savepassword" value="保存" />
-                    <input type="button" class="btn btn-primary radius" value="取消" data-dismiss="modal" aria-hidden="true"/>
-		</div>
-                
-        </form>
+    
+       <!--彈出消息-->
+    <div id="modal-message" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+            <div class="modal-content radius">
+            <div class="modal-body">
+                <p id="alter_message"></p>
+            </div>
+            </div>
+	</div>
     </div>
-</div>
+
 <script type="text/javascript" src="<%=basePath%>pages/lib/jquery/1.9.1/jquery.js"></script> 
 <script type="text/javascript" src="<%=basePath%>pages/static/h-ui/js/H-ui.js"></script>
 <script type="text/javascript" src="<%=basePath%>pages/lib/bootstrap-modal/2.2.4/bootstrap-modalmanager.js"></script>
 <script type="text/javascript" src="<%=basePath%>pages/lib/bootstrap-modal/2.2.4/bootstrap-modal.js"></script>
-<script type="text/javascript" src="<%=basePath%>pages/com.js"></script>
+<script type="text/javascript">
+//單獨使點擊id=orderHeadTable的表格的行時，使底色變色
+//$(document).ready(function(){
+//    $("#orderHeadTable tr").click(function(){
+//        $(this).css({"background":"#99ffff"}).siblings().css({"background":"white"});
+//    });
+//});
 
+</script>    
 <script>
-    
-    var str = [];
-    var id;
-    var up = [];
-    //查询订单详细信息
-    $(function (){
-        $(".orderInfo").each(function (){
-            var tem = $(this).children().eq(3);
-            var button = tem.children();
-            button.bind("click",function(){ 
-                var val = button.parent().parent().children("td").get(0).innerHTML;
-                id = button.parent().parent().children("td").get(4).innerHTML;
+  
+  /**
+     * 顯示訂單頭檔信息列表
+     * @@author David
+     */
+    //在class=showOrderDetail觸發此函數   
+    $(document).ready(function(){
+                $(".showOrderDetail").click(function(){ //只能是class，不能用id
+                  //把showOrderDetail這個class的上一級的上一級的下一級的第一列的值付給orderHeadId（<a> -> <td> -> <tr>,再 -> <td>的第一個）
+                    orderHeadId4OD = $(this).parent().parent()
+                            .children().eq(0).text(); 
+                    dealWithOD();
+                });
+              });
+     
+
+//點擊訂單詳細時，分頁顯示訂單身檔內容
+    function dealWithOD(value){
+         //把取到的orderHeadId的值賦值給id=orderHeadId_4addDetail的標籤位置
+                 $("#orderHeadId_4addDetail").val(orderHeadId4OD);                   
+                 
+                $.ajax({  
+                url : "queryOrderDetailList",  
+                type : "post",  
+                datatype:"json",  
+                data:{orderHeadId:orderHeadId4OD,pageNo:value},
+                success : function(data) {
+                 
+                $("#odtotalPage").val(data.count);               
                 
-                if($(this)[0].innerHTML === "订单详细"){
-                    $.ajax({
-                        url:"detailQuery",
-                        type:"get",
-                        datatype:"json",  
-                        data : {orderId:""+ val +""}, 
-                        success : function(data, stats) {  
-                            if (stats === "success") { 
-                                var orderDetailInfo = data.orderDetailInfo;
-                                $("#detailTotalPage")[0].value = data.count;
-                                
-                                for(var i=0;i<orderDetailInfo.length;i++){
-                                    //table中新建行列
-                                    $("#orderDetailTable");
-                                    tb = document.getElementById("orderDetailTable");
-                                    tb.hidden = false;
-                                    new_row = tb.insertRow();
-                                    new_cell1 = new_row.insertCell();
-                                    new_cell2 = new_row.insertCell();
-                                    new_cell3 = new_row.insertCell();
-                                    new_cell4 = new_row.insertCell();
-                                    new_cell5 = new_row.insertCell();
-                                    new_cell6 = new_row.insertCell();
-                                    //新建行列中插入信息
-                                    new_cell1.innerHTML = orderDetailInfo[i].orderDetailId;
-                                    new_cell2.innerHTML = orderDetailInfo[i].orderMasterId_int;
-                                    new_cell3.innerHTML = orderDetailInfo[i].productId_int;
-                                    new_cell4.innerHTML = orderDetailInfo[i].productName;
-                                    new_cell5.innerHTML = orderDetailInfo[i].orderQty;
-                                    new_cell6.innerHTML = orderDetailInfo[i].orderPrice;
-                                } 
-                            }
-                        },  
-                        error : function(data) {  
-                            alert("查询产品单价失败");  
-                        }   
+                var list=data.data;               
+                
+                $("#orderDetail").modal("show");  
+                
+                var i=0;
+                        $("#orderDetailTable").find("tr").each(function (){       
+                            if(i>0){
+                                $(this).remove();
+                                }
+                            i++;   
+                            });
+                
+                for(var i=0;i<list.length;i++){
+                    //table中新建行列
+                    //繪製顯示訂單詳細的表格
+                    //
+                    //$("#orderDetailTable").append("<tr><td>"+list[i].orderDetailId+"</td><td>"+list[i].ordheadMasterId.orderHeadId+"</td><td>"+list[i].productMasterId.productId+"</td><td>"+list[i].productMasterId.productName+"</td><td>"+list[i].orderQty+"</td><td>"+list[i].orderPrice+"</td></tr>");
+                      $("#orderDetailTable").append("<tr><td>"+list[i][0]+"</td><td>"+list[i][1]+"</td><td>"+list[i][2]+"</td><td>"+list[i][3]+"</td><td>"+list[i][4]+"</td><td>"+list[i][5]+"</td></tr>");
+                    //在訂單身檔信息列中，點擊行事件獲取到第一列的值（OrderDetailId），並把值放到了 orderInfo 變量中
+                    orderHeadId4Refresh=list[i][1];
+                    
+                    //在訂單身檔信息列表中，點擊行，將行底色加深
+//                    $(document).ready(function(){
+//                        $("#orderDetailTable tr").click(function(){
+//                        $(this).css({"background":"#99ffff"}).siblings().css({"background":"white"});
+//                        });
+//                    });
+                                                            
+                    $("tr").click(function(){
+                        $(this).find("td").each(function(i){
+                            var text = $(this).text();
+                            if(/ORDD[0-9]{11}/g.test(text)){
+                                console.dir(text+"hahahah");
+                            orderInfo[0] = text;
+                            $(this).parent("tr").css({"background":"#99ffff"}).siblings().css({"background":"white"});
+                            return false;
+                        }
+                    }); 
+                    
+                        //訂單身檔彈窗按鈕置灰                        
+                        if(/ORDD[0-9]{11}/g.test(orderInfo[0])){   
+                        $('#orderDetailDelBtn').attr('href',"#deleteODInfo");//添加标签中的href属
+                        $("#orderDetailDelBtn").removeClass("btn btn-default radius");
+                        $("#orderDetailDelBtn").addClass("btn btn-primary radius");
+                        
+                        $('#orderDetailUpBtn').attr('href',"#updateODInfo");//添加标签中的href属
+                        $("#orderDetailUpBtn").removeClass("btn btn-default radius");
+                        $("#orderDetailUpBtn").addClass("btn btn-primary radius");
+                        }else{
+                        $('#orderDetailDelBtn').removeAttr('href');//清除标签中的href属
+                        $("#orderDetailDelBtn").removeClass("btn btn-primary radius");
+                        $("#orderDetailDelBtn").addClass("btn btn-default radius");
+                        
+                        $('#orderDetailUpBtn').removeAttr('href');//清除标签中的href属
+                        $("#orderDetailUpBtn").removeClass("btn btn-primary radius");
+                        $("#orderDetailUpBtn").addClass("btn btn-default radius");
+                        }
                     });
-                }
-                
+                    }
+   
+                },  
+                error : function(data) { 
+                    var str = data.responseText.toString();
+                    $("#alter_message").html(str.split("##")[1]);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                }  
+            });                        
+     }
+     
+     //刷新訂單身檔列表
+      function refreshOrderDetailList(){
+        //var orderHeadId=orderInfo[1];
+        var orderHeadId= orderHeadId4Refresh;
+        var pageNo = parseInt( $("#odpageNo").val())-1;
+        console.dir(orderHeadId+"在公共");
+        console.dir(pageNo+"在公共");
+        dealWithOD(pageNo);
+        //刷新之後把功能按鈕顏色重置
+                        $('#orderDetailDelBtn').removeAttr('href');//清除标签中的href属
+                        $("#orderDetailDelBtn").removeClass("btn btn-primary radius");
+                        $("#orderDetailDelBtn").addClass("btn btn-default radius");
+                        
+                        $('#orderDetailUpBtn').removeAttr('href');//清除标签中的href属
+                        $("#orderDetailUpBtn").removeClass("btn btn-primary radius");
+                        $("#orderDetailUpBtn").addClass("btn btn-default radius");
+    }
+     
+     //綁定id點擊觸發函數
+      $("#odPrePage,#odNextPage").bind('click', function() {
+        getODPageData(this.id);
+    });
+    //獲取分頁信息
+    function getODPageData(value){
+       
+        var pageNo = parseInt( $("#odpageNo").val());
+        var pageNo_ = "";
+        var totalPage = parseInt($("#odtotalPage").val());
+        if(value === "odPrePage"){
+            if(pageNo <= 1) return ;
+            pageNo_ = pageNo - 2;
+            $("#odpageNo").val(pageNo - 1);
+        }
+        if(value === "odNextPage"){
+           if(pageNo >= totalPage) return ;
+           pageNo_ = pageNo;
+           $("#odpageNo").val(pageNo + 1);
+        }
+        dealWithOD(pageNo_);
+    }
+    
+    /**
+     * 將顯示訂單詳細時動態繪製的表格行刪除，避免在點擊其他選項時，還保留之前的數據      
+     * @@author David
+     */
+    $("#orderDetail").bind("hide",function() {
+        var i=0;
+    $("#orderDetailTable").find("tr").each(function (){       
+        if(i>0){
+            $(this).remove();
+            }
+        i++;   
+        });
+    });
+
+    /**
+     * 獲取客戶信息列表,顯示選擇
+     * @@author David
+     * @type type
+     */
+    var customerList;
+    $("#customerId_4add").bind('input propertychange focus', function() {
+        var customerId = $("#customerId_4add").val();
+        $.ajax({  
+                url : "getCustomerList",  
+                type : "post",  
+                datatype:"json",  
+                data:{customerId:customerId},
+                success : function(data) { 
+                    customerList = data.data;
+                    $("#customer_list").html(null);
+                    for(var i = 0; i < customerList.length; i++){
+                        $("#customer_list").append('<option label="' + customerList[i].customerName  + '" value="' + customerList[i].customerId + '"></option>');
+                    }  
+                },  
+                error : function(data) { 
+                    var str = data.responseText.toString();
+                    $("#alter_message").html(str.split("##")[1]);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                }  
             });
-        });  
-        //去掉a标签中的href属性
-        //$('#del_list').removeAttr('href');
-        //获取点击所在一行的数据并放入数组str中
-        $("#orderDetailTable").on("click","tr",function(){
-            up = [];
-            num = 0;
-            $(this).find("td").each(function(i){
-                var txt = $(this).text();
-                up[num] = txt;
-                num++;
+    });
+    
+    /**
+     * 獲取產品信息，用於顯示，讓用戶選擇
+     */
+     var productList;
+    $("#productId_4add").bind('input propertychange focus', function() {
+        var productId = $("#productId_4add").val();
+        $.ajax({  
+                url : "getProductList",  
+                type : "post",  
+                datatype:"json",  
+                data:{productId:productId},
+                success : function(data) { 
+                    productList = data.data;
+                    $("#product_list").html(null);
+                    for(var i = 0; i < productList.length; i++){
+                        $("#product_list").append('<option label="' + productList[i].productName  + '" value="' + productList[i].productId + '"></option>');
+                    }
+                },  
+                error : function(data) { 
+                    var str = data.responseText.toString();
+                    $("#alter_message").html(str.split("##")[1]);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                }  
             });
-            if(up[0] !== ""){
-                $('#up_detailList').attr('href',"#up_detaillist");//添加标签中的href属
-                $("#up_detailList").removeClass("btn btn-default radius");
-                $("#up_detailList").addClass("btn btn-primary radius");
-            }else{
-                $('#up_detailList').removeAttr('href');//清除标签中的href属
-                $("#up_detailList").removeClass("btn btn-primary radius");
-                $("#up_detailList").addClass("btn btn-default radius");
+    });
+
+
+     
+     /**
+      * 訂單頭檔頁面選中有數據的行時，功能按鈕置灰
+      * @type Array
+      */
+     var orderInfo = [];
+    $("tr").click(function(){
+        var num = 0;
+        //訂單頭檔頁面,行點擊事件讀取到行的值
+        $(this).find("td").each(function(i){
+           var text = $(this).text();
+           if(/ORDH[0-9]{11}/g.test(text)){
+           orderInfo[num] = text;
+            $(this).parent("tr").css({"background":"#99ffff"}).siblings().css({"background":"white"});
+           num++;
             }
         });
-        $("tr").click(function(){
-            var num = 0;
-            $(this).find("td").each(function(i){
-                var txt = $(this).text();
-                str[num] = txt;
-                num++;
-            });
-            $('#del_list').attr('href',"#deleteInfo");//添加标签中的href属
-            $("#del_list").removeClass("btn btn-default radius");
-            $("#del_list").addClass("btn btn-primary radius");
-        });
-    });
-    //显示欢迎
-      $(function (){
-       var session = "<%=(User)session.getAttribute("user")%>"; 
-       hello(session);
-    });
-    
-    //删除订单头档
-    function del(){
-        var orderid = str[0];
-        if(orderid === ""){
-            alert("未选中订单，不能删除！");
+           
+        if(/ORDH[0-9]{11}/g.test(orderInfo[0])){   
+            $('#orderHeadDelBtn').attr('href',"#deleteOHInfo");//添加标签中的href属
+            $("#orderHeadDelBtn").removeClass("btn btn-default radius");
+            $("#orderHeadDelBtn").addClass("btn btn-primary radius");     
+           
         }else{
-            window.location = "<%=basePath%>orderList/orderDelete?orderId="+orderid+"";
+            $('#orderHeadDelBtn').removeAttr('href');//清除标签中的href属
+            $("#orderHeadDelBtn").removeClass("btn btn-primary radius");
+            $("#orderHeadDelBtn").addClass("btn btn-default radius");                        
         }
-    }
-    
-    //新增订单头档
-    function ADD(){
-        $.ajax({
-            url:"orderAdd",
-            type:"get",
-            success:function(data,stats){
-                if(stats === "success"){
-                    //获取订单编号
-                    $("#order_id")[0].value = data[0];
-                    //获取下单日期
-                    $("#orderdate_id")[0].value = data[1];
-                    //获取下拉列表值
-                    for(var i = 0;i < data[2].length;i++){
-                        $("#customerSelect").append("<option value="+ data[2][i].customerId +">"+data[2][i].customerName+"</option>");
-                    }
-                }
-            },
-            error:function(data) {  
-                alert("查询失败");  
-            }  
-        });
-    }
-    
-    //新增订单身档
-    function addDetail(){
-        $("#order_id1")[0].value = id ;
-    }
-    
-    //修改订单身档
-    function updateDetail(){
-        $("#order_id2")[0].value = up[1] ;
-        $("#productName")[0].value = up[3];
-        $("#orderQty")[0].value = up[4];
-        $("#orderDetailId")[0].value = up[0] ;
-        $("#productId")[0].value = up[2];
-        $.ajax({
-            url:"orderDetailUpdate",
-            type:"get",
-            dataType: "json",
-            data:{orderDetailId:""+up[0]+""},
-            success:function(data,stats){
-            },
-            error:function() {  
-            }  
-        });
-    }
-    
-    //将修改后的订单身档数据传给Controller
-    function orderDetailEdit(){
-        var orderMasterId = $("#order_id2")[0].value;
-        var productName = $("#productName")[0].value;
-        var orderQty = $("#orderQty")[0].value;
-        var orderDetailId = $("#orderDetailId")[0].value;
-        var productId = $("#productId")[0].value;  
-        
-        $.ajax({  
-                url : "orderDetailUpdate",  
-                type : "POST",  
-                datatype:"json",  
-                data : {orderMasterId:orderMasterId,productName:productName,orderQty:orderQty,orderDetailId:orderDetailId,productId:productId},  
-                success : function(data, stats) {  
-                    if (stats === "success") {  
-
-                        $("#up_detaillist").modal("hide");
-                        var list = data.orderDetailList;
-                        
-                        var count = -1;
-                        $("#orderDetailTable").find("tr").each(function(){
-                            count++;
-                        });
-                        
-                        var row_count = 10 - count;
-                        for(var m = 0;m < row_count;m++){
-                            tb = document.getElementById("orderDetailTable");
-                            new_row = tb.insertRow();
-                            for(var cell_count=0;cell_count<6;cell_count++){
-                                new_row.insertCell();
-                            }
-                        }
-                        
-                    $("#orderDetailTable").find("tr").each(function(){
-                        $(this).find("td").each(function(){
-                            $(this)[0].innerHTML = null;
-                        });
-                    });
-                        
-                        var i = -1;
-                        $("#orderDetailTable").find("tr").each(function(){
-
-                            var j = 0;
-                            $(this).find("td").each(function(){
-                                $(this)[0].innerHTML = list[i][j];
-                                j++;
-                            });
-                            i++;
-                        });
-                        $("#detailPageNo")[0].value = 1;
-                        $("#detailTotalPage")[0].value = data.totalPage;
-                    }  
-                },  
-                error : function(data) {  
-                    alert("失败");  
-                }  
-            });
-        
-    }
-    //新增订单详细信息
-    function orderDetailAdd(){
-        var productId = $("#productId_add").val();
-        var orderQty = $("#orderQty_add")[0].value;
-        
-        $.ajax({  
-                url : "orderDetailAdd",  
-                type : "POST",  
-                datatype:"json",  
-                data : {productId:productId,orderQty:orderQty},  
-                success : function(data, stats) {  
-                    if (stats === "success") {  
-                        
-                        $("#add_detaillist").modal("hide");
-                        var list = data.orderDetailList;
-                        
-                        var count = -1;
-                        $("#orderDetailTable").find("tr").each(function(){
-
-                            count++;
-                        });
-                        
-                        var row_count = 10 - count;
-                        for(var m = 0;m < row_count;m++){
-                            
-                            tb = document.getElementById("orderDetailTable");
-                            new_row = tb.insertRow();
-                            for(var cell_count=0;cell_count<6;cell_count++){
-                                new_row.insertCell();
-                            }
-                        }
-
-
-                    $("#orderDetailTable").find("tr").each(function(){
-                        $(this).find("td").each(function(){
-                            $(this)[0].innerHTML = null;
-                        });
-                    });
-                        
-                        var i = -1;
-                        $("#orderDetailTable").find("tr").each(function(){
-
-                            var j = 0;
-                            $(this).find("td").each(function(){
-                                $(this)[0].innerHTML = list[i][j];
-                                j++;
-                            });
-                            i++;
-                        });
-                        $("#detailPageNo")[0].value = 1;
-                        $("#detailTotalPage")[0].value = data.totalPage;
-                    }  
-                },  
-                error : function(data) {  
-                    alert("失败");  
-                }  
-            });
-        
-    }
-    
-    //获取客户ID
-    function getCustomer(value){
-        $("#customer_Id").val(value);
-    }
-    
-    //返回订单列表
-    function refresh(){
-        window.location = "<%=basePath%>orderList/queryList";
-    }
-    
-    //订单获取下一页数据
-    function order_next(){
+       
+    });
+     
+     //订单获取下一页数据
+    function OHnextPage(){
 
         var pageNo = parseInt($("#pageNo")[0].value);
         var totalPage = parseInt($("#totalPage")[0].value);
         
-        if(pageNo >= totalPage){
-            return false;
-        }
-        window.location = "<%=basePath%>orderList/orderQueryNext?pageNo="+ pageNo +"";
-        }
+        var orderHeadIdMin=document.getElementById("orderHeadIdMin").value;
+        var orderHeadIdMax=document.getElementById("orderHeadIdMax").value;
+        var orderDateMin=document.getElementById("orderDateMin").value;
+        var orderDateMax=document.getElementById("orderDateMax").value;
+        var customerName=document.getElementById("customerName").value;
+        
+        
+        console.dir(pageNo+"pageNo");
+        console.dir(totalPage+"totalPage");
+        
+        
+        if(pageNo < totalPage){
+           var pageNo = pageNo+1;
+        window.location = "<%=basePath%>OrderManage/queryOrderHeadList?pageNo="+ pageNo +"&orderHeadIdMin="+orderHeadIdMin+
+            "&orderHeadIdMax="+orderHeadIdMax+"&orderDateMin="+orderDateMin+"&orderDateMax="+orderDateMax+"&customerName="+customerName+""    ;
+        }   
+    }
         
     //订单上一页 
-    function order_pre(){
+    function OHprePage(){
         
         var pageNo = parseInt($("#pageNo")[0].value);
-        if(pageNo <= 1){
-            return false;
-        }
-         window.location = "<%=basePath%>orderList/orderQueryPre?pageNo="+ pageNo +"";
+        var orderHeadIdMin=document.getElementById("orderHeadIdMin").value;
+        var orderHeadIdMax=document.getElementById("orderHeadIdMax").value;
+        var orderDateMin=document.getElementById("orderDateMin").value;
+        var orderDateMax=document.getElementById("orderDateMax").value;
+        var customerName=document.getElementById("customerName").value;
+        
+        if(pageNo > 1){
+            var pageNo=pageNo-1;
+             window.location = "<%=basePath%>OrderManage/queryOrderHeadList?pageNo="+ pageNo +"&orderHeadIdMin="+orderHeadIdMin+
+            "&orderHeadIdMax="+orderHeadIdMax+"&orderDateMin="+orderDateMin+"&orderDateMax="+orderDateMax+"&customerName="+customerName+""    ;
+        }        
+    }
+     
+     function addOrderHead(){
+         var customerId=$("#customerId_4add").val();
+         $.ajax({  
+                url : "addOrderHead",  
+                type : "post",  
+                datatype:"json",  
+                data : {customerId:customerId},  
+                success : function(data) {                     
+                 alert(data.message);
+                 window.location="<%=basePath%>OrderManage/queryOrderHeadList" ;
+                },  
+                error : function(data) { 
+                    var str = data.responseText.toString();
+                    $("#alter_message").html(str.split("##")[1]);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                }  
+            });
+     }
+    
+    /**
+     * 新增訂單頭檔函數
+     * 前臺使用者傳入的，只有產品信息和下單數量（這裏取產品編號customerId和orderQty），其它的編號在後臺生成
+     *
+     */
+    function addOrderDetail(){
+        var orderHeadId=$("#orderHeadId_4addDetail").val();
+        var productId=$("#productId_4add").val();
+        var orderQty=$("#orderQty_4add").val();
+            $.ajax({  
+                url : "addOrderDetail",  
+                type : "post",  
+                datatype:"json",  
+                data : {orderHeadId:orderHeadId,orderQty:orderQty,productId:productId},  
+                success : function(data) {
+                 $("#addODInfo").modal("toggle");
+                 $("#alter_message").html(data.message);
+                 $("#modal-message").modal("toggle");
+                 setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+//                 alert(data.message);
+//                 window.location="<%=basePath%>OrderManage/queryOrderHeadList" ;
+                },  
+                error : function(data) { 
+                    var str = data.responseText.toString();
+                    $("#alter_message").html(str.split("##")[1]);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                }  
+            });  
+    }
+    //用戶在修改訂單詳細時，輸入下單數量和獲取到的產品Id，去取得產品價格
+    function getPriceByQtyForUpdate(){
+        var productId=$("#productId4Update").val();
+        var orderQty=$("#orderQty4Update").val();
+            $.ajax({  
+                url : "getPriceByQtyForUpdate",  
+                type : "post",  
+                datatype:"json",  
+                data : {orderQty:orderQty,productId:productId},  
+                success : function(data) {  
+                 $("#productPrice4Update").val(data.productStandardPrice);
+                 $("#userDefinedPrice4Update").val(data.productStandardPrice);                
+                },  
+                error : function(data) { 
+                    var str = data.responseText.toString();
+                    $("#alter_message").html(str.split("##")[1]);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                }  
+            });  
     }
     
-    //获取订单详细下一页数据
-    function detail_next(){
-        var pageNo = parseInt($("#detailPageNo")[0].value);
-        var totalPage = parseInt($("#detailTotalPage")[0].value);
+    
+    /**
+     * 刪除訂單頭檔
+     *
+     */
+    function deleteOrderHead(){
+    var orderHeadId=orderInfo[0];
+    $.ajax({  
+                url : "deleteOrderHead",  
+                type : "post",  
+                datatype:"json",  
+                data : {orderHeadId:orderHeadId},  
+                success : function(data) {                   
+                    alert("刪除訂單頭檔成功！");
+                    window.location = "<%=basePath%>OrderManage/queryOrderHeadList";
+//                    $("#modal-message").modal("toggle");
+//                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+//                    //window.location = "<%=basePath%>OrderManage/queryOrderHeadList";
+//                    setTimeout("window.location = '<%=basePath%>OrderManage/queryOrderHeadList'",2000);
+                },  
+                error : function(data) { 
+
+                    var str = data.responseText.toString();
+                    $("#alter_message").html(str.split("##")[1]);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                }  
+            });
+    }    
+    
+     
+    function deleteOrderDetail(){
+
+    var orderDetailId=orderInfo[0];
+    $.ajax({  
+                url : "deleteOrderDetail",  
+                type : "post",  
+                datatype:"json",  
+                data : {orderDetailId:orderDetailId},  
+                success : function(data) {                           
+                    $("#alter_message").html(data.message);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+//                    $("#alter_message").html(data.message);
+//                    alert("刪除訂單身檔成功！");
+//                    window.location = "<%=basePath%>OrderManage/queryOrderHeadList";
+                },  
+                error : function(data) { 
+                    var str = data.responseText.toString();
+                    $("#alter_message").html(str.split("##")[1]);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                }  
+            });
+    }
+    
+        function getOrderDetailForUpdate(){
         
-        if(pageNo >= totalPage){
-            return false;
-        }else{
-            $("#detailPageNo")[0].value = pageNo + 1; 
-        }
+        var orderDetailId =  orderInfo[0];
+        $.ajax({  
+                url : "getOrderDetailForUpdate",  
+                type : "post",  
+                datatype:"json",  
+                data:{orderDetailId:orderDetailId},
+                success : function(data) { 
+                    var list=data.data;
+                    $("#OrderHeadId4Update").val(list.ordheadMasterId.orderHeadId);
+                    $("#orderDetailId4Update").val(list.orderDetailId);
+                    $("#productId4Update").val(list.productMasterId.productId);                    
+                    $("#productName4Update").val(list.productMasterId.productName);
+                    $("#orderQty4Update").val(list.orderQty);
+                    $("#versionNumber4Update").val(list.versionNumber);
+                    $("#productPrice4Update").val(list.orderPrice);                    
+                },  
+                error : function(data) { 
+                    var str = data.responseText.toString();
+                    $("#alter_message").html(str.split("##")[1]);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                }  
+            });
+    }
+    function updateOrderDetail(){
+        
+        var orderDetailId = $("#orderDetailId4Update").val();
+        var productId = $("#productId4Update").val();
+        var orderQty = $("#orderQty4Update").val();
+        var userDefinedPrice = $("#userDefinedPrice4Update").val();
         
         $.ajax({  
-                url : "queryNextOD",  
-                type : "get",  
+                url : "updateOrderDetail",  
+                type : "post",  
                 datatype:"json",  
-                data : {pageNo:pageNo},  
-                success : function(data, stats) {  
-                    if (stats === "success") {  
-                        
-                    if(data.length < 10){
-                    $("#orderDetailTable").find("tr").each(function(){
-                        $(this).find("td").each(function(){
-                            $(this)[0].innerHTML = null;
-                        });
-                    })
-                    }
-                        var i = -1;
-                        $("#orderDetailTable").find("tr").each(function(){
-
-                            var j = 0;
-                            $(this).find("td").each(function(){
-
-                                    $(this)[0].innerHTML = null;
-                                    $(this)[0].innerHTML = data[i][j];
-                                     j++;
-                            });
-                            i++;
-                        });
-                    }  
+                data : {orderDetailId:orderDetailId,productId:productId,orderQty:orderQty,userDefinedPrice:userDefinedPrice},  
+                success : function(data) {
+                    $("#updateODInfo").modal("toggle");
+                    $("#alter_message").html(data.message);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    //alert(data.message);                   
                 },  
-                error : function(data) {  
-                    alert("失败");  
-                }  
-            });
-        }
-    
-    //订单详细上一页 
-    function detail_pre(){
-        
-        var pageNo = parseInt($("#detailPageNo")[0].value);
-        if(pageNo <= 1){
-            return false;
-        }else{
-            $("#detailPageNo")[0].value = pageNo - 1; 
-        }
-        
-         $.ajax({  
-                url : "queryPreOD",  
-                type : "get",  
-                datatype:"json",  
-                data : {pageNo:pageNo},  
-                success : function(data, stats) {  
-                    if (stats === "success") {  
-                        
-                        var i = -1;
-                        $("#orderDetailTable").find("tr").each(function(){
+                error : function(data) { 
 
-                            var j = 0;
-                            $(this).find("td").each(function(){
-                                $(this)[0].innerHTML = data[i][j];
-                                j++;
-                            });
-                            i++;
-                        });
-                    }  
-                },  
-                error : function(data) {  
-                    alert("失败");  
+                    var str = data.responseText.toString();
+                    $("#alter_message").html(str.split("##")[1]);
+                    $("#modal-message").modal("toggle");
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
                 }  
             });
     }
     
-//    //修改管理员密码
-//    function editPassword(){
-//        var passwordOld = $("#passwordOld")[0].value;
-//        var passwordNew = $("#passwordNew")[0].value;
-//        var passwordConfirm = $("#passwordConfirm")[0].value;
-//    
-//        $.ajax({  
-//            url : "/coms1.2/login/editPassword",  
-//            type : "post",  
-//            datatype:"json",  
-//            data : {passwordOld:passwordOld,passwordNew:passwordNew,passwordConfirm:passwordConfirm},  
-//            success : function(data, stats) {  
-//                if (stats === "success") {  
-//                    if(data === "success"){
-//                        $("#passwordEdit").modal("hide");
-//                        alert("密码修改成功");
-//                        window.location = "<%=basePath%>login";
-//                    }else if(data === "confirm error"){
-//                        $("#message").html("两次输入的密码不一致");
-//                    }
-//                else{
-//                    $("#message").html("原密码错误");
-//                }
-//                }  
-//            },  
-//            error : function(data) {  
-//                alert("失败");  
-//            }  
-//        });
-//    }
-    
-    //注销
-    function logout(){
-    window.location.href = "/order/login/logout";
-    }
-    
-    //检查Session
-    $(function (){
-        var session = "<%=(User)session.getAttribute("user")%>";
-        if(session === null){
-             window.location = "<%=basePath%>login";
-        }
-    });
-    
-    //订单头档新增表单验证
-    $("#master_required").click(function(){
-        var masterParent = $("#master_div").parent();
-        masterParent.find(".formtips").remove();
-        var selectValue = $("#customerSelect").find("option:selected").text();
-        if(selectValue ==="请选择客户" || selectValue ===""){
-            var errorMsg = '*请选择客户！';
-            masterParent.append('<span style="color:red" class="formtips onError">'+errorMsg+'</span>');
-            return false;
-        }   
-    });
-    
-    //订单详细新增表单验证
-    $("#detail_required").click(function(){
-        var reg=/^[1-9]\d*$|^0$/;
-        var addParent = $("#add_div").parent();
-        var detailParent = $("#detail_div").parent();
-        detailParent.find(".formtips").remove();
-        addParent.find(".formtips").remove();
-        var selectValue = $("#productId_add").find("option:selected").text();
-        var numValue = $("#orderQty_add").val();
-        if(selectValue ==="请选择产品" || selectValue ===""){
-            var errorMsg = '*请选择产品！';
-            detailParent.append('<span style="color:red" class="formtips onError">'+errorMsg+'</span>');
-            return false;
-        } 
-        if(numValue === "" || !reg.test(numValue)){
-            var errorMsg = '*请正确输入产品数量！';
-            addParent.append('<span style="color:red" class="formtips onError">'+errorMsg+'</span>');
-            return false;
-        }
-        orderDetailAdd();
-    });
-    
-    //订单详细修改表单验证
-    $("#editdetail").click(function(){
-        var reg=/^[1-9]\d*$|^0$/;
-        var qtyValue = $("#orderQty").val();
-        var upParent = $("#qty_div").parent();
-        upParent.find(".formtips").remove();
-        if(qtyValue === "" || !reg.test(qtyValue)){
-            var errorMsg = '*请正确输入产品数量！';
-            upParent.append('<span style="color:red" class="formtips onError">'+errorMsg+'</span>');
-            return false;
-        }
-        orderDetailEdit();
-    });
-    
-     //修改密码验证
-    $('#savepassword').click(function(){
-            var pass1 = $('#passwordOld').parent();
-            var pass2 = $('#passwordNew').parent();
-            var pass3 = $('#passwordConfirm').parent();
-            var passwordold = $("#passwordOld").val();
-            //var session = "<%=session.getAttribute("password_Old")%>"; 
-            var session = "<%=((User)session.getAttribute("user")).getPassword()%>"; 
-            pass1.find(".formtips").remove();
-            pass2.find(".formtips").remove();
-            pass3.find(".formtips").remove();
-            if( passwordold === ""){
-                var errorMsg = '*请输入原密码！';
-                pass1.append('<span style="color:red" class="formtips onError">'+errorMsg+'</span>');
-                return false;
-            }else{
-                if(passwordold !== session){
-                    var errorMsg = '原密码输入错误！';
-                    pass1.append('<span style="color:red" class="formtips onError">'+errorMsg+'</span>');
-                    return false;
+   /**
+    * 以下3個函數，分別是獲取當前時間信息並顯示，顯示問候語和修改密碼函數，在每個頁面都是有的
+    *  
+    */      
+    $(function () {
+                var d = new Date();
+                var week;
+
+                function add_zero(temp) {
+                    if (temp < 10)
+                        return "0" + temp;
+                    else
+                        return temp;
                 }
-            }
-            if($("#passwordNew").val() === ""){
-                var errorMsg = '*请输入新密码！';
-                pass2.append('<span style="color:red" class="formtips onError">'+errorMsg+'</span>');
-                return false;
-            }else{
-                if( $("#passwordNew").val().length < 6 || $("#passwordNew").val().length > 12){
-                    var errorMsg = '*密码长度为6到12位！';
-                    pass2.append('<span style="color:red" class="formtips onError">'+errorMsg+'</span>');
-                    return false;
+
+                switch (d.getDay()) {
+                    case 1:
+                        week = "星期一";
+                        break;
+                    case 2:
+                        week = "星期二";
+                        break;
+                    case 3:
+                        week = "星期三";
+                        break;
+                    case 4:
+                        week = "星期四";
+                        break;
+                    case 5:
+                        week = "星期五";
+                        break;
+                    case 6:
+                        week = "星期六";
+                        break;
+                    default:
+                        week = "星期天";
                 }
+                var years = d.getFullYear();
+                var month = add_zero(d.getMonth() + 1);
+                var days = add_zero(d.getDate());
+                var hours = add_zero(d.getHours());
+                var minutes = add_zero(d.getMinutes());
+                var seconds = add_zero(d.getSeconds());
+                var ndate = "現在是  " + years + "年" + month + "月" + days + "日 " + hours + ":" + minutes + ":" + seconds + " " + week;
+                var ndate2 = years + "年" + month + "月" + days + "日 "  + " " + week+"  ";
+
+                $("#timeday")[0].innerHTML = ndate2;
+
+            });
+            
+            $(function () {
+
+            var d = new Date();
+            var h = parseInt(d.getHours());
+
+            var str = "上午好！";
+
+            if (h > 12 && h < 18) {
+                str = "下午好！";
             }
-            if($("#passwordConfirm").val() === ""){
-                var errorMsg = '*请再次输入新密码！';
-                pass3.append('<span style="color:red" class="formtips onError">'+errorMsg+'</span>');
-                return false;
-            }else{
-                if( $("#passwordNew").val() !== $("#passwordConfirm").val()){
-                    var errorMsg = '*2次输入的密码不一致！';
-                    pass3.append('<span style="color:red" class="formtips onError">'+errorMsg+'</span>');
-                    return false;
-                }
+            if (h > 18 && h < 24) {
+                str = "晚上好！";
             }
-            editPassword();
+
+            $("#time")[0].innerHTML = str;
+            var session = "<%=(User) session.getAttribute("user")%>";
+            if (session === null) {
+                window.location = "<%=basePath%>login";
+            }
         });
-    $("#orderRequiredID").keyup(function(){   
-                    $(this).val($(this).val().replace(/\D|^0/g,''));  
-        }).bind("paste",function(){  //CTR+V事件处理    
-                    $(this).val($(this).val().replace(/\D|^0/g,''));     
-           }).css("-webkit-ime-mode", "disabled"); //CSS设置输入法不可用    
-           
-   $("#orderQty_add").keyup(function(){   
-                    $(this).val($(this).val().replace(/\D|^0/g,''));  
-        }).bind("paste",function(){  //CTR+V事件处理    
-                    $(this).val($(this).val().replace(/\D|^0/g,''));     
-           }).css("-webkit-ime-mode", "disabled"); //CSS设置输入法不可用  
-    $("#orderQty").keyup(function(){   
-                    $(this).val($(this).val().replace(/\D|^0/g,''));  
-        }).bind("paste",function(){  //CTR+V事件处理    
-                    $(this).val($(this).val().replace(/\D|^0/g,''));     
-           }).css("-webkit-ime-mode", "disabled"); //CSS设置输入法不可用 
+        
+        function editPassword() {
+
+            var userPassOld = $("#userPassOld")[0].value;
+            var userPassNew = $("#userPassNew")[0].value;
+            var userPassConfirm = $("#userPassConfirm")[0].value;
+
+            $.ajax({
+                url: "<%=basePath%>login/editPassword",
+                type: "post",
+                datatype: "json",
+                data: {userPassOld: userPassOld, userPassNew: userPassNew, userPassConfirm: userPassConfirm},
+                success: function (data, stats) {
+                    if (stats === "success") {
+                        if (data === "success") {
+                            $("#passwordEdit").modal("hide");
+                            alert("密碼修改成功！");
+                            window.location = "<%=basePath%>login";
+                        } else if (data === "confirm error") {
+                            $("#message").html("兩次輸入的密碼不一致！");
+                        } else if (data === "same old new") {
+                            $("#message").html("新舊密碼不能一樣！");
+                        } else {
+                            $("#message").html("原密碼輸入錯誤！");
+                        }
+                    }
+                },
+                error: function (data) {
+                    alert("密碼修改失败！");
+                }
+            });
+
+        }
+    
+//    暫時無法成功正確獲取到自動繪製的表格中對應的列中的值
+//    function refreshOrderDetailList(){
+//        //var orderHeadId=orderInfo[1];
+//        var orderHeadId= orderHeadId4Refresh;
+//        var pageNo = parseInt( $("#odpageNo").val())-1;
+//        console.dir(orderHeadId+"在公共");
+//        console.dir(pageNo+"在公共");
+//        dealWithOD();
+        
+        
+//            $.ajax({  
+//                url : "queryOrderDetailList",  
+//                type : "post",  
+//                datatype:"json",  
+//                data:{orderHeadId:orderHeadId,pageNo:pageNo},
+//                success : function(data) { 
+//                   var list = data;              
+//                   
+//                   var i=0;
+//                        $("#orderDetailTable").find("tr").each(function (){       
+//                            if(i>0){
+//                                $(this).remove();
+//                                }
+//                            i++;   
+//                            });   
+//               
+//                for(var i=0;i<list.length;i++){
+//                    //table中新建行列
+//                    //繪製顯示訂單詳細的表格
+//                    $("#orderDetailTable").append("<tr><td>"+list[i][0]+"</td><td>"+list[i][1]+"</td><td>"+list[i][2]+"</td><td>"+list[i][3]+"</td><td>"+list[i][4]+"</td><td>"+list[i][5]+"</td></tr>");
+//                    
+//                    //在訂單身檔信息列表中，點擊行，將行底色加深
+//                    $(document).ready(function(){
+//                        $("#orderDetailTable tr").click(function(){
+//                        $(this).css({"background":"#99ffff"}).siblings().css({"background":"white"});
+//                        });
+//                    });
+//                    
+//                    //在訂單身檔信息列中，點擊行事件獲取到第一列的值（OrderDetailId），並把值放到了 orderInfo 變量中                                       
+//                    $("tr").click(function(){
+//                        $(this).find("td").each(function(i){
+//                            var text = $(this).text();
+//                            orderInfo[0] = text;
+//                            console.dir(orderInfo[0]);
+//                            return false;
+//                        }); 
+//                         //訂單身檔彈窗按鈕置灰
+//                        if(orderInfo[0] !== ""){   
+//                        $('#orderDetailDelBtn').attr('href',"#deleteODInfo");//添加标签中的href属
+//                        $("#orderDetailDelBtn").removeClass("btn btn-default radius");
+//                        $("#orderDetailDelBtn").addClass("btn btn-primary radius");
+//                        
+//                        $('#orderDetailUpBtn').attr('href',"#updateODInfo");//添加标签中的href属
+//                        $("#orderDetailUpBtn").removeClass("btn btn-default radius");
+//                        $("#orderDetailUpBtn").addClass("btn btn-primary radius");
+//                        }else{
+//                        $('#orderDetailDelBtn').removeAttr('href');//清除标签中的href属
+//                        $("#orderDetailDelBtn").removeClass("btn btn-primary radius");
+//                        $("#orderDetailDelBtn").addClass("btn btn-default radius");
+//                        
+//                        $('#orderDetailUpBtn').removeAttr('href');//清除标签中的href属
+//                        $("#orderDetailUpBtn").removeClass("btn btn-primary radius");
+//                        $("#orderDetailUpBtn").addClass("btn btn-default radius");
+//                        }
+//                    });
+//                    }    
+//                },  
+//                error : function(data) { 
+//                    var str = data.responseText.toString();
+//                    $("#alter_message").html(str.split("##")[1]);
+//                    $("#modal-message").modal("toggle");
+//                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+//                }  
+//            });
+//       }
+   
 </script>
 </body>
 </html>

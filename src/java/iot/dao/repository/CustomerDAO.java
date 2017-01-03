@@ -642,4 +642,65 @@ public class CustomerDAO implements Serializable {
         }
     }
 
+    /**
+     * @author David
+     *根據客戶名稱查詢客戶實體，存入list 
+     * @param customerName
+     * @return 
+     */
+    public List<Customer> getCustomerByCustomerName(String customerName) {
+        EntityManager em = getEntityManager();//创建实体管理
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
+            Root<Customer> customer = cq.from(Customer.class);
+            //創建查詢條件，輸入的主鍵id相等，刪除狀態爲假（即未刪除）
+            Predicate p1 = cb.and(cb.like(customer.get(Customer_.customerName),"%"+ customerName+"%"), cb.equal(customer.get(Customer_.deleteStatus), false));
+            cq.where(p1);
+            //創建查詢
+            Query q = em.createQuery(cq);
+            return (List<Customer>) q.getResultList();
+        } catch (NoResultException e) {
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+    /**
+     * @author David
+     * 查詢客戶信息，用於新增訂單頭檔時選擇顯示信息
+     * @param customerId
+     * @return 
+     */
+     public Response queryCustomer(String customerId) {
+        EntityManager em = getEntityManager();
+        try {
+            //创建安全查询工厂
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            //创建查询主语句
+            CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
+            //定义实体类型
+            Root<Customer> customer = cq.from(Customer.class);
+            
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(cb.like(customer.get(Customer_.customerId), "%" + customerId + "%"));
+            predicatesList.add(cb.equal(customer.get(Customer_.deleteStatus), false));
+
+            cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            Query q = em.createQuery(cq);
+            
+            q.setMaxResults(10);
+            
+            List list = q.getResultList();
+            
+            if(list.isEmpty()){
+                return null;
+            }
+            return new Response().success("客戶查詢成功", q.getResultList(),0);
+
+        } finally {
+            em.close();
+        }
+    }
+    
 }

@@ -67,12 +67,12 @@
             </ul>
             <ul>
                 <li>
-                    <a href="<%=basePath%>orderList/queryList">订单列表</a>
+                    <a href="<%=basePath%>OrderManage/queryOrderHeadList">訂單管理</a>
                 </li>
             </ul>
             <ul>
                 <li>
-                    <a href="#">客戶產品單價管理</a>
+                    <a href="#">產品管理</a>
                 </li>
             </ul>
         </div>
