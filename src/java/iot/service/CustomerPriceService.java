@@ -146,7 +146,7 @@ public class CustomerPriceService {
         
         if("product_name_input".equals(inputId)){
             ProductDAO productDAO = new ProductDAO(emf);
-            List productNameList = (List) productDAO.findProductNameListByProductName(productName, true, 0, 10).getData();
+            List productNameList = (List) productDAO.findProductNameListByProductName(productName, false, 0, 10).getData();
             return new Response().success("查詢產品名列表成功", productNameList);
         }
 
