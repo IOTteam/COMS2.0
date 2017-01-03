@@ -49,7 +49,7 @@ public class OrderService {
      * @return
      * @throws ParseException
      */
-    //條件查詢的數據結果
+    //關於訂單頭檔條件查詢的數據結果
     public Response queryOrderHeadListService(String orderHeadIdMin, String orderHeadIdMax, String customerName, String orderDateMin, String orderDateMax,String pageNo) throws ParseException {
         OrderHeadDAO ohdao = new OrderHeadDAO(emf);
         CustomerDAO cdao = new CustomerDAO(emf);
@@ -59,7 +59,7 @@ public class OrderService {
         return queryOrderHeadListResult;
 
     }
-    //條件查詢數據的總計
+    //關於訂單頭檔條件查詢數據數量的總計
     public Response queryCountOrderHeadListService(String orderHeadIdMin, String orderHeadIdMax, String customerName, String orderDateMin, String orderDateMax) throws ParseException {
         OrderHeadDAO ohdao = new OrderHeadDAO(emf);
         CustomerDAO cdao = new CustomerDAO(emf);
