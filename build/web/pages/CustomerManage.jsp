@@ -33,13 +33,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="navbar navbar-fixed-top">
             <div class="container-fluid cl"> <a href="<%=basePath%>index" class="logo navbar-logo f-l mr-10 hidden-xs" style="font-family: LiSu; font-size: 30px">客户订单管理系统</a>
 		<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
-                    <ul class="cl">
-			<li id="time"></li>
+                    <ul class="cl"> 
+                        <li>今天是</li>
+                        <li>&nbsp;&nbsp;&nbsp;</li>
+                        <li id="timeday" style=" color: red"></li>
+                        <li>&nbsp;&nbsp;&nbsp;</li>
+			<li id="time"></li>                        
 			<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A" style="color: red">${user.userName}</a>
                             <ul class="dropDown-menu menu radius box-shadow">
-                                <li><a data-toggle="modal" href="#userInfo">个人信息</a></li>
-                                <li><a data-toggle="modal" href="#passwordEdit">修改密码</a></li>
-				<li><a href="<%=basePath%>login/logout">退出</a></li>
+                                <li><a data-toggle="modal" href="#userInfo">個人資訊</a></li>
+                                <li><a data-toggle="modal" href="#passwordEdit">修改密碼</a></li>
+				<li><a href="<%=basePath%>login/logout">登出</a></li>
                             </ul>
 			</li>
                     </ul>
@@ -74,21 +78,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
     </aside>
                 
-    <!--管理员信息-->
+        <!--管理员信息-->
     <div id="userInfo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">
-            <h3 id="myModalLabel">用户信息</h3><a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+            <h3 id="myModalLabel">個人資訊</h3>
+            <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
         </div>
         <div class="modal-body">
             <form action="" class="form form-horizontal responsive">
             	<div class="row cl">
-                    <label class="form-label col-xs-3">用户编号：</label>
+                    <label class="form-label col-xs-3">用戶編號：</label>
                     <div class="formControls col-xs-5">
                         <input type="text" class="input-text" autocomplete="off" value="${user.userId}" name="username" />
                     </div>
 		</div>
 		<div class="row cl">
-                    <label class="form-label col-xs-3">用户姓名：</label>
+                    <label class="form-label col-xs-3">用戶姓名：</label>
                     <div class="formControls col-xs-5">
                         <input type="text" class="input-text" autocomplete="off"  value="${user.userName}" name="password" />
                     </div>
@@ -96,7 +101,43 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">确定</button>
+            <button class="btn" data-dismiss="modal" aria-hidden="true">確定</button>
+        </div>
+    </div>
+
+     <!--使用者修改密碼-->
+    <div id="passwordEdit" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <h3 id="myModalLabel">修改密碼</h3><a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+        </div>
+        <div class="modal-body">
+            <form action="login/editPassword" method="post" class="form form-horizontal responsive">
+                <div class="row cl">
+                    <label class="form-label col-xs-3">原密碼：</label>
+                    <div class="formControls col-xs-5">
+                        <input type="password" class="input-text" id="userPassOld" autocomplete="off" name="userPassOld" />
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-3">新密碼：</label>
+                    <div class="formControls col-xs-5">
+                        <input type="password" class="input-text" id="userPassNew" autocomplete="off" name="userPassNew" />
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-3">確認新密碼：</label>
+                    <div class="formControls col-xs-5">
+                        <input type="password" class="input-text" id="userPassConfirm" autocomplete="off"  name="userPassConfirm" />
+                        <p id="message" class="c-error text-l"></p>
+                    </div>
+                </div>              
+                <div class="row cl">
+                    <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                        <input class="btn btn-primary radius"  type="button"  id="savePassword" onclick="editPassword()" value="確定" >    
+                        <input type="button" class="btn btn-primary radius" value="取消" data-dismiss="modal" aria-hidden="true">
+                    </div>
+                </div>
+            </form>        
         </div>
     </div>
     
@@ -318,44 +359,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </div>
     </div>
     
-    <!--修改管理员密码-->            
-    <div id="passwordEdit" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-header" align="center">
-           <h2 id="myModalLabel"><small>修改密码</small></h2>
-           <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
-        </div>
-  <div class="modal-body">
-    	<form action="login/editPassword" method="post" class="form form-horizontal responsive">
-            	<div class="row cl">
-		<label class="form-label col-xs-3">原密码：</label>
-		<div class="formControls col-xs-5">
-                   <input type="password" class="input-text" id="passwordOld" autocomplete="off" name="passwordOld" />
-		</div>
-		</div>
-		<div class="row cl">
-		<label class="form-label col-xs-3">新密码：</label>
-		<div class="formControls col-xs-5">
-                    <input type="password" class="input-text" id="passwordNew" autocomplete="off" name="passwordNew" />
-		</div>
-		</div>
-                <div class="row cl">
-		<label class="form-label col-xs-3">确认新密码：</label>
-		<div class="formControls col-xs-5">
-                    <input type="password" class="input-text" id="passwordConfirm" autocomplete="off"  name="passwordConfirm" />
-                     <p id="message" class="c-error text-l"></p>
-		</div>
-		</div>
-                
-                <div class="row cl">
-		<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-                    <input class="btn btn-primary radius" type="button" id="savepassword" value="保存" />
-                    <input type="button" class="btn btn-primary radius" value="取消" data-dismiss="modal" aria-hidden="true" />
-		</div>
-                
-        </form>
-    </div>
-   </div>
-    </div>
+         
     
     <!--彈出消息-->
     <div id="modal-message" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -416,8 +420,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     });
@@ -476,8 +480,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $("#pageNo").val(pageNo);
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
         }
@@ -501,10 +505,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $("#addCustomer").modal("toggle");
                     
                     $("#alter_message").html(data.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                     $("#customer_id").val(data.data.customerId);
-                    setTimeout("$(\"#addCustomerPrice\").modal(\"toggle\")",2000); 
+                    setTimeout("$(\"#addCustomerPrice\").modal(\"show\")",2000); 
                     $("#addCustomerPrice").bind('hide', function() {
                         window.location = "<%=basePath%>CustomerManage/CustomerQuery";
                     });
@@ -513,8 +517,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
@@ -588,8 +592,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
@@ -643,8 +647,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     });
@@ -700,11 +704,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     });
                 },  
                 error : function(data) { 
-                    console.dir("data");
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
@@ -750,8 +753,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             }); 
     }
@@ -781,8 +784,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
@@ -830,8 +833,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
@@ -860,8 +863,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     }
@@ -913,7 +916,112 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             $("#custDelButton").addClass("btn btn-default radius");
         }
     });
-           
+   
+    /**
+    * 以下3個函數，分別是獲取當前時間信息並顯示，顯示問候語和修改密碼函數，在每個頁面都是有的
+    *  
+    */      
+    $(function () {
+                var d = new Date();
+                var week;
+
+                function add_zero(temp) {
+                    if (temp < 10)
+                        return "0" + temp;
+                    else
+                        return temp;
+                }
+
+                switch (d.getDay()) {
+                    case 1:
+                        week = "星期一";
+                        break;
+                    case 2:
+                        week = "星期二";
+                        break;
+                    case 3:
+                        week = "星期三";
+                        break;
+                    case 4:
+                        week = "星期四";
+                        break;
+                    case 5:
+                        week = "星期五";
+                        break;
+                    case 6:
+                        week = "星期六";
+                        break;
+                    default:
+                        week = "星期天";
+                }
+                var years = d.getFullYear();
+                var month = add_zero(d.getMonth() + 1);
+                var days = add_zero(d.getDate());
+                var hours = add_zero(d.getHours());
+                var minutes = add_zero(d.getMinutes());
+                var seconds = add_zero(d.getSeconds());
+                var ndate = "現在是  " + years + "年" + month + "月" + days + "日 " + hours + ":" + minutes + ":" + seconds + " " + week;
+                var ndate2 = years + "年" + month + "月" + days + "日 "  + " " + week+"  ";
+
+                $("#timeday")[0].innerHTML = ndate2;
+
+            });
+            
+            $(function () {
+
+            var d = new Date();
+            var h = parseInt(d.getHours());
+
+            var str = "上午好！";
+
+            if (h > 12 && h < 18) {
+                str = "下午好！";
+            }
+            if (h > 18 && h < 24) {
+                str = "晚上好！";
+            }
+
+            $("#time")[0].innerHTML = str;
+            var session = "<%=(User) session.getAttribute("user")%>";
+            if (session === null) {
+                window.location = "<%=basePath%>login";
+            }
+        });
+        
+        function editPassword() {
+
+            var userPassOld = $("#userPassOld")[0].value;
+            var userPassNew = $("#userPassNew")[0].value;
+            var userPassConfirm = $("#userPassConfirm")[0].value;
+
+            $.ajax({
+                url: "<%=basePath%>login/editPassword",
+                type: "post",
+                datatype: "json",
+                data: {userPassOld: userPassOld, userPassNew: userPassNew, userPassConfirm: userPassConfirm},
+                success: function (data, stats) {
+                    if (stats === "success") {
+                        if (data === "success") {
+                            $("#passwordEdit").modal("hide");
+                            alert("密碼修改成功！");
+                            window.location = "<%=basePath%>login";
+                        } else if (data === "confirm error") {
+                            $("#message").html("兩次輸入的密碼不一致！");
+                        } else if (data === "same old new") {
+                            $("#message").html("新舊密碼不能一樣！");
+                        } else {
+                            $("#message").html("原密碼輸入錯誤！");
+                        }
+                    }
+                },
+                error: function (data) {
+                    alert("密碼修改失败！");
+                }
+            });
+
+        }
+
+
 </script>
 </body>
 </html>

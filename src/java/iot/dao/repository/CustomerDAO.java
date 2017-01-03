@@ -58,7 +58,7 @@ public class CustomerDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            
+
             //若實體中有客戶產品單價映射的集合，遍歷集合，創建新的客戶產品單價資料到緩存
             Collection<CustomerPrice> attachedCustomerPriceMasterCollection = new ArrayList<>();
             for (CustomerPrice customerPriceMasterCollectionCustomerPriceToAttach : customer.getCustomerPriceMasterCollection()) {
@@ -67,7 +67,7 @@ public class CustomerDAO implements Serializable {
             }
             //設置客戶的客戶產品單價映射集合指向緩存中的客戶產品單價實體集合
             customer.setCustomerPriceMasterCollection(attachedCustomerPriceMasterCollection);
-            
+
             //若實體中有設置訂單頭檔的映射集合，遍歷集合，創建新的訂單頭檔資料到緩存
             Collection<OrderHead> attachedOrderHeadMasterCollection = new ArrayList<>();
             for (OrderHead orderHeadMasterCollectionOrderHeadToAttach : customer.getOrderHeadMasterCollection()) {
@@ -78,20 +78,20 @@ public class CustomerDAO implements Serializable {
             customer.setOrderHeadMasterCollection(attachedOrderHeadMasterCollection);
             //新增客戶
             em.persist(customer);
-            
+
             //遍歷客戶產品單價映射的集合，設置集合中客戶產品單價實體的外鍵為新增的客戶
             for (CustomerPrice customerPriceMasterCollectionCustomerPrice : customer.getCustomerPriceMasterCollection()) {
                 Customer oldCustomerMasterIdOfCustomerPriceMasterCollectionCustomerPrice = customerPriceMasterCollectionCustomerPrice.getCustomerMasterId();
                 customerPriceMasterCollectionCustomerPrice.setCustomerMasterId(customer);
                 customerPriceMasterCollectionCustomerPrice = em.merge(customerPriceMasterCollectionCustomerPrice);
-                
+
                 //若客戶產品單價實體中已存在外鍵，將該客戶產品單價從集合中移除
                 if (oldCustomerMasterIdOfCustomerPriceMasterCollectionCustomerPrice != null) {
                     oldCustomerMasterIdOfCustomerPriceMasterCollectionCustomerPrice.getCustomerPriceMasterCollection().remove(customerPriceMasterCollectionCustomerPrice);
                     oldCustomerMasterIdOfCustomerPriceMasterCollectionCustomerPrice = em.merge(oldCustomerMasterIdOfCustomerPriceMasterCollectionCustomerPrice);
                 }
             }
-            
+
             ////遍歷訂單頭檔映射的集合，設置集合中訂單頭檔的外鍵為新增的客戶
             for (OrderHead orderHeadMasterCollectionOrderHead : customer.getOrderHeadMasterCollection()) {
                 Customer oldCustomerMasterIdOfOrderHeadMasterCollectionOrderHead = orderHeadMasterCollectionOrderHead.getCustomerMasterId();
@@ -105,9 +105,9 @@ public class CustomerDAO implements Serializable {
             }
             //提交事務
             em.getTransaction().commit();
-            
-            return new Response().success("新增客戶成功",customer);
-            
+
+            return new Response().success("新增客戶成功", customer);
+
         } catch (Exception ex) {
             if (!findCustomerByCustomerId(customer.getCustomerId()).isEmpty()) {
                 customer.setCustomerId(getCustomerId());
@@ -156,29 +156,29 @@ public class CustomerDAO implements Serializable {
             }
             Collection<CustomerPrice> attachedCustomerPriceMasterCollectionNew = new ArrayList<>();
             //當客戶沒有設置客戶產品單價時，customerPriceMasterCollectionNew為null
-            if(customerPriceMasterCollectionNew != null){//遍歷查詢客戶單價資料，使其保持最新
-              for (CustomerPrice customerPriceMasterCollectionNewCustomerPriceToAttach : customerPriceMasterCollectionNew) {
-                customerPriceMasterCollectionNewCustomerPriceToAttach = em.getReference(customerPriceMasterCollectionNewCustomerPriceToAttach.getClass(), customerPriceMasterCollectionNewCustomerPriceToAttach.getCusPriceMasterId());
-                attachedCustomerPriceMasterCollectionNew.add(customerPriceMasterCollectionNewCustomerPriceToAttach);
-            }
+            if (customerPriceMasterCollectionNew != null) {//遍歷查詢客戶單價資料，使其保持最新
+                for (CustomerPrice customerPriceMasterCollectionNewCustomerPriceToAttach : customerPriceMasterCollectionNew) {
+                    customerPriceMasterCollectionNewCustomerPriceToAttach = em.getReference(customerPriceMasterCollectionNewCustomerPriceToAttach.getClass(), customerPriceMasterCollectionNewCustomerPriceToAttach.getCusPriceMasterId());
+                    attachedCustomerPriceMasterCollectionNew.add(customerPriceMasterCollectionNewCustomerPriceToAttach);
+                }
             }
             //更新客戶下的客戶產品單價集合
             customerPriceMasterCollectionNew = attachedCustomerPriceMasterCollectionNew;
             customer.setCustomerPriceMasterCollection(customerPriceMasterCollectionNew);
             //遍歷查詢訂單頭檔最新資料
             Collection<OrderHead> attachedOrderHeadMasterCollectionNew = new ArrayList<>();
-            if(orderHeadMasterCollectionNew != null){
-            for (OrderHead orderHeadMasterCollectionNewOrderHeadToAttach : orderHeadMasterCollectionNew) {
-                orderHeadMasterCollectionNewOrderHeadToAttach = em.getReference(orderHeadMasterCollectionNewOrderHeadToAttach.getClass(), orderHeadMasterCollectionNewOrderHeadToAttach.getOrdheadMasterId());
-                attachedOrderHeadMasterCollectionNew.add(orderHeadMasterCollectionNewOrderHeadToAttach);
-            }
+            if (orderHeadMasterCollectionNew != null) {
+                for (OrderHead orderHeadMasterCollectionNewOrderHeadToAttach : orderHeadMasterCollectionNew) {
+                    orderHeadMasterCollectionNewOrderHeadToAttach = em.getReference(orderHeadMasterCollectionNewOrderHeadToAttach.getClass(), orderHeadMasterCollectionNewOrderHeadToAttach.getOrdheadMasterId());
+                    attachedOrderHeadMasterCollectionNew.add(orderHeadMasterCollectionNewOrderHeadToAttach);
+                }
             }
             //更新客戶實體中的訂單頭檔資料
             orderHeadMasterCollectionNew = attachedOrderHeadMasterCollectionNew;
             customer.setOrderHeadMasterCollection(orderHeadMasterCollectionNew);
             //修改客戶
             customer = em.merge(customer);
-            
+
             //更新緩存中的客戶產品單價資料對應外鍵客戶資料
             for (CustomerPrice customerPriceMasterCollectionNewCustomerPrice : customerPriceMasterCollectionNew) {
                 if (!customerPriceMasterCollectionOld.contains(customerPriceMasterCollectionNewCustomerPrice)) {
@@ -207,11 +207,11 @@ public class CustomerDAO implements Serializable {
             }
             //提交事務
             em.getTransaction().commit();
-            
-            return new Response().success("修改客戶資訊成功",customer);
-            
-        } catch(OptimisticLockException optimisticLockException){
-            throw new OptimisticLockException("客戶編號為【"+ customer.getCustomerId() +"】的資料已被修改，請重試");
+
+            return new Response().success("修改客戶資訊成功", customer);
+
+        } catch (OptimisticLockException optimisticLockException) {
+            throw new OptimisticLockException("客戶編號為【" + customer.getCustomerId() + "】的資料已被修改，請重試");
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
@@ -221,7 +221,7 @@ public class CustomerDAO implements Serializable {
                 }
             }
             throw ex;
-        }finally {
+        } finally {
             if (em != null) {
                 em.close();
             }
@@ -312,18 +312,19 @@ public class CustomerDAO implements Serializable {
             em.close();
         }
     }
-    
-    /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
-     * 功能簡述：客戶條件查詢
-     * 
+
+    /**
+     * *****************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：客戶條件查詢
+     *
      * @param customerIdMin
      * @param customerIdMax
      * @param customerName
      * @param pageNo
-     * @return 
-     ********************************************************************************/
-    public Response queryCustomerByCondition(String customerIdMin, String customerIdMax ,String customerName,int pageNo) throws JPAQueryException {
+     * @return
+     * ******************************************************************************
+     */
+    public Response queryCustomerByCondition(String customerIdMin, String customerIdMax, String customerName, int pageNo) throws JPAQueryException {
         EntityManager em = getEntityManager();
         try {
             //創建安全查詢工廠
@@ -335,9 +336,11 @@ public class CustomerDAO implements Serializable {
 
             //構造過濾條件
             List<Predicate> predicatesList = new ArrayList<>();
-            predicatesList.add(cb.greaterThanOrEqualTo(customer.get(Customer_.customerId), customerIdMin));
-            if(!customerIdMax.isEmpty()){//客戶編號終值不為空
-                predicatesList.add(cb.lessThanOrEqualTo(customer.get(Customer_.customerId), customerIdMax));
+            Predicate p1 = cb.greaterThanOrEqualTo(customer.get(Customer_.customerId), customerIdMin);
+            predicatesList.add(p1);
+            if (!customerIdMax.isEmpty()) {//客戶編號終值不為空
+                Predicate p2 = cb.lessThanOrEqualTo(customer.get(Customer_.customerId), customerIdMax);
+                predicatesList.add(p2);
             }
             predicatesList.add(cb.like(customer.get(Customer_.customerName), "%" + customerName + "%"));
             predicatesList.add(cb.equal(customer.get(Customer_.deleteStatus), false));
@@ -347,38 +350,39 @@ public class CustomerDAO implements Serializable {
             //創建Query對象
             Query q = em.createQuery(cq);
             //設置查詢起始位置和最大查詢數量
-            q.setFirstResult(pageNo*10);
+            q.setFirstResult(pageNo * 10);
             q.setMaxResults(10);
-            
+
             int count_int = 0;
-            if(pageNo == 0){//當查詢第一頁資料時，查詢資料總數
+            if (pageNo == 0) {//當查詢第一頁資料時，查詢資料總數
 
                 CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
                 countQuery.select(cb.count(customer));
-                
+
                 countQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
                 Query count = em.createQuery(countQuery);
-                count_int = ((Long)count.getSingleResult()).intValue();
-                
-                if(count_int == 0){//查詢結果空，返回資訊
-                return new Response().Empty("無此範圍內的客戶資料");
+                count_int = ((Long) count.getSingleResult()).intValue();
+
+                if (count_int == 0) {//查詢結果空，返回資訊
+                    return new Response().Empty("無此範圍內的客戶資料");
                 }
             }
-            return new Response().success("客戶查詢成功", q.getResultList(),count_int);
+            return new Response().success("客戶查詢成功", q.getResultList(), count_int);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new JPAQueryException("條件查詢客戶失敗", e);
         } finally {
             em.close();
         }
     }
-    
-    /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
-     * 功能簡述：查詢新增客戶編號
-     * 
-     * @return 
-     ********************************************************************************/
+
+    /**
+     * *****************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：查詢新增客戶編號
+     *
+     * @return
+     * ******************************************************************************
+     */
     public String getCustomerId() {
         EntityManager em = getEntityManager();
         try {
@@ -389,18 +393,18 @@ public class CustomerDAO implements Serializable {
             //定义实体类型
             Root<Customer> customer = cq.from(Customer.class);
             cq.select(cb.count(customer));
-            
+
             //獲取當前時間
             Date date = new Date();
-            SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
+            SimpleDateFormat ft = new SimpleDateFormat("yyyyMMdd");
             String customerId = "CUS" + ft.format(date);
 
             //構造過濾條件
             Predicate predicate = cb.like(customer.get(Customer_.customerId), "%" + customerId + "%");
             cq.where(predicate);
-            
+
             Query count = em.createQuery(cq);
-            int count_int = ((Long)count.getSingleResult()).intValue() + 1;
+            int count_int = ((Long) count.getSingleResult()).intValue() + 1;
 
             return customerId + String.format("%03d", count_int);
 
@@ -408,14 +412,15 @@ public class CustomerDAO implements Serializable {
             em.close();
         }
     }
-    
-    /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
-     * 功能簡述：通過客戶編號查詢客戶實體
-     * 
+
+    /**
+     * *****************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：通過客戶編號查詢客戶實體
+     *
      * @param customerId
-     * @return 
-     ********************************************************************************/
+     * @return
+     * ******************************************************************************
+     */
     public Response findCustomerByCustomerId(String customerId) {
         EntityManager em = getEntityManager();
         try {
@@ -434,24 +439,25 @@ public class CustomerDAO implements Serializable {
 
             return new Response().success("查詢客戶實體成功", q.getSingleResult());
 
-        }catch(NoResultException e){
-            return new Response().Empty("客戶編號【"+ customerId +"】的客戶不存在");
+        } catch (NoResultException e) {
+            return new Response().Empty("客戶編號【" + customerId + "】的客戶不存在");
         } finally {
             em.close();
         }
     }
-    
-    /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
-     * 功能簡述：通過客戶姓名查詢客戶實體
-     * 
+
+    /**
+     * *****************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：通過客戶姓名查詢客戶實體
+     *
      * @param customerName
      * @param all
      * @param firstResult
      * @param maxResult
-     * @return 
-     ********************************************************************************/
-     public Response findCustomerByCustomerName(String customerName,boolean all, int firstResult, int maxResult){
+     * @return
+     * ******************************************************************************
+     */
+    public Response findCustomerByCustomerName(String customerName, boolean all, int firstResult, int maxResult) {
         EntityManager em = getEntityManager();
         try {
             //创建安全查询工厂
@@ -465,42 +471,45 @@ public class CustomerDAO implements Serializable {
             predicatesList.add(cb.like(customer.get(Customer_.customerName), "%" + customerName + "%"));
             predicatesList.add(cb.equal(customer.get(Customer_.deleteStatus), false));
             cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
-            
+
             Query q = em.createQuery(cq);
-            
-            if(!all){
+
+            if (!all) {
                 q.setFirstResult(firstResult);
                 q.setMaxResults(maxResult);
             }
-            
-           return new Response().success("客戶查詢成功", q.getResultList());
+
+            return new Response().success("客戶查詢成功", q.getResultList());
 
         } finally {
             em.close();
         }
     }
-     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
-     * 功能簡述：通過客戶姓名查詢全部客戶實體
-     * 
+
+    /**
+     * *****************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：通過客戶姓名查詢全部客戶實體
+     *
      * @param customerName
-     * @return 
-     ********************************************************************************/
-    public Response findCustomerByCustomerName(String customerName){
+     * @return
+     * ******************************************************************************
+     */
+    public Response findCustomerByCustomerName(String customerName) {
         return findCustomerByCustomerName(customerName, true, -1, -1);
     }
-    
-    /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
-     * 功能簡述：通過客戶姓名查詢相似的客戶姓名
-     * 
+
+    /**
+     * *****************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：通過客戶姓名查詢相似的客戶姓名
+     *
      * @param customerName
      * @param all
      * @param firstResult
      * @param maxResult
-     * @return 
-     ********************************************************************************/
-    public Response findCustomerNameListByCustomerName(String customerName,boolean all, int firstResult, int maxResult){
+     * @return
+     * ******************************************************************************
+     */
+    public Response findCustomerNameListByCustomerName(String customerName, boolean all, int firstResult, int maxResult) {
         EntityManager em = getEntityManager();
         try {
             //创建安全查询工厂
@@ -516,34 +525,35 @@ public class CustomerDAO implements Serializable {
             predicatesList.add(cb.like(customer.get(Customer_.customerName), "%" + customerName + "%"));
             predicatesList.add(cb.equal(customer.get(Customer_.deleteStatus), false));
             cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
-            
+
             Query q = em.createQuery(cq);
-            
-            if(!all){
+
+            if (!all) {
                 q.setFirstResult(firstResult);
                 q.setMaxResults(maxResult);
             }
-            
-           return new Response().success("客戶姓名列表查詢成功", q.getResultList());
+
+            return new Response().success("客戶姓名列表查詢成功", q.getResultList());
 
         } finally {
             em.close();
         }
     }
-    
-     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
-     * 功能簡述：通過客戶編號查詢相似的客戶編號
-     * 
+
+    /**
+     * *****************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：通過客戶編號查詢相似的客戶編號
+     *
      * @param inputId
      * @param customerIdMIn
      * @param customerIdMax
      * @param all
      * @param firstResult
      * @param maxResult
-     * @return 
-     ********************************************************************************/
-    public Response findCustomerIdListByCustomerId(String inputId, String customerIdMIn,String customerIdMax,boolean all, int firstResult, int maxResult){
+     * @return
+     * ******************************************************************************
+     */
+    public Response findCustomerIdListByCustomerId(String inputId, String customerIdMIn, String customerIdMax, boolean all, int firstResult, int maxResult) {
         EntityManager em = getEntityManager();
         try {
             //创建安全查询工厂
@@ -556,44 +566,47 @@ public class CustomerDAO implements Serializable {
             cq.distinct(true);
 
             List<Predicate> predicatesList = new ArrayList<>();
-            if("customer_idMin".equals(inputId)){
+            if ("customer_idMin".equals(inputId)) {
                 predicatesList.add(cb.like(customer.get(Customer_.customerId), "%" + customerIdMIn + "%"));
-                if(!customerIdMax.isEmpty()){
-                    predicatesList.add(cb.lessThanOrEqualTo(customer.get(Customer_.customerId), customerIdMax));
+                if (!customerIdMax.isEmpty()) {
+                    Predicate p1 = cb.lessThanOrEqualTo(customer.get(Customer_.customerId), customerIdMax);
+                    predicatesList.add(p1);
                 }
             }
-            if("customer_idMax".equals(inputId)){
+            if ("customer_idMax".equals(inputId)) {
                 predicatesList.add(cb.like(customer.get(Customer_.customerId), "%" + customerIdMax + "%"));
-                if(!customerIdMIn.isEmpty()){
-                    predicatesList.add(cb.greaterThanOrEqualTo(customer.get(Customer_.customerId), customerIdMIn));
+                if (!customerIdMIn.isEmpty()) {
+                    Predicate p2 = cb.greaterThanOrEqualTo(customer.get(Customer_.customerId), customerIdMIn);
+                    predicatesList.add(p2);
                 }
             }
-            
+
             predicatesList.add(cb.equal(customer.get(Customer_.deleteStatus), false));
             cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
-            
+
             Query q = em.createQuery(cq);
-            
-            if(!all){
+
+            if (!all) {
                 q.setFirstResult(firstResult);
                 q.setMaxResults(maxResult);
             }
-            
-           return new Response().success("客戶編號列表查詢成功", q.getResultList());
+
+            return new Response().success("客戶編號列表查詢成功", q.getResultList());
 
         } finally {
             em.close();
         }
     }
-    
-    /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
-     * 功能簡述：邏輯刪除客戶，級聯刪除客戶產品單價
-     * 
+
+    /**
+     * *****************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：邏輯刪除客戶，級聯刪除客戶產品單價
+     *
      * @param customer
-     * @return 
-     * @throws iot.dao.repository.exceptions.PreexistingEntityException 
-     ********************************************************************************/
+     * @return
+     * @throws iot.dao.repository.exceptions.PreexistingEntityException
+     * ******************************************************************************
+     */
     public Response deleteCustomer(Customer customer) throws PreexistingEntityException, NonexistentEntityException {
         EntityManager em = getEntityManager();
         try {
@@ -602,7 +615,7 @@ public class CustomerDAO implements Serializable {
             try {
                 Collection<CustomerPrice> customerPriceCollection = customer.getCustomerPriceMasterCollection();
                 Iterator iterator = customerPriceCollection.iterator();
-                while(iterator.hasNext()){
+                while (iterator.hasNext()) {
                     CustomerPrice customerPrice = (CustomerPrice) iterator.next();
                     customerPrice.setDeleteStatus(true);
                     em.merge(customerPrice);
@@ -611,14 +624,13 @@ public class CustomerDAO implements Serializable {
                 customer.setDeleteStatus(true);
                 em.merge(customer);
                 em.getTransaction().commit();
-                
-            } catch(OptimisticLockException optimisticLockException){
-                if(findCustomerByCustomerId(customer.getCustomerId()).isEmpty()){
+
+            } catch (OptimisticLockException optimisticLockException) {
+                if (findCustomerByCustomerId(customer.getCustomerId()).isEmpty()) {
                     throw new NonexistentEntityException("該客戶已被刪除");
                 }
                 throw new OptimisticLockException("客戶或客戶產品單價資料已被修改，請重試");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 //em.getTransaction().rollback();
                 e.printStackTrace();
                 throw new PreexistingEntityException("删除客户失败");
@@ -629,5 +641,5 @@ public class CustomerDAO implements Serializable {
             em.close();
         }
     }
-    
+
 }

@@ -1,104 +1,156 @@
 <%-- 
     Document   : login
-    Created on : 2016-8-12, 15:24:52
-    Author     : hatanococoro
+    Created on : 2016-12-15, 10:14:42
+    Author     : David
 --%>
-
+<%@page import="java.util.Date"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="renderer" content="webkit|ie-comp|ie-stand">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-<!--[if lt IE 9]>
-<script type="text/javascript" src="lib/html5.js"></script>
-<script type="text/javascript" src="lib/respond.min.js"></script>
-<script type="text/javascript" src="lib/PIE_IE678.js"></script>
-<![endif]-->
-<link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui/css/H-ui.min.css" />
-<link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui.admin/css/H-ui.login.css" />
-<!--[if lt IE 9]>
-<link href="static/h-ui/css/H-ui.ie.css" rel="stylesheet" type="text/css" />
-<![endif]-->
-<!--[if IE 6]>
-<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
-<script>DD_belatedPNG.fix('*');</script>
-<![endif]-->
-<title>用户登录</title>
-<meta name="keywords" content="登陆">
-</head>
-<body>
-  <div class="header"></div>
-  <div class="loginWraper">
-  <div class="loginBox">
-	<form action="" method="post" class="form form-horizontal responsive">
-            <div class="row cl">
-		<label class="form-label col-xs-2">账户：</label>
-		<div class="formControls col-xs-5">
-                    <input type="text" class="input-text "   autocomplete="off" value="admin2016"  placeholder="用户名" name="username" id="username" >
-		</div>
-		</div>
-		<div class="row cl">
-		<label class="form-label col-xs-2">密码：</label>
-		<div class="formControls col-xs-5">
-                    <input type="text" onfocus="this.type='password'" class="input-text" value="admin2016" autocomplete="off"   placeholder="密码" name="password" id="password" >          
-		</div>
-		</div>
-                
-       <div class="row cl">  
-                   <label class="form-label col-xs-2" >验证码:</label> 
-                   <div class="formControls col-xs-5">
-                   <input class="input-text" name="kaptcha" type="text" id="kaptcha" maxlength="4">
-                   <img src="<%=basePath%>/login/captcha-image" id="kaptchaImage"  style="margin-bottom: -3px"/>       
-                   <a onclick="changeCode()">看不清?换一张</a>  
-                    <p class="c-red text-l">${message_k}</p>
-                    <p class="c-red text-l">${message}</p>
-		   </div>
-                  
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>登陆</title>
+        <link rel="stylesheet" href="<%=basePath%>pages/bootstrap-3.3.0/css/bootstrap.css">
+        <link rel="stylesheet" href="<%=basePath%>pages/bootstrap-3.3.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="<%=basePath%>pages/bootstrap-3.3.0/js/jquery.css">
+        <link rel="stylesheet" href="<%=basePath%>pages/css/loginbox.css">
+    </head>
+
+    <body>
+
+        <div class="box">
+            <div class="login-box">
+
+                <h1 class="text-center">
+                    <span>客戶訂單管理系統</span>
+                </h1>
+
+                <h3 style="color:blueviolet" class="text-center" id="time">           
+                </h3>
+                <div class="login-title text-center">
+                    <h1><small>請輸入登錄信息</small></h1>
+                </div>
+                <div class="login-content ">
+                    <div class="form">
+                        <form action="#" method="post">
+                            <div class="form-group">
+                                <div class="col-xs-12  ">
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                                        <input type="text" id="username" name="userName" autocomplete="off" value="admin2016" class="form-control" placeholder="用戶名">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12  ">
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                                        <input type="text" id="password"  name="userPass"  autocomplete="off" value="123" class="form-control" placeholder="密碼">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12  ">
+                                    <div class="input-group  input-group-lg">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                                        <input style="width:120px" type="text" id="password" name="kaptcha" autocomplete="off" class="form-control" placeholder="驗證碼">
+                                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                        <span>&nbsp;&nbsp;&nbsp;</span>
+                                        <img src="<%=basePath%>/login/captcha-image" id="kaptchaImage"/>       
+                                        <a onclick="changeCode()">看不清?&nbsp;换一张</a>  
+                                    </div>
+                                    <div class="message-info text-center">
+                                        <p>${message_k}</p>
+                                        <p>${message}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-actions">
+                                <div class="col-xs-4 col-xs-offset-4 ">
+                                    <button type="submit" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-off"></span> 登录</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="row cl">
-        <div class="formControls col-xs-8 col-xs-offset-3">
-          <input type="submit" class="btn btn-success radius size-L" value="登陆">
-          <input type="reset" class="btn btn-default radius size-L" value="取消">
-        </div>
-      </div>
-    </form>
-  </div>
-  </div>
-  <div class="footer">IOT TEAM</div>
-
-<script type="text/javascript" src="pages/lib/jquery/1.9.1/jquery.min.js"></script> 
-<script type="text/javascript" src="pages/static/h-ui/js/H-ui.js"></script>
-<script>
-//var navigation = responsiveNav("Hui-navbar", {customToggle: ".nav-toggle"});
+        <!-- jQuery first, then Bootstrap JS. -->
+        <script src="<%=basePath%>pages/bootstrap-3.3.0/js/jquery.js"></script>
+<!--        <script src="<%=basePath%>pages/Bootstrap/js/bootstrap.min.js"></script>-->
+        <script>
 
 
-    $(function(){  //生成验证码         
-        $('#kaptchaImage').click(function () {  
-        $(this).hide().attr('src', '<%=basePath%>/login/captcha-image?' + Math.floor(Math.random()*100) ).fadeIn(); });      
-    });   
-  		  
-    function changeCode() {  //刷新
-        $('#kaptchaImage').hide().attr('src', '<%=basePath%>/login/captcha-image?' + Math.floor(Math.random()*100) ).fadeIn();  
-        event.cancelBubble=true;  
-    } 
-    
-    window.onbeforeunload = function(){  
-    //关闭窗口时自动退出  
-    if(event.clientX>360&&event.clientY<0||event.altKey){     
-        alert(parent.document.location);  
-    }  
-  }; 
-</script>
-</body>
+            $(function () {  //生成验证码         
+                $('#kaptchaImage').click(function () {
+                    $(this).hide().attr('src', '<%=basePath%>/login/captcha-image?' + Math.floor(Math.random() * 100)).fadeIn();
+                });
+            });
+            function changeCode() {  //刷新
+                $('#kaptchaImage').hide().attr('src', '<%=basePath%>/login/captcha-image?' + Math.floor(Math.random() * 100)).fadeIn();
+                event.cancelBubble = true;
+            }
+
+            window.onbeforeunload = function () {
+                //关闭窗口时自动退出  
+                if (event.clientX > 360 && event.clientY < 0 || event.altKey) {
+                    alert(parent.document.location);
+                }
+            };
+
+            $(function () {
+                var d = new Date();
+                var week;
+
+                function add_zero(temp) {
+                    if (temp < 10)
+                        return "0" + temp;
+                    else
+                        return temp;
+                }
+
+                switch (d.getDay()) {
+                    case 1:
+                        week = "星期一";
+                        break;
+                    case 2:
+                        week = "星期二";
+                        break;
+                    case 3:
+                        week = "星期三";
+                        break;
+                    case 4:
+                        week = "星期四";
+                        break;
+                    case 5:
+                        week = "星期五";
+                        break;
+                    case 6:
+                        week = "星期六";
+                        break;
+                    default:
+                        week = "星期天";
+                }
+                var years = d.getFullYear();
+                var month = add_zero(d.getMonth() + 1);
+                var days = add_zero(d.getDate());
+                var hours = add_zero(d.getHours());
+                var minutes = add_zero(d.getMinutes());
+                var seconds = add_zero(d.getSeconds());
+                var ndate = "現在是  " + years + "年" + month + "月" + days + "日 " + hours + ":" + minutes + ":" + seconds + " " + week;
+                var ndate2 = "今天是  " + years + "年" + month + "月" + days + "日 "  + " " + week;
+
+                $("#time")[0].innerHTML = ndate2;
+
+            });
+        </script>
+
+    </body>
 </html>

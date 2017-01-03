@@ -10,10 +10,10 @@
     <class>iot.dao.entity.Product</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/db_coms2?useUnicode=true&amp;amp;characterEncoding=UTF-8"/>
-      <property name="javax.persistence.jdbc.user" value="kokoro"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/db_coms2_1021?useUnicode=true&amp;amp;characterEncoding=UTF-8"/>
+      <property name="javax.persistence.jdbc.user" value="swm"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-      <property name="javax.persistence.jdbc.password" value="123456"/>
+      <property name="javax.persistence.jdbc.password" value="root"/>
     </properties>
   </persistence-unit>
 </persistence>
