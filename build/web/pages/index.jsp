@@ -22,7 +22,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
         <meta http-equiv="Cache-Control" content="no-siteapp" />
-
+<!--        更改左上角圖標-->
+        <link rel="shortcut icon" href="http://www.easyicon.net/api/resizeApi.php?id=1174456&size=24" type="image/x-icon" />
+        
         <link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui.admin/css/myStyle.css" />
         <link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui/css/H-ui.css" />
         <link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui.admin/css/H-ui.admin.css" />
@@ -72,7 +74,7 @@
             </ul>
             <ul>
                 <li>
-                    <a href="#">產品管理</a>
+                    <a href="<%=basePath%>Product/ProductQuery">產品管理</a>
                 </li>
             </ul>
         </div>
@@ -80,7 +82,7 @@
 
     <div class="dislpayArrow"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
     <section class="Hui-article-box">
-        <div class="page-container" style="background-image: url(bg.png);background-repeat: no-repeat;background-size: 100%">
+        <div class="page-container" style="background-image: url(bg2.png);background-repeat: no-repeat;background-size: 100%">
 
         </div>
         <div class="footer">IOT TEAM</div>
