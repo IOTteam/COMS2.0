@@ -19,6 +19,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="lib/respond.min.js"></script>
 <script type="text/javascript" src="lib/PIE_IE678.js"></script>
 <![endif]-->
+<link rel="shortcut icon"type="image/x-icon" href="<%=basePath%>pages/image/24pxnet.ico" />
 <link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui/css/H-ui.css" />
 <link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui.admin/css/H-ui.admin.css" />
 <link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui.admin/skin/default/skin.css" id="skin" />
@@ -41,7 +42,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <header class="navbar-wrapper">
 	<div class="navbar navbar-fixed-top">
             <div class="container-fluid cl"> 
-                <a href="<%=basePath%>index" class="logo navbar-logo f-l mr-10 hidden-xs" style="font-family: LiSu; font-size: 30px">客户订单管理系统</a>
+                <a href="<%=basePath%>index" class="logo navbar-logo f-l mr-10 hidden-xs" style="font-family: LiSu; font-size: 30px">客戶訂單管理系統</a>
 		<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                     <ul class="cl">
                         <li>今天是</li>
@@ -64,28 +65,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             
     <!--系统菜单目录-->                       
     <aside class="Hui-aside">
-	<div class="menu_dropdown">
-	    <ul>
+        <div class="menu_dropdown">
+            <ul>
                 <li>
                     <a href="<%=basePath%>CustomerManage/CustomerQuery">客戶管理</a>
                 </li>
             </ul>
-              <ul>
+            <ul>
                 <li>
+                    
                     <a href="<%=basePath%>CustomerPriceManage/queryCustomerPrice">客戶產品單價管理</a>
                 </li>
             </ul>
             <ul>
                 <li>
-                    <a href="<%=basePath%>OrderManage/queryOrderHeadList">訂單管理</a>
+                   <a href="#">訂單管理</a>
+                    <!--<a href="<%=basePath%>OrderManage/queryOrderHeadList">訂單管理</a>-->
                 </li>
             </ul>
-              <ul>
+            <ul>
                 <li>
-                    <a href="#">產品管理</a>
+                    <a href="<%=basePath%>Product/ProductQuery">產品管理</a>
                 </li>
             </ul>
-	</div>
+        </div>
     </aside>
                 
         <!--管理员信息-->

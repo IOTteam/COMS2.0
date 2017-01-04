@@ -472,10 +472,12 @@ public class ProductDAO implements Serializable {
             List<Predicate> predicatesList = new ArrayList<>();
             //查詢productIdMin與productIdMax之間的數據
             if(!productIdMin.equals("")){
-                predicatesList.add(criteriaBuilder.greaterThan(product.get(Product_.productId), productIdMin));
+                Predicate p1=criteriaBuilder.greaterThan(product.get(Product_.productId), productIdMin);
+                predicatesList.add(p1);
             }
             if(!productIdMax.equals("")){
-                predicatesList.add(criteriaBuilder.lessThan(product.get(Product_.productId), productIdMax));
+                Predicate p2=criteriaBuilder.lessThan(product.get(Product_.productId), productIdMax);
+                predicatesList.add(p2);
             }
             //模糊查詢productName
             if(!productName.equals("")){
@@ -483,10 +485,12 @@ public class ProductDAO implements Serializable {
             }
             //查詢productPriceMin與productPriceMax之間的數據
             if(!productPriceMin.equals("")){
-                predicatesList.add(criteriaBuilder.greaterThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMin)));
+                Predicate p3=criteriaBuilder.greaterThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMin));
+                predicatesList.add(p3);
             }
             if(!productPriceMax.equals("")){
-                predicatesList.add(criteriaBuilder.lessThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMax)));
+                Predicate p4=criteriaBuilder.lessThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMax));
+                predicatesList.add(p4);
             }
             //模糊查詢productSpec
             if(!productSpec.equals("")){
@@ -521,10 +525,12 @@ public class ProductDAO implements Serializable {
             //利用Predicate過濾多個查詢條件
             List<Predicate> predicatesList = new ArrayList<>();
             if(!productIdMin.equals("")){
-                predicatesList.add(criteriaBuilder.greaterThan(product.get(Product_.productId), productIdMin));
+                Predicate p1=criteriaBuilder.greaterThan(product.get(Product_.productId), productIdMin);
+                predicatesList.add(p1);
             }
             if(!productIdMax.equals("")){
-                predicatesList.add(criteriaBuilder.lessThan(product.get(Product_.productId), productIdMax));
+                Predicate p2=criteriaBuilder.lessThan(product.get(Product_.productId), productIdMax);
+                predicatesList.add(p2);
             }
             //模糊查詢productName
             if(!productName.equals("")){
@@ -532,10 +538,12 @@ public class ProductDAO implements Serializable {
             }
             //查詢productPriceMin與productPriceMax之間的數據
             if(!productPriceMin.equals("")){
-                predicatesList.add(criteriaBuilder.greaterThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMin)));
+                Predicate p3=criteriaBuilder.greaterThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMin));
+                predicatesList.add(p3);
             }
             if(!productPriceMax.equals("")){
-                predicatesList.add(criteriaBuilder.lessThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMax)));
+                Predicate p4=criteriaBuilder.lessThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMax));
+                predicatesList.add(p4);
             }
             //模糊查詢productSpec
             if(!productSpec.equals("")){
