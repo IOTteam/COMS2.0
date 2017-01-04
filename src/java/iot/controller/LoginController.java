@@ -70,16 +70,16 @@ public class LoginController {
         //獲取驗證碼文字
         String code = (String) session.getAttribute("code");
         //判斷驗證碼是否正確，區分大小寫   
-//        if (!code.equals(kaptcha)) {
-//            model.addAttribute("message_k", "验证码错误");
-//            return "login";
-//        }
+        if (!code.equals(kaptcha)) {
+            model.addAttribute("message_k", "验证码错误");
+            return "login";
+        }
         //調用service層的UserLogin方法
         String umn = loginService.UserLogin(username, userpass);
 
         //根據UserLogin中返回的不同字串，打印不同的反饋內容給前臺
         if ("isNull".equals(umn)) { //賬號不存在
-            model.addAttribute("message", "帳號或密碼錯誤，請重試");
+            model.addAttribute("message", "賬號不存在");
             return "login";
         } else if ("isLocked".equals(umn)) { //帳號被鎖定了
             model.addAttribute("message", "帳號目前是被鎖定的，請稍候再試");
@@ -88,7 +88,7 @@ public class LoginController {
             model.addAttribute("message", "密碼輸錯次數過多，帳號將被鎖定1小時");
             return "login";
         } else if ("tryAgain".equals(umn)) { //密碼輸入錯誤，請重新輸入
-            model.addAttribute("message", "帳號或密碼錯誤，請重試");
+            model.addAttribute("message", "密碼輸入錯誤");
             return "login";
         } else {//將user實體存儲到session，重定向到首頁
             User um = loginService.getUserInfo(username, userpass);

@@ -9,12 +9,12 @@ package iot.response;
  *
  * @author hatanococoro
  */
-public class Response {
+public class Response<T> {
 
     private Boolean success;
     private Boolean isEmpty; 
     private String message;
-    private Object data;
+    private T data;
     private int count = 0;
     
     public Response success() {
@@ -37,7 +37,7 @@ public class Response {
         return this;
     }
  
-    public Response success(String message, Object data) {
+    public Response success(String message, T data) {
         this.success = true;
         this.isEmpty = false;
         this.message = message;
@@ -45,7 +45,7 @@ public class Response {
         return this;
     }
     
-    public Response success(String message, Object data, int count) {
+    public Response success(String message, T data, int count) {
         this.success = true;
         this.isEmpty = false;
         this.message = message;
@@ -68,7 +68,7 @@ public class Response {
         return this;
     }
     
-    public Response failure(String message,Object data) {
+    public Response failure(String message,T data) {
         this.success = false;
         this.isEmpty = false;
         this.message = message;
@@ -90,11 +90,11 @@ public class Response {
           return message;
       }
     
-    public Object getData() {
+    public T getData() {
           return data;
       }
     
-    public void setData(Object data) {
+    public void setData(T data) {
           this.data = data;
       }
     

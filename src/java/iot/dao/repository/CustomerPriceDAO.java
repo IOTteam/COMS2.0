@@ -546,4 +546,110 @@ public class CustomerPriceDAO implements Serializable {
         }
     }
     
+    public List<CustomerPrice> findCustomerPriceByProductMasterId(Product productMasterId,Customer customerMasterId) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            //創建安全查詢工廠
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            //創建查詢主語句
+            CriteriaQuery<CustomerPrice>  criteriaQuery = criteriaBuilder.createQuery(CustomerPrice.class);
+            //定義實體類型
+            Root<CustomerPrice> customerPrice = criteriaQuery.from(CustomerPrice.class);
+            
+            //利用Predicate過濾多個查詢條件
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.productMasterId),productMasterId));
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.customerMasterId),customerMasterId));
+            //查詢有效數據
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.deleteStatus),false));
+            criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            criteriaQuery.orderBy(criteriaBuilder.asc(customerPrice.get(CustomerPrice_.rangeMin)));
+            
+            //創建查詢
+            Query query = entityManager.createQuery(criteriaQuery);
+            return query.getResultList();                    
+        } finally{
+            entityManager.close();
+        }
+    }
+
+    public List<CustomerPrice> findCustomerPriceByProductMasterId(Product productMasterId) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            //創建安全查詢工廠
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            //創建查詢主語句
+            CriteriaQuery<CustomerPrice>  criteriaQuery = criteriaBuilder.createQuery(CustomerPrice.class);
+            //定義實體類型
+            Root<CustomerPrice> customerPrice = criteriaQuery.from(CustomerPrice.class);
+            
+            //利用Predicate過濾多個查詢條件
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.productMasterId),productMasterId));
+            //查詢有效數據
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.deleteStatus),false));
+            criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            
+            //創建查詢
+            Query query = entityManager.createQuery(criteriaQuery);
+            return query.getResultList();                    
+        } finally{
+            entityManager.close();
+        }
+    }
+
+    public CustomerPrice findCustomerPriceByCusPriceMasterId(String cusPriceMasterId) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            //創建安全查詢工廠
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            //創建查詢主語句
+            CriteriaQuery<CustomerPrice>  criteriaQuery = criteriaBuilder.createQuery(CustomerPrice.class);
+            //定義實體類型
+            Root<CustomerPrice> customerPrice = criteriaQuery.from(CustomerPrice.class);
+            
+            //利用Predicate過濾多個查詢條件
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.cusPriceMasterId),cusPriceMasterId));
+            //查詢有效數據
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.deleteStatus),false));
+            criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            
+            //創建查詢
+            Query query = entityManager.createQuery(criteriaQuery);
+            return (CustomerPrice) query.getSingleResult();                    
+        } finally{
+            entityManager.close();
+        }
+    }
+
+    public CustomerPrice findCustomerPriceByConditions(Product productMasterId, Customer customerMasterId, int rangeMin, int rangeMax) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            //創建安全查詢工廠
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            //創建查詢主語句
+            CriteriaQuery<CustomerPrice>  criteriaQuery = criteriaBuilder.createQuery(CustomerPrice.class);
+            //定義實體類型
+            Root<CustomerPrice> customerPrice = criteriaQuery.from(CustomerPrice.class);
+            
+            //利用Predicate過濾多個查詢條件
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.productMasterId),productMasterId));
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.customerMasterId),customerMasterId));
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.rangeMin),rangeMin));
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.rangeMax),rangeMax));
+            //查詢有效數據
+            predicatesList.add(criteriaBuilder.equal(customerPrice.get(CustomerPrice_.deleteStatus),false));
+            criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            
+            //創建查詢
+            Query query = entityManager.createQuery(criteriaQuery);
+            return (CustomerPrice) query.getSingleResult();                    
+        } finally{
+            entityManager.close();
+        }
+    }
+    
+    
 }
