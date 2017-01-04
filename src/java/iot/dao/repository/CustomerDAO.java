@@ -367,7 +367,7 @@ public class CustomerDAO implements Serializable {
                     return new Response().Empty("無此範圍內的客戶資料");
                 }
             }
-            return new Response().success("客戶查詢成功", q.getResultList(), count_int);
+            return new Response<List<Customer>>().success("客戶查詢成功", q.getResultList(), count_int);
 
         } catch (Exception e) {
             throw new JPAQueryException("條件查詢客戶失敗", e);

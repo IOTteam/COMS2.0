@@ -353,4 +353,31 @@ public class OrderDetailDAO implements Serializable {
             em.close();
         }
     }
+    
+    //根據productMasterId查詢訂單
+    public List<OrderDetail> findOrderDetailByProductMasterId(Product productMasterId) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            //創建安全查詢工廠
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            //創建查詢主語句
+            CriteriaQuery<OrderDetail>  criteriaQuery = criteriaBuilder.createQuery(OrderDetail.class);
+            //定義實體類型
+            Root<OrderDetail> orderDetail = criteriaQuery.from(OrderDetail.class);
+            
+            //利用Predicate過濾多個查詢條件
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(criteriaBuilder.equal(orderDetail.get(OrderDetail_.productMasterId),productMasterId));
+            //查詢有效數據
+            predicatesList.add(criteriaBuilder.equal(orderDetail.get(OrderDetail_.deleteStatus),false));
+            criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            
+            //創建查詢
+            Query query = entityManager.createQuery(criteriaQuery);
+            return query.getResultList();                    
+        } finally{
+            entityManager.close();
+        }
+        
+    }
 }

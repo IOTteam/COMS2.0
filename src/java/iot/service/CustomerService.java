@@ -44,7 +44,7 @@ public class CustomerService {
     public Response customerQueryService(String customerIdMin, String customerIdMax ,String customerName,int pageNo) throws JPAQueryException{
     
         CustomerDAO customerDAO = new CustomerDAO(emf);
-        Response customerQueryResult = customerDAO.queryCustomerByCondition(customerIdMin, customerIdMax, customerName, pageNo);
+        Response<List<Customer>> customerQueryResult = customerDAO.queryCustomerByCondition(customerIdMin, customerIdMax, customerName, pageNo);
         return customerQueryResult;
     }
    

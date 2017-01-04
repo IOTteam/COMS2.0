@@ -456,5 +456,121 @@ public class ProductDAO implements Serializable {
             em.close();
         }
     }
+        
+        public Response queryProductByCondition(String productIdMin, String productIdMax, String productName,
+            String productPriceMin, String productPriceMax, String productSpec, String pageNo) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            //創建安全查詢工廠
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            //創建查詢主語句
+            CriteriaQuery<Product>  criteriaQuery = criteriaBuilder.createQuery(Product.class);
+            //定義實體類型
+            Root<Product> product = criteriaQuery.from(Product.class);
+            
+            //利用Predicate過濾多個查詢條件
+            List<Predicate> predicatesList = new ArrayList<>();
+            //查詢productIdMin與productIdMax之間的數據
+            if(!productIdMin.equals("")){
+                predicatesList.add(criteriaBuilder.greaterThan(product.get(Product_.productId), productIdMin));
+            }
+            if(!productIdMax.equals("")){
+                predicatesList.add(criteriaBuilder.lessThan(product.get(Product_.productId), productIdMax));
+            }
+            //模糊查詢productName
+            if(!productName.equals("")){
+                predicatesList.add(criteriaBuilder.like(product.get(Product_.productName), "%" + productName + "%"));
+            }
+            //查詢productPriceMin與productPriceMax之間的數據
+            if(!productPriceMin.equals("")){
+                predicatesList.add(criteriaBuilder.greaterThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMin)));
+            }
+            if(!productPriceMax.equals("")){
+                predicatesList.add(criteriaBuilder.lessThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMax)));
+            }
+            //模糊查詢productSpec
+            if(!productSpec.equals("")){
+                predicatesList.add(criteriaBuilder.like(product.get(Product_.productSpec), "%" + productSpec + "%"));
+            }
+            //查詢有效數據
+            predicatesList.add(criteriaBuilder.equal(product.get(Product_.deleteStatus),false));
+            criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            
+            //創建查詢
+            Query query = entityManager.createQuery(criteriaQuery);
+            //設置查詢的起始位置
+            query.setFirstResult(((Integer.parseInt(pageNo)-1)*10));
+            //設置查詢的數據條數
+            query.setMaxResults(10);
+            return new Response().success("產品查詢成功",query.getResultList());                    
+        } finally{
+            entityManager.close();
+        }
+    }
+
+    public Response queryProductCountByCondition(String productIdMin, String productIdMax, String productName, String productPriceMin, String productPriceMax, String productSpec) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            //創建安全查詢工廠
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            //創建查詢主語句
+            CriteriaQuery<Product>  criteriaQuery = criteriaBuilder.createQuery(Product.class);
+            //定義實體類型
+            Root<Product> product = criteriaQuery.from(Product.class);
+            
+            //利用Predicate過濾多個查詢條件
+            List<Predicate> predicatesList = new ArrayList<>();
+            if(!productIdMin.equals("")){
+                predicatesList.add(criteriaBuilder.greaterThan(product.get(Product_.productId), productIdMin));
+            }
+            if(!productIdMax.equals("")){
+                predicatesList.add(criteriaBuilder.lessThan(product.get(Product_.productId), productIdMax));
+            }
+            //模糊查詢productName
+            if(!productName.equals("")){
+                predicatesList.add(criteriaBuilder.like(product.get(Product_.productName), "%" + productName + "%"));
+            }
+            //查詢productPriceMin與productPriceMax之間的數據
+            if(!productPriceMin.equals("")){
+                predicatesList.add(criteriaBuilder.greaterThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMin)));
+            }
+            if(!productPriceMax.equals("")){
+                predicatesList.add(criteriaBuilder.lessThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMax)));
+            }
+            //模糊查詢productSpec
+            if(!productSpec.equals("")){
+                predicatesList.add(criteriaBuilder.like(product.get(Product_.productSpec), "%" + productSpec + "%"));
+            }
+            //查詢有效數據
+            predicatesList.add(criteriaBuilder.equal(product.get(Product_.deleteStatus),false));
+            criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            
+            //創建查詢
+            Query query = entityManager.createQuery(criteriaQuery);
+            return new Response().success("產品查詢成功",query.getResultList());                    
+        } finally{
+            entityManager.close();
+        }
+    }
+
+    public String getProductCountByProductIdHead(String productIdHead) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            //創建安全查詢工廠
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            //定義實體類型
+            
+            CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+            Root<Product> product = countQuery.from(Product.class);
+            countQuery.select(criteriaBuilder.count(product));
+            countQuery.where(criteriaBuilder.like(product.get(Product_.productId),"%" + productIdHead + "%"));
+            Query count = entityManager.createQuery(countQuery);
+            String count_String = count.getSingleResult().toString();
+            return count_String;
+                    
+        } finally {
+            entityManager.close();
+        }
+    }
     
 }

@@ -18,7 +18,6 @@
         <title>登陆</title>
         <link rel="stylesheet" href="<%=basePath%>pages/bootstrap-3.3.0/css/bootstrap.css">
         <link rel="stylesheet" href="<%=basePath%>pages/bootstrap-3.3.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="<%=basePath%>pages/bootstrap-3.3.0/js/jquery.css">
         <link rel="stylesheet" href="<%=basePath%>pages/css/loginbox.css">
     </head>
 

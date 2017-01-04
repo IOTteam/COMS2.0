@@ -54,7 +54,7 @@ public class CustomerController {
         model.addAttribute("queryCondition",queryCondition); 
         
         //查詢客戶資訊
-        Response customerQueryResult = customerService.customerQueryService(customerIdMin, customerIdMax, customerName,0);
+        Response<List<Customer>> customerQueryResult = customerService.customerQueryService(customerIdMin, customerIdMax, customerName,0);
         
         if(customerQueryResult.isEmpty()){//查詢結果為空，返回頁面
             model.addAttribute("message", customerQueryResult.getMessage());
@@ -62,7 +62,7 @@ public class CustomerController {
         }
         
         //取得客戶資訊列表和數據總量，將其傳遞到前台
-        List<Customer> customerList = (List<Customer>)customerQueryResult.getData();
+        List<Customer> customerList = customerQueryResult.getData();
         int totalPage = (customerQueryResult.getCount() - 1)/10 + 1;
         model.addAttribute("customerList", customerList);
         model.addAttribute("totalPage", totalPage);
