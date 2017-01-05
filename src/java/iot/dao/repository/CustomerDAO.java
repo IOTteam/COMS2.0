@@ -584,6 +584,10 @@ public class CustomerDAO implements Serializable {
             predicatesList.add(cb.equal(customer.get(Customer_.deleteStatus), false));
             cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
 
+            //查詢輸入框顯示的值的默認排序——david
+            cq.orderBy(cb.asc(customer.get(Customer_.customerId)));
+            
+            
             Query q = em.createQuery(cq);
 
             if (!all) {

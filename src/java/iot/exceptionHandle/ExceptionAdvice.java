@@ -152,9 +152,10 @@ public class ExceptionAdvice {
      * @param e
      * @return 
      ********************************************************************************/
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(Exception.class)
-//    public Response ExceptionHandle(Exception e) {
-//        return new Response().failure(e.getMessage());
-//    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(Exception.class)
+    public Response ExceptionHandle(Exception e) {
+        e.printStackTrace();
+        return new Response().failure(e.getMessage());
+    }
 }

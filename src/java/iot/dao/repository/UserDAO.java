@@ -229,7 +229,7 @@ public class UserDAO implements Serializable {
                 //提交事務
                 em.getTransaction().commit();
             }
-        }, 3600000);// 設定自動解鎖帳號的時間，測試時設置爲60秒
+        }, 60000);// 設定自動解鎖帳號的時間，測試時設置爲60秒
     }
 
 }

@@ -25,7 +25,7 @@ public class LoginService {
     private EntityManagerFactory emf;
 
     //判斷輸入的賬號密碼各種情況
-    public String UserLogin(String username, String userpass) {
+    public String UserLogin(String username, String userpass) throws Exception {
 //        //創建loginService對象，便於訪問類內的方法
 //        LoginService loginservice = new LoginService();
 
@@ -55,12 +55,9 @@ public class LoginService {
                         umn.setWrongUserpassTimes(3);
                         //設置鎖定時間
                         umn.setLockedTime(new Date());
-                        try {
-                            //保存中修改後設置的數值
-                            umdao.edit(umn);
-                        } catch (Exception ex) {
-                            Logger.getLogger(LoginService.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+
+                        //保存中修改後設置的數值
+                        umdao.edit(umn);
 
                         //此處調用自動解鎖函數
                         umdao.autoUnlock(umn);
@@ -71,12 +68,10 @@ public class LoginService {
                     else {
                         //把wronguserpasstimes次數+1，
                         umn.setWrongUserpassTimes(wut + 1);
-                        try {
-                            //保存修改的數值存到數據庫
-                            umdao.edit(umn);
-                        } catch (Exception ex) {
-                            Logger.getLogger(LoginService.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+
+                        //保存修改的數值存到數據庫
+                        umdao.edit(umn);
+
                         //密碼輸入錯誤，請重新輸入
                         return "tryAgain";
                     }
@@ -86,12 +81,10 @@ public class LoginService {
                     umn.setIslocked(false);
                     //把wut重置爲0
                     umn.setWrongUserpassTimes(0);
-                    try {
-                        //保存修改
-                        umdao.edit(umn);
-                    } catch (Exception ex) {
-                        Logger.getLogger(LoginService.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+
+                    //保存修改
+                    umdao.edit(umn);
+
                     return "isMatch";
                 }
             }

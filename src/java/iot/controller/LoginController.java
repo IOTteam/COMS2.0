@@ -6,6 +6,7 @@
 package iot.controller;
 
 import iot.dao.entity.User;
+import iot.response.Response;
 import iot.service.LoginService;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,6 +28,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpSession;
+import javax.validation.ValidationException;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -64,7 +66,7 @@ public class LoginController {
     public String userLogin(@RequestParam("userName") String username,
             @RequestParam("userPass") String userpass,
             @RequestParam("kaptcha") String kaptcha,
-            HttpServletRequest request, ModelMap model) {
+            HttpServletRequest request, ModelMap model) throws Exception {
         //由請求獲取session
         HttpSession session = request.getSession();
         //獲取驗證碼文字
@@ -180,12 +182,11 @@ public class LoginController {
     @RequestMapping(value = "editPassword", method = RequestMethod.POST)
     //@ResponseBody註解，將return的值轉化爲json格式
     @ResponseBody
-    public String editPassword(@ModelAttribute("user") User user,
+    public Response editPassword(@ModelAttribute("user") User user,
             @RequestParam("userPassOld") String userPassOld,
             @RequestParam("userPassNew") String userPassNew,
             @RequestParam("userPassConfirm") String userPassConfirm, ModelMap model) throws Exception {
 
-        System.out.println(userPassOld);
         //如果原密碼輸入正確
         if (userPassOld.equals(user.getUserPass())) {
             //如果兩次輸入的密碼一致
@@ -197,21 +198,24 @@ public class LoginController {
                     loginService.editPasswordService(user);
                 } //新舊密碼不一致的否則，即新舊密碼一致 
                 else {
-                    return "same old new";
+                    throw new ValidationException("新舊密碼一致!");
+                    //return new Response().failure("same old new");
                 }
             }//兩次輸入密碼一致的否則，兩次輸入的密碼不一致 
             else {
                 //兩次輸入密碼不一致
-                return "confirm error";
+                throw new ValidationException("兩次輸入密碼不一致!");                
+                //return new Response().failure("sconfirm error");
             }
         }//原密碼輸入正確的否則，即原密碼輸入 
         else {
             //原密碼錯誤
-            return "password error";
+            throw new ValidationException("原密碼錯誤!");
+            //return new Response().failure("password error");
         }
         //修改密碼成功
 
-        return "success";
+        return new Response().success("修改密碼成功!");
     }
 
     //登出

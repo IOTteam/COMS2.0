@@ -36,22 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script>DD_belatedPNG.fix('*');</script>
 <![endif]-->
 <title>客户订单管理系统</title>
-<!--设置table行点击背景颜色-->
-<style type="text/css">
-.color {
-    background-color: #99ffff;
-}
-</style>
-<script type="text/javascript">
-var temptr = $();
-$(function(){
-    $("#productTable").on("click","tr",function(event){
-        temptr.removeClass("color");
-        temptr = $(this);
-        temptr.addClass("color")
-    });
-});
-</script> 
+
 </head>
 <body>
     <!--导航栏-->
@@ -178,12 +163,12 @@ $(function(){
             <div id="ss">
                 <h3 align="center">产品信息列表</h3>
 		    <p align="center">
-                        产品编号：<input type="text" name="productIdMin" class="input-text radius" style="width:100px" id="productIdMin" value="${queryCondition.productIdMin}"/>
-                                - <input type="text" name="productIdMax" class="input-text radius" style="width:100px" id="productIdMax" value="${queryCondition.productIdMax}"/>
-                        产品名称：<input type="text" id="productName" name="productName" class="input-text radius" style="width:100px" value="${queryCondition.productName}"/>
-                        产品规格：<input type="text" id="productSpec" name="productSpec" class="input-text radius" style="width:100px" value="${queryCondition.productSpec}"/>
-                        标准售价：<input type="text" name="productPriceMin" id="productPriceMin" class="input-text radius" style="width:100px" value="${queryCondition.productPriceMin}"/> - 
-                                <input type="text" name="productPriceMax" id="productPriceMax" class="input-text radius" style="width:100px" value="${queryCondition.productPriceMax}"/>
+                        产品编号：<input type="text" name="productIdMin" class="input-text radius" style="width:100px" id="productIdMin" value="${queryCondition.productIdMin}" autocomplete="off"/>
+                                - <input type="text" name="productIdMax" class="input-text radius" style="width:100px" id="productIdMax" value="${queryCondition.productIdMax}" autocomplete="off"/>
+                        产品名称：<input type="text" id="productName" name="productName" class="input-text radius" style="width:100px" value="${queryCondition.productName}" autocomplete="off"/>
+                        产品规格：<input type="text" id="productSpec" name="productSpec" class="input-text radius" style="width:100px" value="${queryCondition.productSpec}" autocomplete="off"/>
+                        标准售价：<input type="text" name="productPriceMin" id="productPriceMin" class="input-text radius" style="width:100px" value="${queryCondition.productPriceMin}" autocomplete="off"/> - 
+                                <input type="text" name="productPriceMax" id="productPriceMax" class="input-text radius" style="width:100px" value="${queryCondition.productPriceMax}" autocomplete="off"/>
                                 <input   type="submit" value="查询" id="query_product"/>
                                 <button  type="button" data-toggle="modal" href="#addInfo" class="btn btn-primary radius" >新增</button>
                     </p>
@@ -456,194 +441,115 @@ $(function(){
 <script type="text/javascript" src="<%=basePath%>pages/static/h-ui/js/H-ui.js"></script>
 <script type="text/javascript" src="<%=basePath%>pages/lib/bootstrap-modal/2.2.4/bootstrap-modalmanager.js"></script>
 <script type="text/javascript" src="<%=basePath%>pages/lib/bootstrap-modal/2.2.4/bootstrap-modal.js"></script>
-<script type="text/javascript" src="<%=basePath%>pages/com.js"></script>
+<script type="text/javascript" src="<%=basePath%>pages/commonAction.js"></script>
     <script>
-                function next(){
-                    var ss = document.getElementById("pageNo").value;
-                    var pageNo = parseInt(ss);
-                    var totalPages = document.getElementById("totalPages").value;
-                    var productName = document.getElementById("productName").value;
-                    var productIdMin = document.getElementById("productIdMin").value;
-                    var productIdMax = document.getElementById("productIdMax").value;
-                    var productSpec = document.getElementById("productSpec").value;
-                    var productPriceMin = document.getElementById("productPriceMin").value;
-                    var productPriceMax = document.getElementById("productPriceMax").value;
-                    if(pageNo < totalPages){
-                        var pageNo = pageNo + 1;
-                        window.location = "<%=basePath%>Product/ProductQuery?pageNo="+pageNo+"&productIdMin="+productIdMin+"&productIdMax="+productIdMax+
-                            "&productSpec="+productSpec+"&productName="+ productName +"&productPriceMin=" + productPriceMin + "&productPriceMax=" + productPriceMax + "";
-                    }
+        
+           //獲取當前使用者的session信息
+    $(function (){
+       var session = "<%=(User)session.getAttribute("user")%>"; 
+       hello(session);
+    });
+        
+        function next(){
+            var ss = document.getElementById("pageNo").value;
+            var pageNo = parseInt(ss);
+            var totalPages = document.getElementById("totalPages").value;
+            var productName = document.getElementById("productName").value;
+            var productIdMin = document.getElementById("productIdMin").value;
+            var productIdMax = document.getElementById("productIdMax").value;
+            var productSpec = document.getElementById("productSpec").value;
+            var productPriceMin = document.getElementById("productPriceMin").value;
+            var productPriceMax = document.getElementById("productPriceMax").value;
+            if(pageNo < totalPages){
+                var pageNo = pageNo + 1;
+                window.location = "<%=basePath%>Product/ProductQuery?pageNo="+pageNo+"&productIdMin="+productIdMin+"&productIdMax="+productIdMax+
+                    "&productSpec="+productSpec+"&productName="+ productName +"&productPriceMin=" + productPriceMin + "&productPriceMax=" + productPriceMax + "";
+            }
+        }
+
+        function per(){
+            var ss = document.getElementById("pageNo").value;
+            var pageNo = parseInt(ss);
+            var productName = document.getElementById("productName").value;
+            var productIdMin = document.getElementById("productIdMin").value;
+            var productIdMax = document.getElementById("productIdMax").value;
+            var productSpec = document.getElementById("productSpec").value;
+            var productPriceMin = document.getElementById("productPriceMin").value;
+            var productPriceMax = document.getElementById("productPriceMax").value;
+            if(pageNo > 1){
+                var pageNo = pageNo - 1;
+                window.location = "<%=basePath%>Product/ProductQuery?pageNo="+pageNo+"&productIdMin="+productIdMin+"&productIdMax="+productIdMax+
+                    "&productSpec="+productSpec+"&productName="+ productName +"&productPriceMin=" + productPriceMin + "&productPriceMax=" + productPriceMax + "";
+            }
+        }
+
+        $(document).ready(function(){
+            $(".modifybtn").click(function(){
+                var productId = $(this).parent().parent().children().eq(0).text();
+                var productName = $(this).parent().parent().children().eq(1).text();
+                var productSpec = $(this).parent().parent().children().eq(2).text();
+                var productStandardPrice = $(this).parent().parent().children().eq(3).text();
+                var productMasterId = $(this).parent().parent().children().eq(4).text();
+                var discountStatus = $(this).parent().parent().children().eq(5).text();
+                $("#productIdOld").val(productId);
+                $("#productNameOld").val(productName);
+                $("#productSpecOld").val(productSpec);
+                $("#productStandardPriceOld").val(productStandardPrice);
+                $("#productMasterIdOld").val(productMasterId);
+                if(discountStatus==="true"){
+                    $("#discountStatusOld").children().eq(1).attr("selected","selected");
+                }else{
+                    $("#discountStatusOld").children().eq(0).attr("selected","selected");
                 }
-                
-                function per(){
-                    var ss = document.getElementById("pageNo").value;
-                    var pageNo = parseInt(ss);
-                    var productName = document.getElementById("productName").value;
-                    var productIdMin = document.getElementById("productIdMin").value;
-                    var productIdMax = document.getElementById("productIdMax").value;
-                    var productSpec = document.getElementById("productSpec").value;
-                    var productPriceMin = document.getElementById("productPriceMin").value;
-                    var productPriceMax = document.getElementById("productPriceMax").value;
-                    if(pageNo > 1){
-                        var pageNo = pageNo - 1;
-                        window.location = "<%=basePath%>Product/ProductQuery?pageNo="+pageNo+"&productIdMin="+productIdMin+"&productIdMax="+productIdMax+
-                            "&productSpec="+productSpec+"&productName="+ productName +"&productPriceMin=" + productPriceMin + "&productPriceMax=" + productPriceMax + "";
-                    }
-                }
-    
-                $(document).ready(function(){
-                    $(".modifybtn").click(function(){
-                        var productId = $(this).parent().parent().children().eq(0).text();
-                        var productName = $(this).parent().parent().children().eq(1).text();
-                        var productSpec = $(this).parent().parent().children().eq(2).text();
-                        var productStandardPrice = $(this).parent().parent().children().eq(3).text();
-                        var productMasterId = $(this).parent().parent().children().eq(4).text();
-                        var discountStatus = $(this).parent().parent().children().eq(5).text();
-                        $("#productIdOld").val(productId);
-                        $("#productNameOld").val(productName);
-                        $("#productSpecOld").val(productSpec);
-                        $("#productStandardPriceOld").val(productStandardPrice);
-                        $("#productMasterIdOld").val(productMasterId);
-                        if(discountStatus==="true"){
-                            $("#discountStatusOld").children().eq(1).attr("selected","selected");
-                        }else{
-                            $("#discountStatusOld").children().eq(0).attr("selected","selected");
-                        }
-                    });
-                    
-                });
-                
-                $(document).ready(function(){
-                    $(".deletebtn").click(function(){
-                        var productId = $(this).parent().parent().children().eq(0).text();
-                        $("#deleteProductId").val(productId);
-                    });
-                    
-                });
-                
-                function deleteProduct(){
-                    var productId = $("#deleteProductId").val();
-                    window.location = "<%=basePath%>Product/deleteProduct?productId="+productId;
-                }
-                
-                function addProduct(){
-                            var productName = $("#productNameNew").val();
-                            var productSpec =  $("#productSpecNew").val();
-                            var productStandardPrice = $("#productStandardPriceNew").val();
-                            var discountStatus = $("#discountStatusNew").val();
-                            $.ajax({
-                                url:"addProduct",
-                                type:"Post",
-                                datatype:"Json",
-                                data:{productName:""+ productName +"",productSpec:""+ productSpec +"", productStandardPrice:""+ productStandardPrice +"",
-                                    discountStatus:"" + discountStatus + ""},  
-                                success : function(data, stats) {  
-                                    if (stats === "success") {
-                                        if(discountStatus==="1"){
-                                            $("#addInfo").modal("hide");
-                                            $("#addCustomerPriceInfo").modal("show"); 
-                                            $("#productIdAdd").val(data.productId);
-                                            $("#productNameAdd").val(data.productName);
-                                            $("#productMasterIdAdd").val(data.productMasterId);
-                                        }else{
-                                            $("#addInfo").modal("hide"); 
-                                            window.location = "<%=basePath%>Product/ProductQuery";
-                                        }
-                                        
-                                    }  
-                                },  
-                                error : function(data) {  
-                                    alert("查询失败！");  
-                                }
-                            });
-                            
-                            $("#customerMasterIdAdd").children().remove();
-                            $.ajax({
-                                url:"queryCustomer",
-                                type:"Post",
-                                datatype:"Json", 
-                                success : function(data, stats) {  
-                                    if (stats === "success") {
-                                        for(i = 0;i < data.length;i++){
-                                            $("#customerMasterIdAdd").append('<option value="'+data[i].customerMasterId+'">"'+data[i].customerName+'"</option>')
-                                        }
-                                        
-                                    }  
-                                },  
-                                error : function(data) {  
-                                    alert("查询失败！");  
-                                }
-                            });
-                        }        
-                function addCusPrice(){
-                            var customerMasterId = $("#customerMasterIdAdd")[0].value;
-                            var rangeMin = $("#rangeMin")[0].value;
-                            var rangeMax =  $("#rangeMax")[0].value;
-                            var rangePrice = $("#rangePrice")[0].value;
-                            var productId = $("#productIdAdd")[0].value;
-                            var productMasterId = $("#productMasterIdAdd")[0].value;
-                            $.ajax({
-                                url:"setCustomerPrice",
-                                type:"Post",
-                                datatype:"Json",
-                                data:{customerMasterId:""+ customerMasterId +"",rangeMin:""+ rangeMin +"", rangePrice:""+ rangePrice +"",
-                                    rangeMax:"" + rangeMax + "",productMasterId:""+ productMasterId + ""},  
-                                success : function(data, stats) {  
-                                    if (stats === "success") {  
-                                        //table中新建行列
-                                        $("#priceTableAdd");
-                                        tb = document.getElementById("priceTableAdd");
-                                        tb.hidden = false;
-                                        new_row = tb.insertRow();
-                                        new_cell1 = new_row.insertCell();
-                                        new_cell2 = new_row.insertCell();
-                                        new_cell3 = new_row.insertCell();
-                                        new_cell4 = new_row.insertCell();
-                                        new_cell5 = new_row.insertCell();
-                                        //新建行列中插入信息
-                                        new_cell1.innerHTML = customerMasterId;
-                                        new_cell2.innerHTML = productId;
-                                        new_cell3.innerHTML = rangeMin;
-                                        new_cell4.innerHTML = rangeMax;
-                                        new_cell5.innerHTML = rangePrice;
-                                    }  
-                                },  
-                                error : function(data) {  
-                                    alert("查询失败！");  
-                                }
-                            });
-                        }
-                        
-                function modifyProduct(){
-                    var productId = $("#productIdOld").val();
-                    var productStandardPrice = $("#productStandardPriceOld").val();
-                    var discountStatus = $("#discountStatusOld").val();
+            });
+
+        });
+
+        $(document).ready(function(){
+            $(".deletebtn").click(function(){
+                var productId = $(this).parent().parent().children().eq(0).text();
+                $("#deleteProductId").val(productId);
+            });
+
+        });
+
+        function deleteProduct(){
+            var productId = $("#deleteProductId").val();
+            window.location = "<%=basePath%>Product/deleteProduct?productId="+productId;
+        }
+
+        function addProduct(){
+                    var productName = $("#productNameNew").val();
+                    var productSpec =  $("#productSpecNew").val();
+                    var productStandardPrice = $("#productStandardPriceNew").val();
+                    var discountStatus = $("#discountStatusNew").val();
                     $.ajax({
-                        url:"modifyProduct",
+                        url:"addProduct",
                         type:"Post",
                         datatype:"Json",
-                        data:{productStandardPrice:""+ productStandardPrice +"",discountStatus:"" + discountStatus + "",productId:""+ productId +""},  
+                        data:{productName:""+ productName +"",productSpec:""+ productSpec +"", productStandardPrice:""+ productStandardPrice +"",
+                            discountStatus:"" + discountStatus + ""},  
                         success : function(data, stats) {  
                             if (stats === "success") {
-                                if(discountStatus==="true"){
-                                    $("#modifyProductInfo").modal("hide");
-                                    $("#modifyCustomerPriceInfo").modal("show"); 
-                                    $("#productIdModify").val(data.productId);
-                                    $("#productNameModify").val(data.productName);
-                                    $("#productMasterIdModify").val(data.productMasterId);
+                                if(discountStatus==="1"){
+                                    $("#addInfo").modal("hide");
+                                    $("#addCustomerPriceInfo").modal("show"); 
+                                    $("#productIdAdd").val(data.productId);
+                                    $("#productNameAdd").val(data.productName);
+                                    $("#productMasterIdAdd").val(data.productMasterId);
                                 }else{
-                                    $("#modifyProductInfo").modal("hide");
+                                    $("#addInfo").modal("hide"); 
                                     window.location = "<%=basePath%>Product/ProductQuery";
                                 }
-                                        
+
                             }  
                         },  
                         error : function(data) {  
-                            alert("查询失败！");  
+                            alert("添加失敗！");  
                         }
                     });
-                            
-                    $("#customerMasterIdModify").children().remove();
+
+                    $("#customerMasterIdAdd").children().remove();
                     $.ajax({
                         url:"queryCustomer",
                         type:"Post",
@@ -651,9 +557,47 @@ $(function(){
                         success : function(data, stats) {  
                             if (stats === "success") {
                                 for(i = 0;i < data.length;i++){
-                                    $("#customerMasterIdModify").append('<option value="'+data[i].customerMasterId+'">"'+data[i].customerName+'"</option>')
+                                    $("#customerMasterIdAdd").append('<option value="'+data[i].customerMasterId+'">"'+data[i].customerName+'"</option>')
                                 }
-                                        
+
+                            }  
+                        },  
+                        error : function(data) {  
+                            alert("查询失败！");  
+                        }
+                    });
+                }        
+        function addCusPrice(){
+                    var customerMasterId = $("#customerMasterIdAdd")[0].value;
+                    var rangeMin = $("#rangeMin")[0].value;
+                    var rangeMax =  $("#rangeMax")[0].value;
+                    var rangePrice = $("#rangePrice")[0].value;
+                    var productId = $("#productIdAdd")[0].value;
+                    var productMasterId = $("#productMasterIdAdd")[0].value;
+                    $.ajax({
+                        url:"setCustomerPrice",
+                        type:"Post",
+                        datatype:"Json",
+                        data:{customerMasterId:""+ customerMasterId +"",rangeMin:""+ rangeMin +"", rangePrice:""+ rangePrice +"",
+                            rangeMax:"" + rangeMax + "",productMasterId:""+ productMasterId + ""},  
+                        success : function(data, stats) {  
+                            if (stats === "success") {  
+                                //table中新建行列
+                                $("#priceTableAdd");
+                                tb = document.getElementById("priceTableAdd");
+                                tb.hidden = false;
+                                new_row = tb.insertRow();
+                                new_cell1 = new_row.insertCell();
+                                new_cell2 = new_row.insertCell();
+                                new_cell3 = new_row.insertCell();
+                                new_cell4 = new_row.insertCell();
+                                new_cell5 = new_row.insertCell();
+                                //新建行列中插入信息
+                                new_cell1.innerHTML = customerMasterId;
+                                new_cell2.innerHTML = productId;
+                                new_cell3.innerHTML = rangeMin;
+                                new_cell4.innerHTML = rangeMax;
+                                new_cell5.innerHTML = rangePrice;
                             }  
                         },  
                         error : function(data) {  
@@ -661,149 +605,197 @@ $(function(){
                         }
                     });
                 }
-                
-                function modifyCusPrice(){
-                            var customerMasterId = $("#customerMasterIdModify")[0].value;
-                            var rangeMin = $("#rangeMinModify")[0].value;
-                            var rangeMax =  $("#rangeMaxModify")[0].value;
-                            var rangePrice = $("#rangePriceModify")[0].value;
-                            var productId = $("#productIdModify")[0].value;
-                            var productMasterId = $("#productMasterIdModify")[0].value;
-                            $.ajax({
-                                url:"modifyCustomerPrice",
-                                type:"Post",
-                                datatype:"Json",
-                                data:{customerMasterId:""+ customerMasterId +"",rangeMin:""+ rangeMin +"", rangePrice:""+ rangePrice +"",
-                                    rangeMax:"" + rangeMax + "",productMasterId:""+ productMasterId + ""},  
-                                success : function(data, stats) {  
-                                    if (stats === "success") {  
-                                        //table中新建行列
-                                        $("#priceTable");
-                                        tb = document.getElementById("priceTable");
-                                        tb.hidden = false;
-                                        new_row = tb.insertRow();
-                                        new_cell1 = new_row.insertCell();
-                                        new_cell2 = new_row.insertCell();
-                                        new_cell3 = new_row.insertCell();
-                                        new_cell4 = new_row.insertCell();
-                                        new_cell5 = new_row.insertCell();
-                                        //新建行列中插入信息
-                                        new_cell1.innerHTML = customerMasterId;
-                                        new_cell2.innerHTML = productId;
-                                        new_cell3.innerHTML = rangeMin;
-                                        new_cell4.innerHTML = rangeMax;
-                                        new_cell5.innerHTML = rangePrice;
-                                    }  
-                                },  
-                                error : function(data) {  
-                                    alert("查询失败！");  
-                                }
-                            });
-                        }
-                        
-                        /**
-    * 以下3個函數，分別是獲取當前時間信息並顯示，顯示問候語和修改密碼函數，在每個頁面都是有的
-    *  
-    */      
-    $(function () {
-                var d = new Date();
-                var week;
 
-                function add_zero(temp) {
-                    if (temp < 10)
-                        return "0" + temp;
-                    else
-                        return temp;
-                }
-
-                switch (d.getDay()) {
-                    case 1:
-                        week = "星期一";
-                        break;
-                    case 2:
-                        week = "星期二";
-                        break;
-                    case 3:
-                        week = "星期三";
-                        break;
-                    case 4:
-                        week = "星期四";
-                        break;
-                    case 5:
-                        week = "星期五";
-                        break;
-                    case 6:
-                        week = "星期六";
-                        break;
-                    default:
-                        week = "星期天";
-                }
-                var years = d.getFullYear();
-                var month = add_zero(d.getMonth() + 1);
-                var days = add_zero(d.getDate());
-                var hours = add_zero(d.getHours());
-                var minutes = add_zero(d.getMinutes());
-                var seconds = add_zero(d.getSeconds());
-                var ndate = "現在是  " + years + "年" + month + "月" + days + "日 " + hours + ":" + minutes + ":" + seconds + " " + week;
-                var ndate2 = years + "年" + month + "月" + days + "日 "  + " " + week+"  ";
-
-                $("#timeday")[0].innerHTML = ndate2;
-
-            });
-            
-            $(function () {
-
-            var d = new Date();
-            var h = parseInt(d.getHours());
-
-            var str = "上午好！";
-
-            if (h > 12 && h < 18) {
-                str = "下午好！";
-            }
-            if (h > 18 && h < 24) {
-                str = "晚上好！";
-            }
-
-            $("#time")[0].innerHTML = str;
-            var session = "<%=(User) session.getAttribute("user")%>";
-            if (session === null) {
-                window.location = "<%=basePath%>login";
-            }
-        });
-        
-        function editPassword() {
-
-            var userPassOld = $("#userPassOld")[0].value;
-            var userPassNew = $("#userPassNew")[0].value;
-            var userPassConfirm = $("#userPassConfirm")[0].value;
-
+        function modifyProduct(){
+            var productId = $("#productIdOld").val();
+            var productStandardPrice = $("#productStandardPriceOld").val();
+            var discountStatus = $("#discountStatusOld").val();
             $.ajax({
-                url: "<%=basePath%>login/editPassword",
-                type: "post",
-                datatype: "json",
-                data: {userPassOld: userPassOld, userPassNew: userPassNew, userPassConfirm: userPassConfirm},
-                success: function (data, stats) {
+                url:"modifyProduct",
+                type:"Post",
+                datatype:"Json",
+                data:{productStandardPrice:""+ productStandardPrice +"",discountStatus:"" + discountStatus + "",productId:""+ productId +""},  
+                success : function(data, stats) {  
                     if (stats === "success") {
-                        if (data === "success") {
-                            $("#passwordEdit").modal("hide");
-                            alert("密碼修改成功！");
-                            window.location = "<%=basePath%>login";
-                        } else if (data === "confirm error") {
-                            $("#message").html("兩次輸入的密碼不一致！");
-                        } else if (data === "same old new") {
-                            $("#message").html("新舊密碼不能一樣！");
-                        } else {
-                            $("#message").html("原密碼輸入錯誤！");
+                        if(discountStatus==="true"){
+                            $("#modifyProductInfo").modal("hide");
+                            $("#modifyCustomerPriceInfo").modal("show"); 
+                            $("#productIdModify").val(data.productId);
+                            $("#productNameModify").val(data.productName);
+                            $("#productMasterIdModify").val(data.productMasterId);
+                        }else{
+                            $("#modifyProductInfo").modal("hide");
+                            window.location = "<%=basePath%>Product/ProductQuery";
                         }
-                    }
-                },
-                error: function (data) {
-                    alert("密碼修改失败！");
+
+                    }  
+                },  
+                error : function(data) {  
+                    alert("查询失败！");  
                 }
             });
 
+            $("#customerMasterIdModify").children().remove();
+            $.ajax({
+                url:"queryCustomer",
+                type:"Post",
+                datatype:"Json", 
+                success : function(data, stats) {  
+                    if (stats === "success") {
+                        for(i = 0;i < data.length;i++){
+                            $("#customerMasterIdModify").append('<option value="'+data[i].customerMasterId+'">"'+data[i].customerName+'"</option>')
+                        }
+
+                    }  
+                },  
+                error : function(data) {  
+                    alert("查询失败！");  
+                }
+            });
         }
+
+        function modifyCusPrice(){
+                    var customerMasterId = $("#customerMasterIdModify")[0].value;
+                    var rangeMin = $("#rangeMinModify")[0].value;
+                    var rangeMax =  $("#rangeMaxModify")[0].value;
+                    var rangePrice = $("#rangePriceModify")[0].value;
+                    var productId = $("#productIdModify")[0].value;
+                    var productMasterId = $("#productMasterIdModify")[0].value;
+                    $.ajax({
+                        url:"modifyCustomerPrice",
+                        type:"Post",
+                        datatype:"Json",
+                        data:{customerMasterId:""+ customerMasterId +"",rangeMin:""+ rangeMin +"", rangePrice:""+ rangePrice +"",
+                            rangeMax:"" + rangeMax + "",productMasterId:""+ productMasterId + ""},  
+                        success : function(data, stats) {
+                            if (stats === "success") {  
+                                //table中新建行列
+                                $("#priceTable");
+                                tb = document.getElementById("priceTable");
+                                tb.hidden = false;
+                                new_row = tb.insertRow();
+                                new_cell1 = new_row.insertCell();
+                                new_cell2 = new_row.insertCell();
+                                new_cell3 = new_row.insertCell();
+                                new_cell4 = new_row.insertCell();
+                                new_cell5 = new_row.insertCell();
+                                //新建行列中插入信息
+                                new_cell1.innerHTML = data[0].customerMasterId.customerName;
+                                new_cell2.innerHTML = productId;
+                                new_cell3.innerHTML = rangeMin;
+                                new_cell4.innerHTML = rangeMax;
+                                new_cell5.innerHTML = rangePrice;
+                            }  
+                        },  
+                        error : function(data) {  
+                            alert("查询失败！");  
+                        }
+                    });
+                }
+                        
+//                        /**
+//    * 以下3個函數，分別是獲取當前時間信息並顯示，顯示問候語和修改密碼函數，在每個頁面都是有的
+//    *  
+//    */      
+//    $(function () {
+//                var d = new Date();
+//                var week;
+//
+//                function add_zero(temp) {
+//                    if (temp < 10)
+//                        return "0" + temp;
+//                    else
+//                        return temp;
+//                }
+//
+//                switch (d.getDay()) {
+//                    case 1:
+//                        week = "星期一";
+//                        break;
+//                    case 2:
+//                        week = "星期二";
+//                        break;
+//                    case 3:
+//                        week = "星期三";
+//                        break;
+//                    case 4:
+//                        week = "星期四";
+//                        break;
+//                    case 5:
+//                        week = "星期五";
+//                        break;
+//                    case 6:
+//                        week = "星期六";
+//                        break;
+//                    default:
+//                        week = "星期天";
+//                }
+//                var years = d.getFullYear();
+//                var month = add_zero(d.getMonth() + 1);
+//                var days = add_zero(d.getDate());
+//                var hours = add_zero(d.getHours());
+//                var minutes = add_zero(d.getMinutes());
+//                var seconds = add_zero(d.getSeconds());
+//                var ndate = "現在是  " + years + "年" + month + "月" + days + "日 " + hours + ":" + minutes + ":" + seconds + " " + week;
+//                var ndate2 = years + "年" + month + "月" + days + "日 "  + " " + week+"  ";
+//
+//                $("#timeday")[0].innerHTML = ndate2;
+//
+//            });
+//            
+//            $(function () {
+//
+//            var d = new Date();
+//            var h = parseInt(d.getHours());
+//
+//            var str = "上午好！";
+//
+//            if (h > 12 && h < 18) {
+//                str = "下午好！";
+//            }
+//            if (h > 18 && h < 24) {
+//                str = "晚上好！";
+//            }
+//
+//            $("#time")[0].innerHTML = str;
+//            var session = "<%=(User) session.getAttribute("user")%>";
+//            if (session === null) {
+//                window.location = "<%=basePath%>login";
+//            }
+//        });
+//        
+//        function editPassword() {
+//
+//            var userPassOld = $("#userPassOld")[0].value;
+//            var userPassNew = $("#userPassNew")[0].value;
+//            var userPassConfirm = $("#userPassConfirm")[0].value;
+//
+//            $.ajax({
+//                url: "<%=basePath%>login/editPassword",
+//                type: "post",
+//                datatype: "json",
+//                data: {userPassOld: userPassOld, userPassNew: userPassNew, userPassConfirm: userPassConfirm},
+//                success: function (data, stats) {
+//                    if (stats === "success") {
+//                        if (data === "success") {
+//                            $("#passwordEdit").modal("hide");
+//                            alert("密碼修改成功！");
+//                            window.location = "<%=basePath%>login";
+//                        } else if (data === "confirm error") {
+//                            $("#message").html("兩次輸入的密碼不一致！");
+//                        } else if (data === "same old new") {
+//                            $("#message").html("新舊密碼不能一樣！");
+//                        } else {
+//                            $("#message").html("原密碼輸入錯誤！");
+//                        }
+//                    }
+//                },
+//                error: function (data) {
+//                    alert("密碼修改失败！");
+//                }
+//            });
+//
+//        }
             </script>
 </body>
 </html>
