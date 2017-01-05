@@ -226,6 +226,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
                 </div>
             </div>
+    
     <!--新增产品-->
     <div id="addInfo" class="modal2 hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -238,6 +239,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <div class="formControls col-xs-5">
                                     产品名称：<input type="text" name="productNameNew" id="productNameNew" class="input-text radius" />
                                 </div>
+                                
+                                
+<!--                                <div class="row cl">
+                                <label class="form-label col-xs-3" style=" width: 150px">产品名称：</label>
+                                    <div class="formControls col-xs-5">
+                                        <input type="text" class="input-text disabled" autocomplete="off" readonly="true" name="productNameNew" id="productNameNew"/>
+                                    </div>
+                                </div>-->
+                                
+                                
                                 <div class="formControls col-xs-5">
                                     产品规格：<input type="text" name="productSpecNew" id="productSpecNew" class="input-text radius" /> 
                                 </div>
@@ -252,11 +263,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 </div>
                             </div>    
                         </div>
-                        <div class="row cl">
+<!--                        <div class="row cl">
                             <div class="formControls col-xs-5">
                                 <input type="button" id="send" value="新增" class="btn btn-primary radius" aria-hidden="true" onclick="addProduct()"/>                    
                             </div>
+                        </div>-->
+                        
+                        
+                        <div class="row cl">
+                            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" align="right">
+                                <input class="btn btn-primary radius" type="button"  value="確定"  onclick="addProduct()">
+                                <input type="button" class="btn btn-primary radius" value="取消" data-dismiss="modal" aria-hidden="true">
+                            </div>
                         </div>
+                        
+                        
+                        
                     </form>
                 </div>
             </div>
@@ -338,6 +360,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <div id="modifyProductInfo" class="modal2 hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <form>
+                        <div align="center" class="modal-header">
+                            <h2 id="myModalLabel"><small>产品新增管理</small></h2>
+                        </div>
                         <div id="productTable">
                             <div class="formControls col-xs-5">
                                 产品编号：<input type="text" name="productIdOld" id="productIdOld"  readonly="readonly" class="input-text disabled radius"/>
@@ -421,7 +446,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         </form>
                 </div>
             </div>
-    
+        <!--彈出消息-->
+    <div id="modal-message" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+            <div class="modal-content radius">
+            <div class="modal-body">
+                <p id="alter_message"></p>
+            </div>
+            </div>
+	</div>
+    </div>
    
 <!--<script type="text/javascript" src="<%=basePath%>pages/lib/jquery/1.9.1/jquery.min.js"></script> 
 <script type="text/javascript" src="<%=basePath%>pages/lib/layer/2.1/layer.js"></script> 
@@ -545,7 +579,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             }  
                         },  
                         error : function(data) {  
-                            alert("添加失敗！");  
+                           var response = JSON.parse(data.responseText.toString());
+                            $("#alter_message").html(response.message);
+                            $("#modal-message").modal("show");
+                            setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                         }
                     });
 
@@ -563,7 +600,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             }  
                         },  
                         error : function(data) {  
-                            alert("查询失败！");  
+                            var response = JSON.parse(data.responseText.toString());
+                            $("#alter_message").html(response.message);
+                            $("#modal-message").modal("show");
+                            setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);  
                         }
                     });
                 }        
@@ -601,7 +641,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             }  
                         },  
                         error : function(data) {  
-                            alert("查询失败！");  
+                            var response = JSON.parse(data.responseText.toString());
+                            $("#alter_message").html(response.message);
+                            $("#modal-message").modal("show");
+                            setTimeout("$(\"#modal-message\").modal(\"hide\")",5000); 
                         }
                     });
                 }
@@ -631,7 +674,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     }  
                 },  
                 error : function(data) {  
-                    alert("查询失败！");  
+                    var response = JSON.parse(data.responseText.toString());
+                    $("#alter_message").html(response.message);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                 }
             });
 
@@ -649,7 +695,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     }  
                 },  
                 error : function(data) {  
-                    alert("查询失败！");  
+                    var response = JSON.parse(data.responseText.toString());
+                    $("#alter_message").html(response.message);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                 }
             });
         }
@@ -688,7 +737,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             }  
                         },  
                         error : function(data) {  
-                            alert("查询失败！");  
+                            var response = JSON.parse(data.responseText.toString());
+                            $("#alter_message").html(response.message);
+                            $("#modal-message").modal("show");
+                            setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);  
                         }
                     });
                 }

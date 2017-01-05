@@ -79,7 +79,7 @@ public class ProductService {
         product.setProductName(productName);
         product.setProductSpec(productSpec);
         product.setProductStandardPrice(productStandardPrice);
-        product.setProductMasterId(UUID.randomUUID().toString());
+        product.setProductMasterId(UUID.randomUUID().toString().toUpperCase());
         product.setVersionNumber(0);
         product.setDeleteStatus(false);
         Date currentTime = new Date();

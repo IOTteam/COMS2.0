@@ -16,7 +16,7 @@
     <head>
         <meta charset="UTF-8">
         <title>登陆</title>
-        <link rel="shortcut icon" href="http://www.easyicon.net/api/resizeApi.php?id=1184613&size=24" type="image/x-icon" />
+        <link rel="shortcut icon"type="image/x-icon" href="<%=basePath%>pages/image/24pxnet.ico" />
         <link rel="stylesheet" href="<%=basePath%>pages/bootstrap-3.3.0/css/bootstrap.css">
         <link rel="stylesheet" href="<%=basePath%>pages/bootstrap-3.3.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="<%=basePath%>pages/css/loginbox.css">

@@ -108,7 +108,7 @@ public class ProductController {
     @RequestMapping("setCustomerPrice")
     @ResponseBody
     public CustomerPrice setCustomerPrice(@RequestParam("productMasterId") Product productMasterId,@RequestParam("customerMasterId") Customer customerMasterId,
-            @RequestParam("rangeMin") Integer rangeMin,@RequestParam("rangeMax") Integer rangeMax,@RequestParam("rangePrice") float rangePrice){
+            @RequestParam("rangeMin") Integer rangeMin,@RequestParam("rangeMax") Integer rangeMax,@RequestParam("rangePrice") float rangePrice) throws Exception{
         return customerPriceService.setCustomerPrice(productMasterId,customerMasterId,rangeMin,rangeMax,rangePrice);
     }
     

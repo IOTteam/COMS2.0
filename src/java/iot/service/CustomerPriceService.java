@@ -223,7 +223,7 @@ public class CustomerPriceService {
         
         customerPrice.setCustomerMasterId(customer);
         customerPrice.setProductMasterId(product);
-        customerPrice.setCusPriceMasterId(UUID.randomUUID().toString());
+        customerPrice.setCusPriceMasterId(UUID.randomUUID().toString().toUpperCase());
         customerPrice.setCustomerPriceId(customerPriceDAO.getCustomerPriceId());
         
         Response customerPriceAddResult = customerPriceDAO.create(customerPrice);
@@ -299,86 +299,112 @@ public class CustomerPriceService {
              ***1）修改的數量級區間在原有的數量級區間的最左側
              ***2）修改的數量級區間在原有的數量級區間的最右側
              ***/
-            if(rangeMax <= customerPriceList.get(0).getRangeMin()){
+            if(rangeMax < customerPriceList.get(0).getRangeMin() || rangeMin > customerPriceList.get(customerPriceList.size()-1).getRangeMax()){
                 setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
             }
-            if (rangeMin >= customerPriceList.get(customerPriceList.size()-1).getRangeMax()) {
+            else{
+                
                 setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
+                for (CustomerPrice customerPrice : customerPriceList) {
+                    if(customerPrice.getRangeMin() < rangeMin && customerPrice.getRangeMax() > rangeMin){
+                        if(customerPrice.getRangeMax() > rangeMax){
+                            setCustomerPrice(productMasterId, customerMasterId, rangeMax + 1, customerPrice.getRangeMax(), customerPrice.getRangePrice());
+                            customerPrice.setRangeMax(rangeMin - 1);
+                            customerPriceDAO.edit(customerPrice);
+                        }
+                        else{
+                            customerPrice.setRangeMax(rangeMin - 1);
+                            customerPriceDAO.edit(customerPrice);
+                        }
+                    }
+                    else if(customerPrice.getRangeMax() >= rangeMin){
+                        
+                        if(customerPrice.getRangeMin() >= rangeMin && customerPrice.getRangeMax() <= rangeMax){
+                            customerPrice.setDeleteStatus(true);
+                            customerPriceDAO.edit(customerPrice);
+                        }
+                        else if(customerPrice.getRangeMin() <= rangeMax && customerPrice.getRangeMax() >= rangeMax){
+                            customerPrice.setRangeMin(rangeMax + 1);
+                            customerPriceDAO.edit(customerPrice);
+                        }
+                    }  
+                }
             }
+
             /***
              ***以下為數量級區間有交叉的情形
              ***遍歷List表，找出有交叉的數量級區間，並對他們進行拆分以及合併***/
-            for (int i = 0; i < customerPriceList.size(); i++) {
-                //前提1修改的數量級最小值在某一數量級區間內，此時先對此數量級區間進行一次拆分
-                if(rangeMin > customerPriceList.get(i).getRangeMin() && rangeMin < customerPriceList.get(i).getRangeMax()){
-                    CustomerPrice customerPrice = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(i).getRangeMin(), customerPriceList.get(i).getRangeMax());
-                    customerPrice.setRangeMax(rangeMin);
-                    customerPriceDAO.edit(customerPrice);
-                    //在前提1符合的條件下遍歷List表，找出修改的數量級最大值的所在位置
-                    for (int j = i; j < customerPriceList.size(); j++) {
-                        //修改的數量級最大值沒有與任何數量級區間交叉
-                        if (customerPriceList.get(j).getRangeMax() < rangeMax && rangeMax < customerPriceList.get(j+1).getRangeMin()) {
-                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
-                            break;
-                        }
-                        //修改的數量級最大值與某一數量級區間交叉，但沒有與最小值同時存在於同一個區間內
-                        else if(customerPriceList.get(j+1).getRangeMax() > rangeMax && rangeMax > customerPriceList.get(j+1).getRangeMin()){
-                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
-                            CustomerPrice customerPriceNew = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(j+1).getRangeMin(), customerPriceList.get(j+1).getRangeMax());
-                            customerPriceNew.setRangeMin(customerPriceList.get(j+1).getRangeMin());
-                            customerPriceDAO.edit(customerPriceNew);
-                            break;
-                        }
-                        //修改的數量級最大值與某一數量級區間交叉，但與最小值同時存在於同一個區間內
-                        else if(rangeMax < customerPriceList.get(i).getRangeMax()){
-                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
-                            setCustomerPrice(productMasterId, customerMasterId, rangeMax, customerPriceList.get(i).getRangeMax(), customerPriceList.get(i).getRangePrice());
-                            break;
-                        }
-                        //刪除被修改的數量級區間包含的已有的某個或某些區間
-                        else{
-                            CustomerPrice customerPriceOld = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(j+1).getRangeMin(), customerPriceList.get(j).getRangeMax());
-                            customerPriceOld.setDeleteStatus(true);
-                            customerPriceDAO.edit(customerPriceOld);
-                        }
-                    }
-                }
-                /***
-                 ***前提2修改的數量級最小值沒有與任何數量級區間交叉
-                 ***/
-                else if (customerPriceList.get(i).getRangeMax() < rangeMin && rangeMin < customerPriceList.get(i+1).getRangeMin()) {
-                    //遍歷找出修改的數量級最大值的所在位置
-                    for(int j = i + 1;j < customerPriceList.size();j++){
-                        //修改的數量級最大值與某一數量級區間交叉
-                        if (customerPriceList.get(j).getRangeMin() < rangeMax && rangeMax < customerPriceList.get(j).getRangeMax()) {
-                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
-                            CustomerPrice customerPrice = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(j).getRangeMin(), customerPriceList.get(j).getRangeMax());
-                            customerPrice.setRangeMin(rangeMax);
-                            customerPriceDAO.edit(customerPrice);
-                            break;
-                        } 
-                        //修改的數量級最大值沒有與任何數量級區間交叉，但是在修改的數量級區間中包含了已有的某個或某些區間
-                        else if(customerPriceList.get(j).getRangeMax() < rangeMax && rangeMax < customerPriceList.get(j+1).getRangeMin()){
-                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
-                            CustomerPrice customerPrice = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(j).getRangeMin(), customerPriceList.get(j).getRangeMax());
-                            customerPrice.setDeleteStatus(true);
-                            customerPriceDAO.edit(customerPrice);
-                            break;
-                        } 
-                        //修改的數量級最大值沒有與任何數量級區間交叉，但是在修改的數量級區間中沒有包含已有的某個或某些區間
-                        else if (rangeMax < customerPriceList.get(i+1).getRangeMin()) {
-                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
-                            break;
-                        }
-                        //刪除被修改的數量級區間包含的已有的某個或某些區間
-                        else{
-                            CustomerPrice customerPrice = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(j).getRangeMin(), customerPriceList.get(j).getRangeMax());
-                            customerPrice.setDeleteStatus(true);
-                            customerPriceDAO.edit(customerPrice);
-                        }
-                    }    
-                }    
-            }
+//            for (int i = 0; i < customerPriceList.size(); i++) {
+//                //前提1修改的數量級最小值在某一數量級區間內，此時先對此數量級區間進行一次拆分
+//                if(rangeMin > customerPriceList.get(i).getRangeMin() && rangeMin < customerPriceList.get(i).getRangeMax()){
+//                    CustomerPrice customerPrice = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(i).getRangeMin(), customerPriceList.get(i).getRangeMax());
+//                    customerPrice.setRangeMax(rangeMin);
+//                    customerPriceDAO.edit(customerPrice);
+//                    //在前提1符合的條件下遍歷List表，找出修改的數量級最大值的所在位置
+//                    for (int j = i; j < customerPriceList.size(); j++) {
+//                        //修改的數量級最大值沒有與任何數量級區間交叉
+//                        if (customerPriceList.get(j).getRangeMax() < rangeMax && rangeMax < customerPriceList.get(j+1).getRangeMin()) {
+//                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
+//                            break;
+//                        }
+//                        //修改的數量級最大值與某一數量級區間交叉，但沒有與最小值同時存在於同一個區間內
+//                        else if(customerPriceList.get(j+1).getRangeMax() > rangeMax && rangeMax > customerPriceList.get(j+1).getRangeMin()){
+//                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
+//                            CustomerPrice customerPriceNew = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(j+1).getRangeMin(), customerPriceList.get(j+1).getRangeMax());
+//                            customerPriceNew.setRangeMin(customerPriceList.get(j+1).getRangeMin());
+//                            customerPriceDAO.edit(customerPriceNew);
+//                            break;
+//                        }
+//                        //修改的數量級最大值與某一數量級區間交叉，但與最小值同時存在於同一個區間內
+//                        else if(rangeMax < customerPriceList.get(i).getRangeMax()){
+//                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
+//                            setCustomerPrice(productMasterId, customerMasterId, rangeMax, customerPriceList.get(i).getRangeMax(), customerPriceList.get(i).getRangePrice());
+//                            break;
+//                        }
+//                        //刪除被修改的數量級區間包含的已有的某個或某些區間
+//                        else{
+//                            CustomerPrice customerPriceOld = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(j+1).getRangeMin(), customerPriceList.get(j).getRangeMax());
+//                            customerPriceOld.setDeleteStatus(true);
+//                            customerPriceDAO.edit(customerPriceOld);
+//                        }
+//                    }
+//                }
+//                /***
+//                 ***前提2修改的數量級最小值沒有與任何數量級區間交叉
+//                 ***/
+//                else if (customerPriceList.get(i).getRangeMax() < rangeMin && rangeMin < customerPriceList.get(i+1).getRangeMin()) {
+//                    //遍歷找出修改的數量級最大值的所在位置
+//                    for(int j = i + 1;j < customerPriceList.size();j++){
+//                        //修改的數量級最大值與某一數量級區間交叉
+//                        if (customerPriceList.get(j).getRangeMin() < rangeMax && rangeMax < customerPriceList.get(j).getRangeMax()) {
+//                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
+//                            CustomerPrice customerPrice = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(j).getRangeMin(), customerPriceList.get(j).getRangeMax());
+//                            customerPrice.setRangeMin(rangeMax);
+//                            customerPriceDAO.edit(customerPrice);
+//                            break;
+//                        } 
+//                        //修改的數量級最大值沒有與任何數量級區間交叉，但是在修改的數量級區間中包含了已有的某個或某些區間
+//                        else if(customerPriceList.get(j).getRangeMax() < rangeMax && rangeMax < customerPriceList.get(j+1).getRangeMin()){
+//                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
+//                            CustomerPrice customerPrice = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(j).getRangeMin(), customerPriceList.get(j).getRangeMax());
+//                            customerPrice.setDeleteStatus(true);
+//                            customerPriceDAO.edit(customerPrice);
+//                            break;
+//                        } 
+//                        //修改的數量級最大值沒有與任何數量級區間交叉，但是在修改的數量級區間中沒有包含已有的某個或某些區間
+//                        else if (rangeMax < customerPriceList.get(i+1).getRangeMin()) {
+//                            setCustomerPrice(productMasterId, customerMasterId, rangeMin, rangeMax, rangePrice);
+//                            break;
+//                        }
+//                        //刪除被修改的數量級區間包含的已有的某個或某些區間
+//                        else{
+//                            CustomerPrice customerPrice = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, customerPriceList.get(j).getRangeMin(), customerPriceList.get(j).getRangeMax());
+//                            customerPrice.setDeleteStatus(true);
+//                            customerPriceDAO.edit(customerPrice);
+//                        }
+//                    }    
+//                }    
+//            }
             
         }
         
@@ -386,7 +412,7 @@ public class CustomerPriceService {
         return customerPrices;
     }
 
-    public CustomerPrice setCustomerPrice(Product productMasterId,Customer customerMasterId, Integer rangeMin, Integer rangeMax, float rangePrice) {
+    public CustomerPrice setCustomerPrice(Product productMasterId,Customer customerMasterId, Integer rangeMin, Integer rangeMax, float rangePrice) throws Exception {
         CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
         CustomerPrice customerPrice = new CustomerPrice();
         customerPrice.setCustomerMasterId(customerMasterId);
@@ -395,18 +421,16 @@ public class CustomerPriceService {
         customerPrice.setRangeMin(rangeMin);
         customerPrice.setRangePrice(rangePrice);
         customerPrice.setDeleteStatus(false);
-        customerPrice.setCusPriceMasterId(UUID.randomUUID().toString());
+        customerPrice.setCusPriceMasterId(UUID.randomUUID().toString().toUpperCase());
         Integer count = customerPriceDAO.getCustomerPriceCount();
         count = count + 1;
         String number = String.format("%06d", count);
         customerPrice.setCustomerPriceId("CUSPRO" + number);
-        try {
+   
             customerPriceDAO.create(customerPrice);
-        } catch (Exception ex) {
-            Logger.getLogger(CustomerPriceService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        CustomerPrice customerPriceNew = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, rangeMin, rangeMax);
-        return customerPriceNew;
+       
+        //CustomerPrice customerPriceNew = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, rangeMin, rangeMax);
+        return customerPrice;
     }
 
 }

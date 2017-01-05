@@ -286,6 +286,7 @@ public class ProductDAO implements Serializable {
             List<Predicate> predicatesList = new ArrayList<>();
             predicatesList.add(cb.like(product.get(Product_.productId), "%" + productId + "%"));
             predicatesList.add(cb.equal(product.get(Product_.deleteStatus), false));
+            predicatesList.add(cb.equal(product.get(Product_.discountStatus), true));
 
             cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
             Query q = em.createQuery(cq);
@@ -295,7 +296,7 @@ public class ProductDAO implements Serializable {
             List list = q.getResultList();
             
             if(list.isEmpty()){
-                return findProductByProductName(productId, false, 0, 10);
+                return findProductByProductName(productId, false, true, 0, 10);
             }
             return new Response().success("產品查詢成功", q.getResultList(),0);
 
@@ -317,7 +318,6 @@ public class ProductDAO implements Serializable {
             List<Predicate> predicatesList = new ArrayList<>();
             predicatesList.add(cb.like(product.get(Product_.productId), "%" + productId + "%"));
             predicatesList.add(cb.equal(product.get(Product_.deleteStatus), false));
-
             cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
             Query q = em.createQuery(cq);
             
@@ -326,7 +326,7 @@ public class ProductDAO implements Serializable {
             List list = q.getResultList();
             
             if(list.isEmpty()){
-                return findProductByProductName(productId, false, 0, 10);
+                return findProductByProductName(productId, false, false, 0, 10);
             }
             return new Response().success("產品查詢成功", q.getResultList(),0);
 
@@ -378,7 +378,7 @@ public class ProductDAO implements Serializable {
      * @param maxResult
      * @return 
      ********************************************************************************/
-        public Response findProductByProductName(String productName,boolean all, int firstResult, int maxResult) {
+        public Response findProductByProductName(String productName,boolean all,boolean isDiscount,int firstResult, int maxResult) {
         EntityManager em = getEntityManager();
         try {
             //创建安全查询工厂
@@ -391,6 +391,11 @@ public class ProductDAO implements Serializable {
             List<Predicate> predicatesList = new ArrayList<>();
             predicatesList.add(cb.like(product.get(Product_.productName), "%" + productName + "%"));
             predicatesList.add(cb.equal(product.get(Product_.deleteStatus), false));
+            
+            if(isDiscount){
+                predicatesList.add(cb.equal(product.get(Product_.discountStatus), true));
+            }
+            
             cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
             Query q = em.createQuery(cq);
             
@@ -414,7 +419,7 @@ public class ProductDAO implements Serializable {
      * @return 
      ********************************************************************************/
     public Response findProductByProductName(String productName){
-        return findProductByProductName(productName, true, -1, -1);
+        return findProductByProductName(productName, true, false, -1, -1);
     }
     
      /*******************************************************************************
