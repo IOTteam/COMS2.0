@@ -338,13 +338,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <div class="modal-body">
             <form action="addOrderDetail" method="post" class="form form-horizontal responsive">
             	 <div class="row cl">
-                    <label class="form-label col-xs-3">訂單頭檔編號：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">訂單頭檔編號：</label>
                     <div class="formControls col-xs-5">
                         <input type="text"  id="orderHeadId_4addDetail" name="orderHeadId" class="input-text disabled" readonly="true"/>
                     </div>
 		</div>
 		<div class="row cl">
-                    <label class="form-label col-xs-3">產品信息：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">產品信息：</label>
                     <div class="formControls col-xs-5">
                         <span class="select-box">
                         <input class="select" name="productId" id="productId_4add" list="product_list" />
@@ -354,7 +354,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </div>
 		</div>
                 <div class="row cl">
-                    <label class="form-label col-xs-3">下單數量：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">下單數量：</label>
                     <div class="formControls col-xs-5" id="add_div">
                         <input type="text"  value="" id="orderQty_4add" name="orderQty" class="input-text radius"/>
                     </div>
@@ -378,43 +378,43 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <div class="modal-body">
             <form action="orderDetailUpdate" method="post" class="form form-horizontal responsive">
             	<div class="row cl" hidden="true">
-                    <label class="form-label col-xs-3">訂單頭檔編號：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">訂單頭檔編號：</label>
                     <div class="formControls col-xs-5">
                         <input type="text" id="OrderHeadId4Update"  readonly="true" name="orderHeadId" class="input-text disabled radius"/>
                     </div>
 		</div>
                 <div class="row cl">
-                    <label class="form-label col-xs-3">訂單身檔編號：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">訂單身檔編號：</label>
                     <div class="formControls col-xs-5">
                         <input type="text" id="orderDetailId4Update"   name="orderDetailId" readonly="true" class="input-text disabled radius" />
                     </div>
 		</div>
                 <div class="row cl" hidden="true">
-                    <label class="form-label col-xs-3">產品編號：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">產品編號：</label>
                     <div class="formControls col-xs-5">
                         <input type="text" id="productId4Update"  readonly="true" name="productId" class="input-text disabled radius"/>
                     </div>
 		</div>
 		<div class="row cl">
-                    <label class="form-label col-xs-3">產品名稱：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">產品名稱：</label>
                     <div class="formControls col-xs-5">
                         <input type="text" id="productName4Update"  readonly="true" name="productName" class="input-text disabled radius"/>
                     </div>
 		</div>
                 <div class="row cl">
-                    <label class="form-label col-xs-3">下單數量：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">下單數量：</label>
                     <div class="formControls col-xs-5">
                         <input type="text"  id="orderQty4Update"  name="orderQty" class="input-text radius" onblur="getPriceByQtyForUpdate()"/>
                     </div>                    
 		</div>
                 <div class="row cl">
-                    <label class="form-label col-xs-3">產品價格：</label>
+                    <label class="form-label col-xs-3" style=" width: 150px">產品價格：</label>
                     <div class="formControls col-xs-5">
                         <input type="text"  id="productPrice4Update"  name="productPrice"  readonly="true" class="input-text disabled radius"/>
                     </div>
                 </div>
                <div class="row cl">
-                   <label class="form-label col-xs-3" style="color: red">自定義下單價格：</label>
+                   <label class="form-label col-xs-3" style=" width: 150px ;color: red" >自定義下單價格：</label>
                     <div class="formControls col-xs-5">
                         <input type="text" id="userDefinedPrice4Update"  name="userDefinedPrice" class="input-text radius"/>
                     </div>

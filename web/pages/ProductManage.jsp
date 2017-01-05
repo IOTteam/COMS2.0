@@ -161,15 +161,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <div class="page-container">
         <form action="ProductQuery" method="post">
             <div id="ss">
-                <h3 align="center">产品信息列表</h3>
+                <h3 align="center">產品管理</h3>
 		    <p align="center">
-                        产品编号：<input type="text" name="productIdMin" class="input-text radius" style="width:100px" id="productIdMin" value="${queryCondition.productIdMin}" autocomplete="off"/>
+                        產品編號：<input type="text" name="productIdMin" class="input-text radius" style="width:100px" id="productIdMin" value="${queryCondition.productIdMin}" autocomplete="off"/>
                                 - <input type="text" name="productIdMax" class="input-text radius" style="width:100px" id="productIdMax" value="${queryCondition.productIdMax}" autocomplete="off"/>
-                        产品名称：<input type="text" id="productName" name="productName" class="input-text radius" style="width:100px" value="${queryCondition.productName}" autocomplete="off"/>
-                        产品规格：<input type="text" id="productSpec" name="productSpec" class="input-text radius" style="width:100px" value="${queryCondition.productSpec}" autocomplete="off"/>
-                        标准售价：<input type="text" name="productPriceMin" id="productPriceMin" class="input-text radius" style="width:100px" value="${queryCondition.productPriceMin}" autocomplete="off"/> - 
+                        產品名稱：<input type="text" id="productName" name="productName" class="input-text radius" style="width:100px" value="${queryCondition.productName}" autocomplete="off"/>
+                        產品規格：<input type="text" id="productSpec" name="productSpec" class="input-text radius" style="width:100px" value="${queryCondition.productSpec}" autocomplete="off"/>
+                        標準售價：<input type="text" name="productPriceMin" id="productPriceMin" class="input-text radius" style="width:100px" value="${queryCondition.productPriceMin}" autocomplete="off"/> - 
                                 <input type="text" name="productPriceMax" id="productPriceMax" class="input-text radius" style="width:100px" value="${queryCondition.productPriceMax}" autocomplete="off"/>
-                                <input   type="submit" value="查询" id="query_product"/>
+<!--                                <input   type="submit" value="查询" id="query_product"/>-->
+                                <input class="btn btn-primary radius"  type="submit" id="query_product" value="查询"/>
                                 <button  type="button" data-toggle="modal" href="#addInfo" class="btn btn-primary radius" >新增</button>
                     </p>
             </div>                        
@@ -229,8 +230,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     <!--新增产品-->
     <div id="addInfo" class="modal2 hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <form>
+                    
                         <div align="center" class="modal-header">
                             <h2 id="myModalLabel"><small>产品新增管理</small></h2>
                         </div>
@@ -261,8 +261,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                             <option value="1">是</option> 
                                          </select>
                                 </div>
-                            </div>    
+                            </div>                           
+                        <div class="row cl">
+                            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" align="right">
+                                <input class="btn btn-primary radius" type="button"  value="確定"  onclick="addProduct()">
+                                <input type="button" class="btn btn-primary radius" value="取消" data-dismiss="modal" aria-hidden="true">
+                            </div>
                         </div>
+                    </div>
 <!--                        <div class="row cl">
                             <div class="formControls col-xs-5">
                                 <input type="button" id="send" value="新增" class="btn btn-primary radius" aria-hidden="true" onclick="addProduct()"/>                    
@@ -270,17 +276,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         </div>-->
                         
                         
-                        <div class="row cl">
-                            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" align="right">
-                                <input class="btn btn-primary radius" type="button"  value="確定"  onclick="addProduct()">
-                                <input type="button" class="btn btn-primary radius" value="取消" data-dismiss="modal" aria-hidden="true">
-                            </div>
-                        </div>
                         
                         
                         
-                    </form>
-                </div>
+                        
             </div>
     <div id="addCustomerPriceInfo" class="modal2 hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -358,40 +357,49 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     <!--修改产品-->
     <div id="modifyProductInfo" class="modal2 hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <form>
-                        <div align="center" class="modal-header">
-                            <h2 id="myModalLabel"><small>产品新增管理</small></h2>
-                        </div>
-                        <div id="productTable">
-                            <div class="formControls col-xs-5">
-                                产品编号：<input type="text" name="productIdOld" id="productIdOld"  readonly="readonly" class="input-text disabled radius"/>
-                            </div>
-                            <div class="formControls col-xs-5">
-                                产品名称：<input type="text" name="productNameOld" id="productNameOld"  readonly="readonly" class="input-text disabled radius"/>
-                            </div>
-                            <div class="formControls col-xs-5">
-                                产品规格：<input type="text" name="productSpecOld" id="productSpecOld"  readonly="readonly" class="input-text disabled radius"/> 
-                            </div>
-                            <div class="formControls col-xs-5">
-                                产品单价：<input type="text" name="productStandardPriceOld" id="productStandardPriceOld"  class="input-text radius"/>
-                            </div>
-                            <div class="formControls col-xs-5">
-                                优惠选择：<select class="select" style="width:150px;" size="1" name="discountStatusOld" id="discountStatusOld" placeholder="此产品是否优惠" ">
-                                     <option value="false" >否</option>
-                                     <option value="true" >是</option> 
-                                </select>
-                            </div>
-                            <div class="formControls col-xs-5">
-                                <input type="text" hidden="true" name="productMasterIdOld" id="productMasterIdOld" class="input-text radius"/>
-                            </div>
-                        </div>
-                        <div class="formControls col-xs-5">
-                            <input type="button" id="send" value="修改" class="btn btn-primary radius"  aria-hidden="true" onclick="modifyProduct()"/>                    
-                        </div>
-                    </form>
+        <div align="center" class="modal-header">
+            <h2 id="myModalLabel"><small>修改產品信息</small></h2>
+            <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+        </div>        
+        <div class="modal-body">
+            <form>
+                <div id="productTable">
+                    <div class="formControls col-xs-5">
+                        产品编号：<input type="text" name="productIdOld" id="productIdOld"  readonly="readonly" class="input-text disabled radius"/>
+                    </div>
+                    <div class="formControls col-xs-5">
+                        产品名称：<input type="text" name="productNameOld" id="productNameOld"  readonly="readonly" class="input-text disabled radius"/>
+                    </div>
+                    <div class="formControls col-xs-5">
+                        产品规格：<input type="text" name="productSpecOld" id="productSpecOld"  readonly="readonly" class="input-text disabled radius"/> 
+                    </div>
+                    <div class="formControls col-xs-5">
+                        产品单价：<input type="text" name="productStandardPriceOld" id="productStandardPriceOld"  class="input-text radius"/>
+                    </div>
+                    <div class="formControls col-xs-5">
+                        优惠选择：<select class="select" style="width:80px;" size="1" name="discountStatusOld" id="discountStatusOld" placeholder="此产品是否优惠" ">
+                             <option value="false" >否</option>
+                             <option value="true" >是</option> 
+                        </select>
+                    </div>
+                    <div class="formControls col-xs-5">
+                        <input type="text" hidden="true" name="productMasterIdOld" id="productMasterIdOld" class="input-text radius"/>
+                    </div>
                 </div>
-           </div>
+<!--                        <div class="formControls col-xs-5">
+                    <input type="button" id="send" value="修改" class="btn btn-primary radius"  aria-hidden="true" onclick="modifyProduct()"/>                    
+                </div>-->
+
+
+                <div class="row cl">
+                    <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" align="right">
+                        <input type="button" id="send" value="修改" class="btn btn-primary radius"  aria-hidden="true" onclick="modifyProduct()"/> 
+                        <input type="button" class="btn btn-primary radius" value="取消" data-dismiss="modal" aria-hidden="true">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
                                     
             <div id="modifyCustomerPriceInfo" class="modal2 hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

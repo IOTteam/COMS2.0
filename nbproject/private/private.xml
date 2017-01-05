@@ -3,15 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/src/java/iot/controller/LoginController.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/src/java/iot/dao/repository/OrderHeadDAO.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/src/java/iot/service/LoginService.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/web/pages/CustomerPriceManage.jsp</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/src/java/iot/dao/repository/CustomerDAO.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/web/pages/CustomerManage.jsp</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/src/java/iot/exceptionHandle/ExceptionAdvice.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/web/pages/commonAction.js</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/src/java/iot/dao/repository/UserDAO.java</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/web/pages/ProductManage.jsp</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/web/pages/OrderManage.jsp</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/src/java/iot/service/CustomerPriceService.java</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0i/src/java/iot/dao/repository/CustomerPriceDAO.java</file>
         </group>
     </open-files>
 </project-private>
