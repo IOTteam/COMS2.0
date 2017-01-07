@@ -160,9 +160,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
     
     <!--客户单价主体-->
-    <section class="Hui-article-box">
+    <section class="Hui-article-box" id = "customerPriceSection">
         <div class="page-container">
-            <form action="queryCustomerPrice" method="post">
+            <form id = "queryCustomerPriceForm" action="queryCustomerPrice" method="post">
                 <h3 align="center">客戶產品單價管理</h3>
                 <br/>
                 <p align="center">
@@ -188,6 +188,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <a class="btn btn-default radius" type="button" id="custPriceEditBotton" onclick="getCustomerPriceForUpdate()" data-toggle="modal" style="display: inline-block;" >修改</a>    
                 </p>
             </form>
+                    <div id="CusPriceTableDiv">
             <table class="table table-border table-bordered table-hover" id="CusPriceTable" >
                 <tr>
                     <th style="width:100px">客戶產品單價編號</th>  
@@ -207,10 +208,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <td style="width:100px"><c:out value="${customerPrice.productMasterId.productName}"></c:out></td>
                     <td style="width:100px"><c:out value="${customerPrice.rangeMin} ~ ${customerPrice.rangeMax}"></c:out></td>
                     <td style="width:100px"><c:out value="${customerPrice.rangePrice}"></c:out></td>
-<!--                    <td style="width:100px"><fmt:formatNumber type="number" value="${custPrice.rangePrice}" pattern="0.000" maxFractionDigits="3"/></td>-->
+<!--                <td style="width:100px"><fmt:formatNumber type="number" value="${custPrice.rangePrice}" pattern="0.000" maxFractionDigits="3"/></td>-->
                 </tr>
              </c:forEach> 
             </table>
+                    </div>
         <p>${message}</p>
         <br/>
         <div align="center">
@@ -283,6 +285,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
 
 <script type="text/javascript" src="<%=basePath%>pages/lib/jquery/1.9.1/jquery.js"></script> 
+<script type="text/javascript" src="<%=basePath%>pages/lib/jquery/jquery.form.js"></script> 
 <script type="text/javascript" src="<%=basePath%>pages/static/h-ui/js/H-ui.js"></script>
 <script type="text/javascript" src="<%=basePath%>pages/lib/bootstrap-modal/2.2.4/bootstrap-modalmanager.js"></script>
 <script type="text/javascript" src="<%=basePath%>pages/lib/bootstrap-modal/2.2.4/bootstrap-modal.js"></script>
@@ -293,6 +296,46 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
        var session = "<%=(User)session.getAttribute("user")%>"; 
        hello(session);
     });
+    
+    /*******************************************************************************
+     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 功能簡述：將查詢到的客戶資訊顯示在表格
+     * 
+     ********************************************************************************/
+    $(document).ready(function() { 
+        $('#queryCustomerPriceForm').ajaxForm({ 
+            success:function (data){
+               var html =  data.split("<div id=\"CusPriceTableDiv\">")[1].split("</div>")[0];
+                $("#CusPriceTableDiv").html(html);
+                $('#custPriceEditBotton').removeAttr('href');
+                $("#custPriceEditBotton").removeClass("btn btn-primary radius");
+                $("#custPriceEditBotton").addClass("btn btn-default radius");
+                
+                $("tr").click(function(){
+                $(this).find("td").each(function(){
+                    var text = $(this).text();
+                    if(/CUSPRO[0-9]{6}/g.test(text)){
+                        $("tr").each(function (){
+                        $(this).removeClass("success");
+                    })
+                    $(this).parents("tr").attr('class',"success");
+                    $('#custPriceEditBotton').attr('href',"#updateCustomerPrice");//添加标签中的href属
+                    $("#custPriceEditBotton").removeClass("btn btn-default radius");
+                    $("#custPriceEditBotton").addClass("btn btn-primary radius");
+                    }
+                    customerPrice[0] = text;
+                    return false;
+                });
+            });
+            },
+            error:function (data){
+                var response = JSON.parse(data.responseText.toString());
+                $("#alter_message").html(response.message);
+                $("#modal-message").modal("show");
+                setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+            }
+         }); 
+    })
     /*******************************************************************************
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：客戶、產品輸入框獲得焦點時查詢相應資訊列表
@@ -420,9 +463,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 },  
                 error : function(data) { 
                     var response = JSON.parse(data.responseText.toString());
-                    $("#alter_message").html(response.message);
-                    $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    console.dir(response.message);
+                    //$("#alter_message").html(response.message);
+                    //$("#modal-message").modal("show");
+                    //setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                 }  
             });
     });
