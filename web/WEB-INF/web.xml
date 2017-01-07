@@ -53,8 +53,9 @@
         <welcome-file>redirect.jsp</welcome-file>
     </welcome-file-list>
     
-<!--    <error-page>    
+    <error-page>    
         <error-code>404</error-code>    
         <location>/pages/404.jsp</location>    
-    </error-page>-->
+    </error-page>
+    
 </web-app>

@@ -12,7 +12,9 @@ import javax.persistence.OptimisticLockException;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import iot.response.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -147,16 +150,34 @@ public class ExceptionAdvice {
     
     /*******************************************************************************
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
-     * 功能簡述：捕獲所有異常
+     * 功能簡述：處理字符串轉換數字異常
      * 
      * @param e
      * @return 
      ********************************************************************************/
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public Response NumberFormatExceptionHandle(NumberFormatException e) {
+        return new Response().failure(e.getMessage());
+    }
+    
+    /*******************************************************************************
+     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 功能簡述：捕獲所有異常
+     * 
+     * @param e
+     * @return 
+     ********************************************************************************/
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public Response ExceptionHandle(Exception e) {
+    public ModelAndView ExceptionHandle(Exception e) {
         
         e.printStackTrace();
-        return new Response().failure(e.getMessage());
+        Map model = new HashMap();
+        model.put("e", e.getClass());
+        model.put("cause", e.getCause());
+        ModelAndView mv = new ModelAndView("500",model);
+        return mv;
+        //return new Response().failure(e.getMessage());
     }
 }

@@ -46,6 +46,7 @@ public class CustomerPriceService {
      * @param customerName
      * @param pageNo
      * @return 
+     * @throws iot.dao.repository.exceptions.JPAQueryException 
      ********************************************************************************/
     public Response queryCustomerPriceService(String customerName, String productName, String priceMin,String priceMax, String rangeMin, String rangeMax, int pageNo) throws JPAQueryException{
     
