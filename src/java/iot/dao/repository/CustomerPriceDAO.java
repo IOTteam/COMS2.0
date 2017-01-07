@@ -25,6 +25,7 @@ import javax.persistence.criteria.Predicate;
 import javax.validation.ValidationException;
 import iot.response.Response;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 import javax.persistence.NoResultException;
 import javax.persistence.OptimisticLockException;
 
@@ -302,14 +303,16 @@ public class CustomerPriceDAO implements Serializable {
         if(priceMax.length() > 0){
             predicatesList.add(cb.le(customerPrice.get(CustomerPrice_.rangePrice), Float.parseFloat(priceMax)));
         }
+        
         //當用戶輸入了數量級起始時，將其加入條件
         if(rangeMin.length() > 0){
-            predicatesList.add(cb.ge(customerPrice.get(CustomerPrice_.rangeMin), Integer.parseInt(rangeMin)));
+            predicatesList.add(cb.or(cb.ge(customerPrice.get(CustomerPrice_.rangeMin), Integer.parseInt(rangeMin)), cb.and(cb.le(customerPrice.get(CustomerPrice_.rangeMin), Integer.parseInt(rangeMin)),cb.ge(customerPrice.get(CustomerPrice_.rangeMax), Integer.parseInt(rangeMin)))));
         }
         //當用戶輸入了數量級終點時，將其加入條件
         if(rangeMax.length() > 0){
-            predicatesList.add(cb.le(customerPrice.get(CustomerPrice_.rangeMax), Integer.parseInt(rangeMax)));
+            predicatesList.add(cb.or(cb.le(customerPrice.get(CustomerPrice_.rangeMax), Integer.parseInt(rangeMax)),cb.and(cb.ge(customerPrice.get(CustomerPrice_.rangeMax), Integer.parseInt(rangeMax)),cb.le(customerPrice.get(CustomerPrice_.rangeMin), Integer.parseInt(rangeMax))))); 
         }
+        
         //添加過濾條件，未被邏輯刪除
         predicatesList.add(cb.equal(customerPrice.get(CustomerPrice_.deleteStatus), false));
         
@@ -343,6 +346,8 @@ public class CustomerPriceDAO implements Serializable {
         
         return new Response().success("客戶查詢成功", q.getResultList(),count_int);
             
+        }catch(NumberFormatException numberFormatException){
+            throw new ValidationException("請輸入正確的數量或價格");
         }catch(Exception e){
             throw new JPAQueryException("條件查詢客戶產品單價失敗", e);
         }finally {
@@ -387,8 +392,8 @@ public class CustomerPriceDAO implements Serializable {
                 productPredicate = cb.or(productPredicate,cb.equal(customerPrice.get(CustomerPrice_.productMasterId), productList.get(n)));
             }
             //構造數量級過濾條件
-            Predicate rangeMinPredicate = cb.ge(customerPrice.get(CustomerPrice_.rangeMin), Integer.parseInt(rangeMin));
-            Predicate rangeMaxPredicate = cb.le(customerPrice.get(CustomerPrice_.rangeMax), Integer.parseInt(rangeMax));
+            Predicate rangeMinPredicate = cb.or(cb.ge(customerPrice.get(CustomerPrice_.rangeMin), Integer.parseInt(rangeMin)), cb.and(cb.le(customerPrice.get(CustomerPrice_.rangeMin), Integer.parseInt(rangeMin)),cb.ge(customerPrice.get(CustomerPrice_.rangeMax), Integer.parseInt(rangeMin))));
+            Predicate rangeMaxPredicate = cb.or(cb.le(customerPrice.get(CustomerPrice_.rangeMax), Integer.parseInt(rangeMax)),cb.and(cb.ge(customerPrice.get(CustomerPrice_.rangeMax), Integer.parseInt(rangeMax)),cb.le(customerPrice.get(CustomerPrice_.rangeMin), Integer.parseInt(rangeMax))));
             Predicate priceMinPredicate = cb.ge(customerPrice.get(CustomerPrice_.rangePrice), Float.parseFloat(priceMin));
             Predicate notdeletePredicate = cb.equal(customerPrice.get(CustomerPrice_.deleteStatus), false);
             String successMessage = "";
@@ -438,6 +443,8 @@ public class CustomerPriceDAO implements Serializable {
             
             return new Response().success(successMessage, q.getResultList());
 
+        }catch(NumberFormatException numberFormatException){
+            throw new ValidationException("請輸入正確的數量或價格");
         } finally {
             em.close();
         }

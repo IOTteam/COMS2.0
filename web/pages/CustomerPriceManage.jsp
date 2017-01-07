@@ -188,7 +188,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <a class="btn btn-default radius" type="button" id="custPriceEditBotton" onclick="getCustomerPriceForUpdate()" data-toggle="modal" style="display: inline-block;" >修改</a>    
                 </p>
             </form>
-                    <div id="CusPriceTableDiv">
+            <div id="CusPriceTableDiv">
             <table class="table table-border table-bordered table-hover" id="CusPriceTable" >
                 <tr>
                     <th style="width:100px">客戶產品單價編號</th>  
@@ -212,8 +212,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 </tr>
              </c:forEach> 
             </table>
-                    </div>
-        <p>${message}</p>
+            <p>${message}</p>
+        </div>
         <br/>
         <div align="center">
             <p> <input type="button" class="btn btn-default radius" value="上一頁" onclick="getPageData(this)"/>
