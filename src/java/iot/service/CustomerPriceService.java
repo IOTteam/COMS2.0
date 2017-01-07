@@ -113,7 +113,7 @@ public class CustomerPriceService {
                 ++count;
                 if(count > pageNo*5){
                     List list_row = new ArrayList();
-                    list_row.add(customerPrice.getCustomerPriceId());
+                    list_row.add(customerPrice.getCustomerPriceId() + ":" + customerPrice.getVersionNumber());
                     list_row.add(customerPrice.getCustomerMasterId().getCustomerId() + " : " + customerPrice.getCustomerMasterId().getCustomerName());
                     list_row.add(customerPrice.getProductMasterId().getProductId() + " : " + customerPrice.getProductMasterId().getProductName());
                     list_row.add(customerPrice.getRangeMin() + "~" + customerPrice.getRangeMax());
@@ -264,10 +264,11 @@ public class CustomerPriceService {
      * 功能簡述：邏輯刪除客戶產品單價資訊
      * 
      * @param customerPriceId
+     * @param versionNumber
      * @return 
      * @throws iot.dao.repository.exceptions.NonexistentEntityException 
      ********************************************************************************/
-    public Response deleteCustomerPriceService(String customerPriceId) throws NonexistentEntityException, Exception{
+    public Response deleteCustomerPriceService(String customerPriceId,int versionNumber) throws NonexistentEntityException, Exception{
 
         CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
          
@@ -279,6 +280,7 @@ public class CustomerPriceService {
         
         CustomerPrice customerPrice = (CustomerPrice)response.getData();
         
+        customerPrice.setVersionNumber(versionNumber);
         customerPrice.setDeleteStatus(true);
         
         customerPriceDAO.edit(customerPrice);

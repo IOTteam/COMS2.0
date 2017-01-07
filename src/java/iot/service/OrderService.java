@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -167,6 +168,8 @@ public class OrderService {
 
     /**
      * 新增訂單身檔
+     * 
+     * 2017/01/07 修訂新增訂單時未在客戶產品單價表中查詢到資料的處理
      *
      * @param productId
      * @param orderQty
@@ -189,8 +192,13 @@ public class OrderService {
         //如果通過傳入的產品ID查到的產品的優惠狀態是true，即此產品有優惠，獲取的通過傳入的產品ID和數量，查詢到的在客戶產品單價表中的價格
         if (product.getDiscountStatus() == true) {
             CustomerPriceDAO cpdao = new CustomerPriceDAO(emf);
-            CustomerPrice customerPrice = (CustomerPrice) cpdao.queryCustomerPriceByOrderQty(orderQty, product).getData();
-            od.setOrderPrice(customerPrice.getRangePrice());
+            CustomerPrice customerPrice = (CustomerPrice) cpdao.queryCustomerPriceByOrderQty(orderQty, product,oh.getCustomerMasterId()).getData();
+            if(customerPrice != null){
+                od.setOrderPrice(customerPrice.getRangePrice());
+            }
+            else{
+                od.setOrderPrice(product.getProductStandardPrice());
+            }
         } else {//否則，就是按標準售價做下單單價
             od.setOrderPrice(product.getProductStandardPrice());
         }
@@ -248,14 +256,16 @@ public class OrderService {
     //先通過產品ID查找到產品，如果產品有優惠，再加上數量去查詢到客戶產品單價表信息，獲取優惠價格
     //如果沒有優惠，直接獲取到標準價格
     //把兩個價格傳給產品實體的價格中，把產品實體傳出去
-    public Product getPriceByQtyForUpdateService(String productId, int orderQty) throws Exception {
+    public Product getPriceByQtyForUpdateService(String orderDetailId,String productId, int orderQty) throws Exception {
 
+        OrderDetail od = (OrderDetail) new OrderDetailDAO(emf).queryOrderDetailByOrderDetailId(orderDetailId).getData();
         ProductDAO pdao = new ProductDAO(emf);
         Product product = (Product) pdao.findProductByProductId(productId).getData();
         if (product.getDiscountStatus() == true) {
             CustomerPriceDAO cpdao = new CustomerPriceDAO(emf);
-            Response cprResponse = cpdao.queryCustomerPriceByOrderQty(orderQty, product);
-            CustomerPrice cp = (CustomerPrice) cpdao.queryCustomerPriceByOrderQty(orderQty, product).getData();
+            /************ 沒有客戶資訊***************/
+            Response cprResponse = cpdao.queryCustomerPriceByOrderQty(orderQty, product, od.getOrdheadMasterId().getCustomerMasterId());
+            CustomerPrice cp = (CustomerPrice) cprResponse.getData();
             //如果客戶產品單價表查詢結果爲空，則保留標準售價
             if (cprResponse.isEmpty()) {
                 product.setProductStandardPrice(product.getProductStandardPrice());
@@ -268,7 +278,7 @@ public class OrderService {
     }
 
     //如果輸入的用戶自定義下單單價  不爲空  時調用
-    public Response updateOrderDetailService(String orderDetailId, int orderQty, float userDefinedPrice) throws Exception {
+    public Response updateOrderDetailService(String orderDetailId, int orderQty, float userDefinedPrice,int versionNumber) throws Exception {
 
         OrderDetailDAO oddao = new OrderDetailDAO(emf);
         //通過訂單身檔編號，插到訂單身檔實體
@@ -276,12 +286,13 @@ public class OrderService {
         //將前臺啊傳入的下單數量和單價填入該訂單身檔
         od.setOrderQty(orderQty);
         od.setOrderPrice(userDefinedPrice);
+        od.setVersionNumber(versionNumber);
         Response response = oddao.edit(od);
         return response;
     }
 
     //如果輸入的用戶自定義下單單價  爲空  時調用
-    public Response updateOrderDetailService(String orderDetailId, String productId, int orderQty) throws Exception {
+    public Response updateOrderDetailService(String orderDetailId, String productId, int orderQty,int versionNumber) throws Exception {
 
         OrderDetailDAO oddao = new OrderDetailDAO(emf);
         //通過訂單身檔編號，插到訂單身檔實體
@@ -298,14 +309,19 @@ public class OrderService {
         //如果輸入的產品是有優惠的產品
         if (product.getDiscountStatus() == true) {
             //通過產品實體和下單數量，查找到輸入的下單數量對應的產品價格
-            CustomerPrice customerPrice = (CustomerPrice) cpdao.queryCustomerPriceByOrderQty(orderQty, product).getData();
-
-            od.setOrderPrice(customerPrice.getRangePrice());
+            CustomerPrice customerPrice = (CustomerPrice) cpdao.queryCustomerPriceByOrderQty(orderQty, product,od.getOrdheadMasterId().getCustomerMasterId()).getData();
+            if(customerPrice != null){
+                od.setOrderPrice(customerPrice.getRangePrice());
+            }
+            else{
+                 od.setOrderPrice(product.getProductStandardPrice());
+            }
+            
         } //否則就是沒有優惠的產品，就取產品實體中的標準售價
         else {
             od.setOrderPrice(product.getProductStandardPrice());
         }
-
+        od.setVersionNumber(versionNumber);
         Response response = oddao.edit(od);
         return response;
     }

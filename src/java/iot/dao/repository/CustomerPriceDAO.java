@@ -524,7 +524,18 @@ public class CustomerPriceDAO implements Serializable {
         }
     }
     
-    public Response queryCustomerPriceByOrderQty(int orderQty,Product product){
+    /*******************************************************************************
+     * 建立者：David  建立日期：-  最後修訂日期：2017/01/07
+     * 功能簡述：條件查詢客戶產品單價
+     * 
+     * 2017/01/07 新增訂單時查詢條件應有客戶
+     * 
+     * @param orderQty
+     * @param product
+     * @param customer
+     * @return 
+     ********************************************************************************/
+    public Response queryCustomerPriceByOrderQty(int orderQty,Product product,Customer customer){
     EntityManager em = getEntityManager();
         try {
             //创建安全查询工厂
@@ -535,6 +546,7 @@ public class CustomerPriceDAO implements Serializable {
             Root<CustomerPrice> customerPrice = cq.from(CustomerPrice.class);
 
             List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(cb.equal(customerPrice.get(CustomerPrice_.customerMasterId), customer));
             predicatesList.add(cb.equal(customerPrice.get(CustomerPrice_.productMasterId), product));
             predicatesList.add(cb.le(customerPrice.get(CustomerPrice_.rangeMin), orderQty));
             predicatesList.add(cb.ge(customerPrice.get(CustomerPrice_.rangeMax), orderQty));
@@ -547,7 +559,7 @@ public class CustomerPriceDAO implements Serializable {
             return new Response().success("查詢產品實體成功", q.getSingleResult());
 
         } catch(NoResultException e){
-            return new Response().Empty("1");
+            return new Response().Empty("無此範圍內客戶產品單價資料");
         }finally {
             em.close();
         }

@@ -85,8 +85,6 @@ public class OrderController {
         List<OrderHead> orderCountHeadList = (List<OrderHead>) queryCountOrderHeadListResult.getData();
         int totalPage = (orderCountHeadList.size() - 1) / 10 + 1;
 
-        System.out.println(totalPage + "iot.controller.OrderController.queryOrderHeadList()");
-
         model.addAttribute("orderHeadList", orderHeadList);
         model.addAttribute("queryCondition", queryCondition);
         model.addAttribute("totalPage", totalPage);
@@ -221,10 +219,11 @@ public class OrderController {
     //獲取產品的價格，在修改訂單身檔的時候
     @RequestMapping(value = "getPriceByQtyForUpdate", method = RequestMethod.POST)
     @ResponseBody
-    public Product getPriceByQtyForUpdate(@RequestParam("productId") String productId,
+    public Product getPriceByQtyForUpdate(@RequestParam("orderDetailId") String orderDetailId,
+            @RequestParam("productId") String productId,
             @RequestParam("orderQty") int orderQty) throws Exception {
 
-        return orderService.getPriceByQtyForUpdateService(productId, orderQty);
+        return orderService.getPriceByQtyForUpdateService(orderDetailId,productId, orderQty);
     }
 
     //修改訂單身檔
@@ -233,15 +232,16 @@ public class OrderController {
     public Response updateOrderDetail(@RequestParam("orderDetailId") String orderDetailId,
             @RequestParam("productId") String productId,
             @RequestParam("orderQty") int orderQty,
-            @RequestParam("userDefinedPrice") String userDefinedPrice) throws Exception {
+            @RequestParam("userDefinedPrice") String userDefinedPrice,
+            @RequestParam("versionNumber") int versionNumber) throws Exception {
 
         //如果用戶自定義下單單價輸入值不爲空，就先將輸入值轉化爲float型，再調用修改身檔方法
         if (!"".equals(userDefinedPrice)) {
             float userDefinedPrice_f = Float.parseFloat(userDefinedPrice);
-            return orderService.updateOrderDetailService(orderDetailId, orderQty, userDefinedPrice_f);
+            return orderService.updateOrderDetailService(orderDetailId, orderQty, userDefinedPrice_f,versionNumber);
         }
         //否則就直接調用同樣的方法，但參數不同
-        return orderService.updateOrderDetailService(orderDetailId, productId, orderQty);
+        return orderService.updateOrderDetailService(orderDetailId, productId, orderQty,versionNumber);
     }
 
 }

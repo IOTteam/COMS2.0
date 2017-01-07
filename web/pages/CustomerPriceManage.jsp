@@ -102,13 +102,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             	<div class="row cl">
                     <label class="form-label col-xs-3">用戶編號：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" class="input-text" autocomplete="off" value="${user.userId}" name="username" />
+                        <input type="text" class="input-text" readonly="true" autocomplete="off" value="${user.userId}" name="username" />
                     </div>
 		</div>
 		<div class="row cl">
                     <label class="form-label col-xs-3">用戶姓名：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" class="input-text" autocomplete="off"  value="${user.userName}" name="password" />
+                        <input type="text" class="input-text" readonly="true" autocomplete="off"  value="${user.userName}" name="password" />
                     </div>
 		</div>
             </form>

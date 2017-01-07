@@ -93,13 +93,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             	<div class="row cl">
                     <label class="form-label col-xs-3">用戶編號：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" class="input-text" autocomplete="off" value="${user.userId}" name="username" />
+                        <input type="text" class="input-text" readonly="true" autocomplete="off" value="${user.userId}" name="username" />
                     </div>
 		</div>
 		<div class="row cl">
                     <label class="form-label col-xs-3">用戶姓名：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" class="input-text" autocomplete="off"  value="${user.userName}" name="password" />
+                        <input type="text" class="input-text" readonly="true" autocomplete="off"  value="${user.userName}" name="password" />
                     </div>
 		</div>
             </form>
@@ -182,6 +182,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <c:forEach items="${customerList}" var ="customer">
                 <tr style=" height: 38px">
                     <td style="width:100px"><c:out value="${customer.customerId}"></c:out></td>
+                    <td hidden="true" ><c:out value="${customer.versionNumber}"></c:out></td>
                     <td style="width:100px"><c:out value="${customer.customerName}"></c:out></td>
                     <td style="width:100px"><c:out value="${customer.customerMail}"></c:out></td> 
                     <td style="width:100px"><c:out value="${customer.customerPhone}"></c:out></td>
@@ -728,12 +729,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      * 
      ********************************************************************************/
     function deleteCustomerPrice(button){
-        var customerPriceId = $(button).parent().parent().children("td").get(0).innerHTML;
+        var customerPrice = $(button).parent().parent().children("td").get(0).innerHTML.split(":");
+        var customerPriceId = customerPrice[0];
+        var versionNumber = customerPrice[1];
         $.ajax({  
                 url : "<%=basePath%>CustomerPriceManage/deleteCustomerPrice",  
                 type : "post",  
                 datatype:"json",  
-                data:{customerPriceId:customerPriceId},
+                data:{customerPriceId:customerPriceId,versionNumber:versionNumber},
                 success : function(data) { 
                     $("#pageNo_cp").val(1);
                     $("#totalPage_cp").val(data.count);
@@ -765,6 +768,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $("#alter_message").html(response.message);
                     $("#modal-message").modal("show");
                     setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    getCustomerPriceList("addCustomerPrice");
                 }  
             }); 
     }
@@ -850,18 +854,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/07
      * 功能簡述：刪除客戶資訊
+     * 2017/01/07 添加版本號
      * 
      ********************************************************************************/
     function deleteCustomer(){
         var customerId =  customerInfo[0];
-        
+        var versionNumber = customerInfo[1];
         $.ajax({  
                 url : "deleteCustomer",  
                 type : "post",  
                 datatype:"json",  
-                data : {customerId:customerId},  
+                data : {customerId:customerId,versionNumber:versionNumber},  
                 success : function(data) {  
                     
                     $("#alter_message").html(data.message);
@@ -891,6 +896,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
            var text = $(this).text();
            if(/CUS[0-9]{11}/g.test(text)){
                customerInfo[0] = text;
+               customerInfo[1] = $(this).next("td").text();
                $("tr").each(function (){
                     $(this).removeClass("success");
                 })

@@ -12,9 +12,13 @@ import javax.persistence.OptimisticLockException;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import iot.response.Response;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -44,6 +48,7 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
     public Response BindExceptionHandle(BindException e,BindingResult result) {
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
 
         List<FieldError> fieldErrors = result.getFieldErrors();
         //FieldError fieldError = fieldErrors.get(0);
@@ -67,6 +72,7 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValidationException.class)
     public Response ValidationExceptionHandle(ValidationException e) {
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
         return new Response().failure(e.getMessage());
     }
     
@@ -80,6 +86,7 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public Response ConstraintViolationExceptionHandle(ConstraintViolationException e) {
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
         return new Response().failure("已存在的實體參數驗證未通過");
     }
     
@@ -93,6 +100,7 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NoResultException.class)
     public Response NoResultExceptionHandle(NoResultException e) {
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
         return new Response().failure(e.getMessage());
     }
     
@@ -106,6 +114,7 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NonexistentEntityException.class)
     public Response NonexistentEntityExceptionHandle(NonexistentEntityException e) {
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
         return new Response().failure(e.getMessage());
     }
     
@@ -119,6 +128,7 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(OptimisticLockException.class)
     public Response OptimisticLockExceptionHandle(OptimisticLockException e) {
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
         return new Response().failure( e.getMessage());
     }
     
@@ -132,6 +142,7 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(PreexistingEntityException.class)
     public Response PreexistingEntityExceptionHandle(PreexistingEntityException e) {
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
         return new Response().failure(e.getMessage());
     }
     
@@ -145,6 +156,7 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NoSuchFieldException.class)
     public Response NoSuchFieldExceptionHandle(NoSuchFieldException e) {
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
         return new Response().failure(e.getMessage());
     }
     
@@ -158,6 +170,21 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NumberFormatException.class)
     public Response NumberFormatExceptionHandle(NumberFormatException e) {
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
+        return new Response().failure(e.getMessage());
+    }
+    
+    /*******************************************************************************
+     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 功能簡述：處理字符串轉換數字異常
+     * 
+     * @param e
+     * @return 
+     ********************************************************************************/
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NullPointerException.class)
+    public Response NullPointerExceptionHandle(NullPointerException e) {
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
         return new Response().failure(e.getMessage());
     }
     
@@ -172,7 +199,13 @@ public class ExceptionAdvice {
     @ExceptionHandler(Exception.class)
     public ModelAndView ExceptionHandle(Exception e) {
         
-        e.printStackTrace();
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
+        
+        File directory = new File("");
+        
+       // FileWriter logWriter = new FileWriter("");
+        
+        //e.printStackTrace();
         Map model = new HashMap();
         model.put("e", e.getClass());
         model.put("cause", e.getCause());

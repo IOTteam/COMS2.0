@@ -192,14 +192,15 @@ public class CustomerController {
      * 功能簡述：刪除客戶資訊
      * 
      * @param customerId
+     * @param versionNumber
      * @return 
      * @throws java.lang.Exception 
      ********************************************************************************/
     @RequestMapping(value = "deleteCustomer",method = RequestMethod.POST)
     @ResponseBody
-    public Response deleteCustomer(@RequestParam("customerId") String customerId) throws Exception{
+    public Response deleteCustomer(@RequestParam("customerId") String customerId,@RequestParam(value = "versionNumber",defaultValue = "0") int versionNumber) throws Exception{
         
-       return customerService.deleteCustomer(customerId);
+       return customerService.deleteCustomer(customerId,versionNumber);
         
     }
     

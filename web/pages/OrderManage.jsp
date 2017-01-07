@@ -103,13 +103,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             	<div class="row cl">
                     <label class="form-label col-xs-3">用戶編號：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" class="input-text" autocomplete="off" value="${user.userId}" name="username" />
+                        <input type="text" class="input-text" readonly="true" autocomplete="off" value="${user.userId}" name="username" />
                     </div>
 		</div>
 		<div class="row cl">
                     <label class="form-label col-xs-3">用戶姓名：</label>
                     <div class="formControls col-xs-5">
-                        <input type="text" class="input-text" autocomplete="off"  value="${user.userName}" name="password" />
+                        <input type="text" class="input-text" readonly="true" autocomplete="off"  value="${user.userName}" name="password" />
                     </div>
 		</div>
             </form>
@@ -534,7 +534,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     //$("#orderDetailTable").append("<tr><td>"+list[i].orderDetailId+"</td><td>"+list[i].ordheadMasterId.orderHeadId+"</td><td>"+list[i].productMasterId.productId+"</td><td>"+list[i].productMasterId.productName+"</td><td>"+list[i].orderQty+"</td><td>"+list[i].orderPrice+"</td></tr>");
                       $("#orderDetailTable").append("<tr><td>"+list[i][0]+"</td><td>"+list[i][1]+"</td><td>"+list[i][2]+"</td><td>"+list[i][3]+"</td><td>"+list[i][4]+"</td><td>"+list[i][5]+"</td></tr>");
                     //在訂單身檔信息列中，點擊行事件獲取到第一列的值（OrderDetailId），並把值放到了 orderInfo 變量中
-                    orderHeadId4Refresh=list[i][1];
+                    //orderHeadId4Refresh=list[i][1];
                     
                     //在訂單身檔信息列表中，點擊行，將行底色加深
 //                    $(document).ready(function(){
@@ -547,15 +547,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $(this).find("td").each(function(i){
                             var text = $(this).text();
                             if(/ORDD[0-9]{11}/g.test(text)){
-                                console.dir(text+"hahahah");
-                            orderInfo[0] = text;
+                            orderDetail[0] = text;
                             $(this).parent("tr").css({"background":"#99ffff"}).siblings().css({"background":"white"});
                             return false;
                         }
                     }); 
                     
                         //訂單身檔彈窗按鈕置灰                        
-                        if(/ORDD[0-9]{11}/g.test(orderInfo[0])){   
+                        if(/ORDD[0-9]{11}/g.test(orderDetail[0])){   
                         $('#orderDetailDelBtn').attr('href',"#deleteODInfo");//添加标签中的href属
                         $("#orderDetailDelBtn").removeClass("btn btn-default radius");
                         $("#orderDetailDelBtn").addClass("btn btn-primary radius");
@@ -591,11 +590,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      
      //刷新訂單身檔列表
       function refreshOrderDetailList(){
-        //var orderHeadId=orderInfo[1];
-        var orderHeadId= orderHeadId4Refresh;
+        var orderHeadId=orderHead[0];
+        //var orderHeadId= orderHeadId4Refresh;
         var pageNo = parseInt( $("#odpageNo").val())-1;
-        console.dir(orderHeadId+"在公共");
-        console.dir(pageNo+"在公共");
         dealWithOD(pageNo);
         //刷新之後把功能按鈕顏色重置
                         $('#orderDetailDelBtn').removeAttr('href');//清除标签中的href属
@@ -706,20 +703,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       * 訂單頭檔頁面選中有數據的行時，功能按鈕置灰
       * @type Array
       */
-     var orderInfo = [];
+     var orderHead = [];
     $("tr").click(function(){
         var num = 0;
         //訂單頭檔頁面,行點擊事件讀取到行的值
         $(this).find("td").each(function(i){
            var text = $(this).text();
            if(/ORDH[0-9]{11}/g.test(text)){
-           orderInfo[num] = text;
+           orderHead[num] = text;
             $(this).parent("tr").css({"background":"#99ffff"}).siblings().css({"background":"white"});
            num++;
             }
         });
            
-        if(/ORDH[0-9]{11}/g.test(orderInfo[0])){   
+        if(/ORDH[0-9]{11}/g.test(orderHead[0])){   
             $('#orderHeadDelBtn').attr('href',"#deleteOHInfo");//添加标签中的href属
             $("#orderHeadDelBtn").removeClass("btn btn-default radius");
             $("#orderHeadDelBtn").addClass("btn btn-primary radius");     
@@ -743,12 +740,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         var orderDateMin=document.getElementById("orderDateMin").value;
         var orderDateMax=document.getElementById("orderDateMax").value;
         var customerName=document.getElementById("customerName").value;
-        
-        
-        console.dir(pageNo+"pageNo");
-        console.dir(totalPage+"totalPage");
-        
-        
+
         if(pageNo < totalPage){
            var pageNo = pageNo+1;
         window.location = "<%=basePath%>OrderManage/queryOrderHeadList?pageNo="+ pageNo +"&orderHeadIdMin="+orderHeadIdMin+
@@ -808,10 +800,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 datatype:"json",  
                 data : {orderHeadId:orderHeadId,orderQty:orderQty,productId:productId},  
                 success : function(data) {
-                 $("#addODInfo").modal("toggle");
+                 $("#addODInfo").modal("hide");
                  $("#alter_message").html(data.message);
-                 $("#modal-message").modal("toggle");
-                 setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                 $("#modal-message").modal("show");
+                 setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
 //                 alert(data.message);
 //                 window.location="<%=basePath%>OrderManage/queryOrderHeadList" ;
                 },  
@@ -827,11 +819,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function getPriceByQtyForUpdate(){
         var productId=$("#productId4Update").val();
         var orderQty=$("#orderQty4Update").val();
+        var orderDetailId = $("#orderDetailId4Update").val();
             $.ajax({  
                 url : "getPriceByQtyForUpdate",  
                 type : "post",  
                 datatype:"json",  
-                data : {orderQty:orderQty,productId:productId},  
+                data : {orderQty:orderQty,productId:productId,orderDetailId:orderDetailId},  
                 success : function(data) {  
                  $("#productPrice4Update").val(data.productStandardPrice);
                  $("#userDefinedPrice4Update").val(data.productStandardPrice);                
@@ -851,7 +844,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      *
      */
     function deleteOrderHead(){
-    var orderHeadId=orderInfo[0];
+    var orderHeadId=orderHead[0];
     $.ajax({  
                 url : "deleteOrderHead",  
                 type : "post",  
@@ -878,7 +871,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      
     function deleteOrderDetail(){
 
-    var orderDetailId=orderInfo[0];
+    var orderDetailId=orderDetail[0];
     $.ajax({  
                 url : "deleteOrderDetail",  
                 type : "post",  
@@ -886,8 +879,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 data : {orderDetailId:orderDetailId},  
                 success : function(data) {                           
                     $("#alter_message").html(data.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
 //                    $("#alter_message").html(data.message);
 //                    alert("刪除訂單身檔成功！");
 //                    window.location = "<%=basePath%>OrderManage/queryOrderHeadList";
@@ -903,7 +896,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
         function getOrderDetailForUpdate(){
         
-        var orderDetailId =  orderInfo[0];
+        var orderDetailId =  orderDetail[0];
         $.ajax({  
                 url : "getOrderDetailForUpdate",  
                 type : "post",  
@@ -933,17 +926,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         var productId = $("#productId4Update").val();
         var orderQty = $("#orderQty4Update").val();
         var userDefinedPrice = $("#userDefinedPrice4Update").val();
+        var versionNumber = $("#versionNumber4Update").val();
         
         $.ajax({  
                 url : "updateOrderDetail",  
                 type : "post",  
                 datatype:"json",  
-                data : {orderDetailId:orderDetailId,productId:productId,orderQty:orderQty,userDefinedPrice:userDefinedPrice},  
+                data : {orderDetailId:orderDetailId,productId:productId,orderQty:orderQty,userDefinedPrice:userDefinedPrice,versionNumber:versionNumber},  
                 success : function(data) {
-                    $("#updateODInfo").modal("toggle");
+                    $("#updateODInfo").modal("hide");
                     $("#alter_message").html(data.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
                     //alert(data.message);                   
                 },  
                 error : function(data) { 

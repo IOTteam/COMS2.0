@@ -7,7 +7,6 @@ package iot.service;
 
 import iot.dao.entity.Customer;
 import iot.dao.repository.CustomerDAO;
-import iot.dao.repository.OrderHeadDAO;
 import iot.dao.repository.ProductDAO;
 import iot.dao.repository.exceptions.JPAQueryException;
 import iot.dao.repository.exceptions.NonexistentEntityException;
@@ -156,24 +155,25 @@ public class CustomerService {
      * 功能簡述：刪除客戶資訊
      * 
      * @param customerId
+     * @param versionNumber
      * @return 
      * @throws iot.dao.repository.exceptions.NonexistentEntityException 
      ********************************************************************************/
-    public Response deleteCustomer(String customerId) throws NonexistentEntityException, Exception{
+    public Response deleteCustomer(String customerId,int versionNumber) throws NonexistentEntityException, Exception{
 
         CustomerDAO customerDAO = new CustomerDAO(emf);
         
         Response queryCustomer = customerDAO.findCustomerByCustomerId(customerId);
         
         if(queryCustomer.isEmpty()){
-            throw new NonexistentEntityException("要修改的客戶資料不存在");
+            throw new NonexistentEntityException("要刪除的客戶資料不存在");
         }
         Customer customer = (Customer) queryCustomer.getData();
         
         if(customer.getOrderHeadMasterCollection().size() > 0){
             throw new ValidationException("該客戶有訂單，不能刪除");
         }
-
+        customer.setVersionNumber(versionNumber);
         return new CustomerDAO(emf).deleteCustomer(customer);
     }
    

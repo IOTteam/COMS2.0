@@ -227,14 +227,15 @@ public class CustomerPriceController {
      * 功能簡述：邏輯刪除客戶產品單價資訊
      * 
      * @param customerPriceId
+     * @param versionNumber
      * @return 
      * @throws java.lang.Exception 
      ********************************************************************************/
     @RequestMapping(value = "deleteCustomerPrice",method = RequestMethod.POST)
     @ResponseBody
-    public Response deleteCustomerPrice(@RequestParam("customerPriceId") String customerPriceId) throws Exception{
+    public Response deleteCustomerPrice(@RequestParam("customerPriceId") String customerPriceId,@RequestParam(value = "versionNumber",defaultValue = "0") int versionNumber) throws Exception{
         
-        return customerPriceService.deleteCustomerPriceService(customerPriceId);
+        return customerPriceService.deleteCustomerPriceService(customerPriceId,versionNumber);
         
     }
 

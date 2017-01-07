@@ -633,10 +633,9 @@ public class CustomerDAO implements Serializable {
                 if (findCustomerByCustomerId(customer.getCustomerId()).isEmpty()) {
                     throw new NonexistentEntityException("該客戶已被刪除");
                 }
-                throw new OptimisticLockException("客戶或客戶產品單價資料已被修改，請重試");
+                throw new OptimisticLockException("客戶資料已被修改，請重試");
             } catch (Exception e) {
                 //em.getTransaction().rollback();
-                e.printStackTrace();
                 throw new PreexistingEntityException("删除客户失败");
             }
             return new Response().success("刪除客戶成功");

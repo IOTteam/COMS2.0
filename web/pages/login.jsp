@@ -51,7 +51,7 @@
                                 <div class="col-xs-12  ">
                                     <div class="input-group input-group-lg">
                                         <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-                                        <input type="text" id="password"  name="userPass"  autocomplete="off" value="123" class="form-control" placeholder="密碼">
+                                        <input type="password" id="password"  name="userPass"  autocomplete="off" value="admin2016" class="form-control" placeholder="密碼">
                                     </div>
                                 </div>
                             </div>

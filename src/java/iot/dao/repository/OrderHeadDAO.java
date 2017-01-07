@@ -11,7 +11,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import iot.dao.entity.Customer;
-import iot.dao.entity.Customer_;
 import iot.dao.entity.OrderDetail;
 import iot.dao.entity.OrderHead;
 import iot.dao.entity.OrderHead_;

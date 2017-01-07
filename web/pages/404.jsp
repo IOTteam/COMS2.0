@@ -83,7 +83,7 @@
     <section class="Hui-article-box">
         <article class="page-404 minWP text-c">
 		<p class="error-title"><span class="va-m"> 404</span></p>
-		<p class="error-description">不好意思，您访问的页面不存在~</p>
+		<p class="error-description">不好意思，您要訪問的頁面不存在~</p>
 	</article>
         <div class="footer">IOT TEAM</div>
     </section>

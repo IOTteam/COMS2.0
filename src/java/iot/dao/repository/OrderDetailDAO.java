@@ -327,7 +327,7 @@ public class OrderDetailDAO implements Serializable {
             return new Response().success("查詢訂單身檔實體成功", q.getSingleResult());
 
         } catch (NoResultException e) {
-            throw new NoResultException("##要查詢的訂單身檔不存在##");
+            throw new NoResultException("要查詢的訂單身檔不存在");
         } finally {
             em.close();
         }
