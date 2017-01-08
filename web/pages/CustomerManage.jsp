@@ -307,7 +307,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</table>
             <p align="right"> <input type="button" class="btn btn-default radius" value="上一頁" id="pre_cp" />
             <input class="radius" type="text" id="pageNo_cp" value="1" readonly="true" style="width:30px" />/
-            <input class="radius" type="text" id="totalPage_cp"  readonly="true" style="width:30px" />
+            <input class="radius" type="text" id="totalPage_cp" value="1"  readonly="true" style="width:30px" />
             <input type="button" class="btn btn-default radius" value="下一頁" id="next_cp" />
             </p>
         </div>   
@@ -535,9 +535,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     
                     $("#alter_message").html(data.message);
                     $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",3000);
                     $("#customer_id").val(data.data.customerId);
-                    setTimeout("$(\"#addCustomerPrice\").modal(\"show\")",5000); 
+                    $("#modal-message").bind("hide",function (){
+                        $("#addCustomerPrice").modal("show")
+                    });
                     $("#addCustomerPrice").bind('hide', function() {
                         window.location = "<%=basePath%>CustomerManage/CustomerQuery";
                     });
@@ -582,10 +584,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             customerId = customerInfo[0];
             $("#customer_id").val(customerId);
         } 
-        if(isCross === true && (productId === null || rangeMin === null || rangeMax === null)){
-            isCross = false;
-            getCustomerPriceList("addCustomerPrice",isCross);
-        }
         
         if(value === "pre_cp"){
             if(pageNo <= 1) return ;
@@ -596,6 +594,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
            if(pageNo >= totalPage) return ;
            pageNo_ = pageNo;
            $("#pageNo_cp").val(pageNo + 1);
+        }
+        if(value === "addCustomerPrice"){
+            if(pageNo < 1) return ;
+            pageNo_ = pageNo - 1;
         }
         
         $.ajax({  
@@ -609,6 +611,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                   
                     var customerPriceList = data.data;
                     if(customerPriceList.length === 0){
+                        if(pageNo > 1){
+                            $("#pageNo_cp").val(pageNo - 1);
+                            getCustomerPriceList("addCustomerPrice",isCross);
+                        }
+                        else if(isCross === true){
+                            isCross = false;
+                            getCustomerPriceList("addCustomerPrice",isCross);
+                        }
                         return;
                     }
                     
@@ -633,6 +643,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     
                 },  
                 error : function(data) { 
+                    $("#pageNo_cp").val(pageNo);
                     try {
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
@@ -734,6 +745,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 data : {customerId:customerId,productId:productId,productPrice:productPrice,rangeMin:rangeMin,rangeMax:rangeMax,rangePrice:rangePrice},  
                 success : function(data) {
                     
+                    isCross = false;
                     $("#pageNo_cp").val(1);
                     $("#totalPage_cp").val(data.count);
                     $("#product_id").val(null);
@@ -772,6 +784,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                         if(/[交|叉|區|域]{4}/.test(response.message)){
                             isCross = true;
+                            $("#pageNo_cp").val(1);
                             getCustomerPriceList("addCustomerPrice",isCross);
                         }
                     }
@@ -830,7 +843,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         i++;
                     });
                 },  
-                error : function(data) { 
+                error : function(data) {
+                    getCustomerPriceList("addCustomerPrice",isCross);
                     try {
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
@@ -843,7 +857,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $("#modal-message").modal("show");
                         setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
-                    getCustomerPriceList("addCustomerPrice",false);
                 }  
             }); 
     }
@@ -876,6 +889,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
                         setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
+                        $("#modal-message").bind("hide",function (){
+                            if(/[請重試|不存在]{3}/.test(response.message)){
+                                window.location = "<%=basePath%>CustomerManage/CustomerQuery";
+                            }
+                        });
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
@@ -907,10 +925,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 data : {customerMasterId:customerMasterId,customerId:customerId,customerName:customerName,customerMail:customerMail,customerPhone:customerPhone,versionNumber:versionNumber},  
                 success : function(data) {  
 
-                    $("#updateCustomer").modal("toggle");
+                    $("#updateCustomer").modal("hide");
                     $("#alter_message").html(data.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",5000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",3000);
                     
                     var customer = new Array(data.data.customerId,data.data.customerName,data.data.customerMail,data.data.customerPhone);
                     
@@ -933,6 +951,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
                         setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
+                        $("#modal-message").bind("hide",function (){
+                            if(/[請重試|不存在]{3}/.test(response.message)){
+                                window.location = "<%=basePath%>CustomerManage/CustomerQuery";
+                            }
+                        });
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
@@ -961,9 +984,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 success : function(data) {  
                     
                     $("#alter_message").html(data.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",5000);
-                    setTimeout("window.location = '<%=basePath%>CustomerManage/CustomerQuery'",5000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",3000);
+                    $("#modal-message").bind("hide",function (){
+                       window.location = "<%=basePath%>CustomerManage/CustomerQuery";
+                    });
                 },  
                 error : function(data) { 
                     try {
