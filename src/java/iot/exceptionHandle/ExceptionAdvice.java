@@ -12,8 +12,6 @@ import javax.persistence.OptimisticLockException;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import iot.response.Response;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -201,13 +199,10 @@ public class ExceptionAdvice {
         
         Logger.getLogger("Exception").log(Level.SEVERE, "", e);
         
-        File directory = new File("");
-        
-       // FileWriter logWriter = new FileWriter("");
-        
         //e.printStackTrace();
         Map model = new HashMap();
         model.put("e", e.getClass());
+        model.put("message", e.getMessage());
         model.put("cause", e.getCause());
         ModelAndView mv = new ModelAndView("500",model);
         return mv;

@@ -69,7 +69,7 @@
     <section class="Hui-article-box">
         <article class="page-404 minWP text-c">
             <p class="error-title"><span class="va-m"> 出錯了！</span></p>
-		<p class="error-description"><span class="va-m"> ${e}</span></p>
+		<p class="error-description">${e}:${message}</p>
 		<p class="error-description">${cause}</p>
 	</article>
         <div class="footer">IOT TEAM</div>

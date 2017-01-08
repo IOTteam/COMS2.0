@@ -429,10 +429,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                    }
                 },  
                 error : function(data) { 
-                    var response = JSON.parse(data.responseText.toString());
-                    $("#alter_message").html(response.message);
-                    $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    try {
+                        var response = JSON.parse(data.responseText.toString());
+                        throw new Error(response.message);
+                        //$("#alter_message").html(response.message);
+                        //$("#modal-message").modal("show");
+                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
+                    catch(e){
+                        var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                        throw new Error(message);
+                        //$("#alter_message").html(message);
+                        //$("#modal-message").modal("show");
+                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
                 }  
             });
     });
@@ -489,10 +499,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 },  
                 error : function(data) {  
                     $("#pageNo").val(pageNo);
-                    var response = JSON.parse(data.responseText.toString());
-                    $("#alter_message").html(response.message);
-                    $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    try {
+                        var response = JSON.parse(data.responseText.toString());
+                        $("#alter_message").html(response.message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
+                    catch(e){
+                        var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                        $("#alter_message").html(message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
                 }  
             });
         }
@@ -525,11 +543,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     });
                 },  
                 error : function(data) { 
-                    
-                    var response = JSON.parse(data.responseText.toString());
-                    $("#alter_message").html(response.message);
-                    $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    try {
+                        var response = JSON.parse(data.responseText.toString());
+                        $("#alter_message").html(response.message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
+                    catch(e){
+                        var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                        $("#alter_message").html(message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
                 }  
             });
     }
@@ -601,10 +626,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     
                 },  
                 error : function(data) { 
-                    var response = JSON.parse(data.responseText.toString());
-                    $("#alter_message").html(response.message);
-                    $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    try {
+                        var response = JSON.parse(data.responseText.toString());
+                        $("#alter_message").html(response.message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
+                    catch(e){
+                        var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                        $("#alter_message").html(message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
                 }  
             });
     }
@@ -656,10 +689,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
                 },  
                 error : function(data) { 
-                    var response = JSON.parse(data.responseText.toString());
-                    $("#alter_message").html(response.message);
-                    $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    try {
+                        var response = JSON.parse(data.responseText.toString());
+                        $("#alter_message").html(response.message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
+                    catch(e){
+                        var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                        $("#alter_message").html(message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
                 }  
             });
     });
@@ -715,10 +756,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     });
                 },  
                 error : function(data) { 
-                    var response = JSON.parse(data.responseText.toString());
-                    $("#alter_message").html(response.message);
-                    $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    try {
+                        var response = JSON.parse(data.responseText.toString());
+                        $("#alter_message").html(response.message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
+                    catch(e){
+                        var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                        $("#alter_message").html(message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
                 }  
             });
     }
@@ -764,10 +813,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     });
                 },  
                 error : function(data) { 
-                    var response = JSON.parse(data.responseText.toString());
-                    $("#alter_message").html(response.message);
-                    $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    try {
+                        var response = JSON.parse(data.responseText.toString());
+                        $("#alter_message").html(response.message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
+                    catch(e){
+                        var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                        $("#alter_message").html(message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
                     getCustomerPriceList("addCustomerPrice");
                 }  
             }); 
@@ -796,10 +853,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $("#customer_master_id_update").val(data.data.customerMasterId);
                 },  
                 error : function(data) { 
-                    var response = JSON.parse(data.responseText.toString());
-                    $("#alter_message").html(response.message);
-                    $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    try {
+                        var response = JSON.parse(data.responseText.toString());
+                        $("#alter_message").html(response.message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
+                    catch(e){
+                        var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                        $("#alter_message").html(message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
                 }  
             });
     }
@@ -845,10 +910,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         });
                 },  
                 error : function(data) { 
-                    var response = JSON.parse(data.responseText.toString());
-                    $("#alter_message").html(response.message);
-                    $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    try {
+                        var response = JSON.parse(data.responseText.toString());
+                        $("#alter_message").html(response.message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
+                    catch(e){
+                        var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                        $("#alter_message").html(message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
                 }  
             });
     }
@@ -875,11 +948,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     setTimeout("window.location = '<%=basePath%>CustomerManage/CustomerQuery'",2000);
                 },  
                 error : function(data) { 
-
-                    var response = JSON.parse(data.responseText.toString());
-                    $("#alter_message").html(response.message);
-                    $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    try {
+                        var response = JSON.parse(data.responseText.toString());
+                        $("#alter_message").html(response.message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
+                    catch(e){
+                        var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                        $("#alter_message").html(message);
+                        $("#modal-message").modal("show");
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    }
                 }  
             });
     }
