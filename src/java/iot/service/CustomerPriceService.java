@@ -18,8 +18,6 @@ import iot.response.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -113,9 +111,9 @@ public class CustomerPriceService {
             //倒序取customerPriceList中的數據，每次5條
             for(int j = 1; j <= size; j++){
                 CustomerPrice customerPrice = customerPriceList.get(size - j);
-                if(customerPrice.getProductMasterId().getProductId().equals(productId) && (Integer.parseInt(rangeMax) > customerPrice.getRangeMin() && Integer.parseInt(rangeMin) < customerPrice.getRangeMax())){
+                if(customerPrice.getProductMasterId().getProductId().equals(productId) && (Integer.parseInt(rangeMax) >= customerPrice.getRangeMin() && Integer.parseInt(rangeMin) <= customerPrice.getRangeMax())){
                     ++count;
-                    if(count > pageNo*5){
+                    if(count > pageNo*5 && count <= pageNo*5 + 5){
                         List list_row = new ArrayList();
                         list_row.add(customerPrice.getCustomerPriceId() + ":" + customerPrice.getVersionNumber());
                         list_row.add(customerPrice.getCustomerMasterId().getCustomerId() + " : " + customerPrice.getCustomerMasterId().getCustomerName());
@@ -125,11 +123,8 @@ public class CustomerPriceService {
                         responseList.add(list_row);
                     }
                 }
-                if(responseList.size() == 5){
-                    totalPage = pageNo + 2;
-                    break;
-                }
             }
+            totalPage = (count - 1)/5 + 1;
         }
         else{
             for(int j = 1; j <= size; j++){

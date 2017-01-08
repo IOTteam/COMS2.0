@@ -307,7 +307,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</table>
             <p align="right"> <input type="button" class="btn btn-default radius" value="上一頁" id="pre_cp" />
             <input class="radius" type="text" id="pageNo_cp" value="1" readonly="true" style="width:30px" />/
-            <input class="radius" type="text" id="totalPage_cp"  readonly="true" style="width:30px" />
+            <input class="radius" type="text" id="totalPage_cp" value="1"  readonly="true" style="width:30px" />
             <input type="button" class="btn btn-default radius" value="下一頁" id="next_cp" />
             </p>
         </div>   
@@ -582,10 +582,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             customerId = customerInfo[0];
             $("#customer_id").val(customerId);
         } 
-        if(isCross === true && (productId === null || rangeMin === null || rangeMax === null)){
-            isCross = false;
-            getCustomerPriceList("addCustomerPrice",isCross);
-        }
         
         if(value === "pre_cp"){
             if(pageNo <= 1) return ;
@@ -596,6 +592,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
            if(pageNo >= totalPage) return ;
            pageNo_ = pageNo;
            $("#pageNo_cp").val(pageNo + 1);
+        }
+        if(value === "addCustomerPrice"){
+            if(pageNo < 1) return ;
+            pageNo_ = pageNo - 1;
         }
         
         $.ajax({  
@@ -609,6 +609,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                   
                     var customerPriceList = data.data;
                     if(customerPriceList.length === 0){
+                        if(pageNo > 1){
+                            $("#pageNo_cp").val(pageNo - 1);
+                            getCustomerPriceList("addCustomerPrice",isCross);
+                        }
+                        else if(isCross === true){
+                            isCross = false;
+                            getCustomerPriceList("addCustomerPrice",isCross);
+                        }
                         return;
                     }
                     
@@ -633,6 +641,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     
                 },  
                 error : function(data) { 
+                    $("#pageNo_cp").val(pageNo);
                     try {
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
@@ -734,6 +743,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 data : {customerId:customerId,productId:productId,productPrice:productPrice,rangeMin:rangeMin,rangeMax:rangeMax,rangePrice:rangePrice},  
                 success : function(data) {
                     
+                    isCross = false;
                     $("#pageNo_cp").val(1);
                     $("#totalPage_cp").val(data.count);
                     $("#product_id").val(null);
@@ -772,6 +782,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                         if(/[交|叉|區|域]{4}/.test(response.message)){
                             isCross = true;
+                            $("#pageNo_cp").val(1);
                             getCustomerPriceList("addCustomerPrice",isCross);
                         }
                     }
@@ -830,7 +841,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         i++;
                     });
                 },  
-                error : function(data) { 
+                error : function(data) {
+                    getCustomerPriceList("addCustomerPrice",isCross);
                     try {
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
@@ -843,7 +855,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $("#modal-message").modal("show");
                         setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
-                    getCustomerPriceList("addCustomerPrice",false);
                 }  
             }); 
     }

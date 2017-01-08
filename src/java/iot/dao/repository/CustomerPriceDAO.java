@@ -501,11 +501,13 @@ public class CustomerPriceDAO implements Serializable {
                 throw new ValidationException("數量級區間大小有誤");
             }
             
-            Predicate predicate_range_min = cb.and(cb.le(customerPrice.get(CustomerPrice_.rangeMin), rangeMin),cb.ge(customerPrice.get(CustomerPrice_.rangeMax), rangeMin));
-            Predicate predicate_range_max = cb.and(cb.le(customerPrice.get(CustomerPrice_.rangeMin), rangeMax),cb.ge(customerPrice.get(CustomerPrice_.rangeMax), rangeMax));
+//            Predicate predicate_range_min = cb.and(cb.le(customerPrice.get(CustomerPrice_.rangeMin), rangeMin),cb.ge(customerPrice.get(CustomerPrice_.rangeMax), rangeMin));
+//            Predicate predicate_range_max = cb.and(cb.le(customerPrice.get(CustomerPrice_.rangeMin), rangeMax),cb.ge(customerPrice.get(CustomerPrice_.rangeMax), rangeMax));
+            Predicate predicate_range_min = cb.and(cb.ge(customerPrice.get(CustomerPrice_.rangeMax), rangeMin),cb.le(customerPrice.get(CustomerPrice_.rangeMin), rangeMax));
+            //Predicate predicate_range_max = cb.and(cb.le(customerPrice.get(CustomerPrice_.rangeMin), rangeMax),cb.ge(customerPrice.get(CustomerPrice_.rangeMax), rangeMax));
             Predicate predicate_cus_pro = cb.and(cb.equal(customerPrice.get(CustomerPrice_.customerMasterId), customer),cb.equal(customerPrice.get(CustomerPrice_.productMasterId), product));
             Predicate predicate_not_delete = cb.equal(customerPrice.get(CustomerPrice_.deleteStatus), false);
-            cq.where(cb.and(predicate_cus_pro,cb.or(predicate_range_min,predicate_range_max),predicate_not_delete));
+            cq.where(cb.and(predicate_cus_pro,predicate_range_min,predicate_not_delete));
             
             Query count = em.createQuery(cq);
             

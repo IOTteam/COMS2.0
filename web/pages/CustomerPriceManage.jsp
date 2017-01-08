@@ -551,6 +551,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     });
                 },  
                 error : function(data) {  
+                    $("#pageNo").val(pageNo);
                     try {
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
