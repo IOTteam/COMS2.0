@@ -16,6 +16,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import javax.validation.constraints.Digits;
 
 /**
  *
@@ -24,12 +25,18 @@ import javax.persistence.Version;
 @Entity
 @Table(name = "order_detail_master")
 @NamedQueries({
-    @NamedQuery(name = "OrderDetail.findAll", query = "SELECT o FROM OrderDetail o"),
-    @NamedQuery(name = "OrderDetail.findByOrddetailMasterId", query = "SELECT o FROM OrderDetail o WHERE o.orddetailMasterId = :orddetailMasterId"),
-    @NamedQuery(name = "OrderDetail.findByOrderDetailId", query = "SELECT o FROM OrderDetail o WHERE o.orderDetailId = :orderDetailId"),
-    @NamedQuery(name = "OrderDetail.findByOrderQty", query = "SELECT o FROM OrderDetail o WHERE o.orderQty = :orderQty"),
-    @NamedQuery(name = "OrderDetail.findByOrderPrice", query = "SELECT o FROM OrderDetail o WHERE o.orderPrice = :orderPrice"),
-    @NamedQuery(name = "OrderDetail.findByVersionNumber", query = "SELECT o FROM OrderDetail o WHERE o.versionNumber = :versionNumber"),
+    @NamedQuery(name = "OrderDetail.findAll", query = "SELECT o FROM OrderDetail o")
+    ,
+    @NamedQuery(name = "OrderDetail.findByOrddetailMasterId", query = "SELECT o FROM OrderDetail o WHERE o.orddetailMasterId = :orddetailMasterId")
+    ,
+    @NamedQuery(name = "OrderDetail.findByOrderDetailId", query = "SELECT o FROM OrderDetail o WHERE o.orderDetailId = :orderDetailId")
+    ,
+    @NamedQuery(name = "OrderDetail.findByOrderQty", query = "SELECT o FROM OrderDetail o WHERE o.orderQty = :orderQty")
+    ,
+    @NamedQuery(name = "OrderDetail.findByOrderPrice", query = "SELECT o FROM OrderDetail o WHERE o.orderPrice = :orderPrice")
+    ,
+    @NamedQuery(name = "OrderDetail.findByVersionNumber", query = "SELECT o FROM OrderDetail o WHERE o.versionNumber = :versionNumber")
+    ,
     @NamedQuery(name = "OrderDetail.findByDeleteStatus", query = "SELECT o FROM OrderDetail o WHERE o.deleteStatus = :deleteStatus")})
 public class OrderDetail implements Serializable {
 
@@ -42,6 +49,7 @@ public class OrderDetail implements Serializable {
     @Column(name = "order_detail_id")
     private String orderDetailId;
     @Basic(optional = false)
+    @Digits(integer = 10, fraction = 0, message = "數據格式只能是整數，且長度最多10位")
     @Column(name = "order_qty")
     private int orderQty;
     @Basic(optional = false)
@@ -163,5 +171,5 @@ public class OrderDetail implements Serializable {
     public String toString() {
         return "iot.dao.entity.OrderDetailMaster[ orddetailMasterId=" + orddetailMasterId + " ]";
     }
-    
+
 }
