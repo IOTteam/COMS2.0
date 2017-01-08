@@ -599,6 +599,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
                         setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
+                        $("#modal-message").bind("hide",function (){
+                            if(/[請重試|不存在]{3}/.test(response.message)){
+                                window.location = "<%=basePath%>CustomerPriceManage/queryCustomerPrice";
+                            }
+                        });
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
@@ -635,7 +640,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $("#updateCustomerPrice").modal("toggle");
                     $("#alter_message").html(data.message);
                     $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",4500);
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",3000);
                     
                     var customerPrice = new Array(data.data.customerPriceId,data.data.customerMasterId.customerId,data.data.customerMasterId.customerName,
                                                   data.data.productMasterId.productId,data.data.productMasterId.productName,data.data.rangeMin +"~"+data.data.rangeMax,
@@ -663,6 +668,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
                         setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
+                         $("#modal-message").bind("hide",function (){
+                            if(/[請重試|不存在]{3}/.test(response.message)){
+                                window.location = "<%=basePath%>CustomerPriceManage/queryCustomerPrice";
+                            }
+                        });
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];

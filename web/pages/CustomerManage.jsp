@@ -535,9 +535,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     
                     $("#alter_message").html(data.message);
                     $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",3000);
                     $("#customer_id").val(data.data.customerId);
-                    setTimeout("$(\"#addCustomerPrice\").modal(\"show\")",5000); 
+                    $("#modal-message").bind("hide",function (){
+                        $("#addCustomerPrice").modal("show")
+                    });
                     $("#addCustomerPrice").bind('hide', function() {
                         window.location = "<%=basePath%>CustomerManage/CustomerQuery";
                     });
@@ -887,6 +889,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
                         setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
+                        $("#modal-message").bind("hide",function (){
+                            if(/[請重試|不存在]{3}/.test(response.message)){
+                                window.location = "<%=basePath%>CustomerManage/CustomerQuery";
+                            }
+                        });
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
@@ -918,10 +925,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 data : {customerMasterId:customerMasterId,customerId:customerId,customerName:customerName,customerMail:customerMail,customerPhone:customerPhone,versionNumber:versionNumber},  
                 success : function(data) {  
 
-                    $("#updateCustomer").modal("toggle");
+                    $("#updateCustomer").modal("hide");
                     $("#alter_message").html(data.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",5000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",3000);
                     
                     var customer = new Array(data.data.customerId,data.data.customerName,data.data.customerMail,data.data.customerPhone);
                     
@@ -944,6 +951,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
                         setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
+                        $("#modal-message").bind("hide",function (){
+                            if(/[請重試|不存在]{3}/.test(response.message)){
+                                window.location = "<%=basePath%>CustomerManage/CustomerQuery";
+                            }
+                        });
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
@@ -972,9 +984,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 success : function(data) {  
                     
                     $("#alter_message").html(data.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",5000);
-                    setTimeout("window.location = '<%=basePath%>CustomerManage/CustomerQuery'",5000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",3000);
+                    $("#modal-message").bind("hide",function (){
+                       window.location = "<%=basePath%>CustomerManage/CustomerQuery";
+                    });
                 },  
                 error : function(data) { 
                     try {
