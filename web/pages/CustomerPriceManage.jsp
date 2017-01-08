@@ -333,13 +333,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     var response = JSON.parse(data.responseText.toString());
                     $("#alter_message").html(response.message);
                     $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                 }
                 catch(e){
                     var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                     $("#alter_message").html(message);
                     $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                 }
             }
          }); 
@@ -378,7 +378,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     var str = data.responseText.toString();
                     $("#alter_message").html(str.split("##")[1]);
                     $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",4500);
                 }  
             });
         }
@@ -422,14 +422,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         throw new Error(response.message);
                         //$("#alter_message").html(response.message);
                         //$("#modal-message").modal("show");
-                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         throw new Error(message);
                         //$("#alter_message").html(message);
                         //$("#modal-message").modal("show");
-                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                     }
                 }  
             });
@@ -485,14 +485,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         throw new Error(response.message);
                         //$("#alter_message").html(response.message);
                         //$("#modal-message").modal("show");
-                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         throw new Error(message);
                         //$("#alter_message").html(message);
                         //$("#modal-message").modal("show");
-                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                     }
                 }  
             });
@@ -555,13 +555,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                     }
                 }  
             });
@@ -597,13 +597,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                     }
                 }  
             });
@@ -634,7 +634,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $("#updateCustomerPrice").modal("toggle");
                     $("#alter_message").html(data.message);
                     $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",4500);
                     
                     var customerPrice = new Array(data.data.customerPriceId,data.data.customerMasterId.customerId,data.data.customerMasterId.customerName,
                                                   data.data.productMasterId.productId,data.data.productMasterId.productName,data.data.rangeMin +"~"+data.data.rangeMax,
@@ -661,13 +661,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
                     }
                 }  
             });

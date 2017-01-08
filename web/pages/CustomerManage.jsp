@@ -434,14 +434,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         throw new Error(response.message);
                         //$("#alter_message").html(response.message);
                         //$("#modal-message").modal("show");
-                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         throw new Error(message);
                         //$("#alter_message").html(message);
                         //$("#modal-message").modal("show");
-                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        //setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                 }  
             });
@@ -503,13 +503,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                 }  
             });
@@ -535,9 +535,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     
                     $("#alter_message").html(data.message);
                     $("#modal-message").modal("show");
-                    setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     $("#customer_id").val(data.data.customerId);
-                    setTimeout("$(\"#addCustomerPrice\").modal(\"show\")",2000); 
+                    setTimeout("$(\"#addCustomerPrice\").modal(\"show\")",5000); 
                     $("#addCustomerPrice").bind('hide', function() {
                         window.location = "<%=basePath%>CustomerManage/CustomerQuery";
                     });
@@ -547,13 +547,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                 }  
             });
@@ -565,20 +565,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      * 
      ********************************************************************************/
     $("#addCustomerPrice").bind('show', function() {
-        getCustomerPriceList(this.id);
+        getCustomerPriceList(this.id,isCross);
     });
     $("#pre_cp,#next_cp").bind('click', function() {
-        getCustomerPriceList(this.id);
+        getCustomerPriceList(this.id,isCross);
     });
-    function getCustomerPriceList(value){
+    function getCustomerPriceList(value,isCross){
         var customerId = $("#customer_id").val();
         var pageNo = parseInt($("#pageNo_cp").val());
         var pageNo_ = "";
         var totalPage = parseInt($("#totalPage_cp").val());
+        var productId = $("#product_id").val();
+        var rangeMin = $("#range_min").val();
+        var rangeMax = $("#range_max").val();
         if(customerId === ""){
             customerId = customerInfo[0];
             $("#customer_id").val(customerId);
         } 
+        if(isCross === true && (productId === null || rangeMin === null || rangeMax === null)){
+            isCross = false;
+            getCustomerPriceList("addCustomerPrice",isCross);
+        }
         
         if(value === "pre_cp"){
             if(pageNo <= 1) return ;
@@ -595,7 +602,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 url : "<%=basePath%>CustomerPriceManage/queryCustomerPriceByCustomerId",  
                 type : "post",  
                 datatype:"json",  
-                data:{customerId:customerId,pageNo:pageNo_},
+                data:{customerId:customerId,pageNo:pageNo_,isCross:isCross,productId:productId,rangeMin:rangeMin,rangeMax:rangeMax},
                 success : function(data) {
                     
                     $("#totalPage_cp").val(data.count);
@@ -630,13 +637,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                 }  
             });
@@ -648,6 +655,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      * 
      ********************************************************************************/
     $("#addCustomerPrice").bind('hide', function() {
+        isCross = false;
         $("#customer_id").val(null);
         $("#product_id").val(null);
         $("#product_price").val(null);
@@ -693,13 +701,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                 }  
             });
@@ -710,6 +718,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      * 功能簡述：新增客戶產品單價資訊
      * 
      ********************************************************************************/
+     var isCross = false;
      function addCustomerPrice(){
         var customerId = $("#customer_id").val();
         var productId = $("#product_id").val();
@@ -760,13 +769,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
+                        if(/[交|叉|區|域]{4}/.test(response.message)){
+                            isCross = true;
+                            getCustomerPriceList("addCustomerPrice",isCross);
+                        }
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                 }  
             });
@@ -787,6 +800,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 datatype:"json",  
                 data:{customerPriceId:customerPriceId,versionNumber:versionNumber},
                 success : function(data) { 
+                    
+                    if(isCross === true){
+                        getCustomerPriceList("addCustomerPrice",isCross);
+                        return ;
+                    }
                     $("#pageNo_cp").val(1);
                     $("#totalPage_cp").val(data.count);
                     
@@ -817,15 +835,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
-                    getCustomerPriceList("addCustomerPrice");
+                    getCustomerPriceList("addCustomerPrice",false);
                 }  
             }); 
     }
@@ -857,13 +875,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                 }  
             });
@@ -892,7 +910,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $("#updateCustomer").modal("toggle");
                     $("#alter_message").html(data.message);
                     $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",5000);
                     
                     var customer = new Array(data.data.customerId,data.data.customerName,data.data.customerMail,data.data.customerPhone);
                     
@@ -914,13 +932,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                 }  
             });
@@ -944,21 +962,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     
                     $("#alter_message").html(data.message);
                     $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",2000);
-                    setTimeout("window.location = '<%=basePath%>CustomerManage/CustomerQuery'",2000);
+                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",5000);
+                    setTimeout("window.location = '<%=basePath%>CustomerManage/CustomerQuery'",5000);
                 },  
                 error : function(data) { 
                     try {
                         var response = JSON.parse(data.responseText.toString());
                         $("#alter_message").html(response.message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                     catch(e){
                         var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
                         $("#alter_message").html(message);
                         $("#modal-message").modal("show");
-                        setTimeout("$(\"#modal-message\").modal(\"hide\")",2000);
+                        setTimeout("$(\"#modal-message\").modal(\"hide\")",5000);
                     }
                 }  
             });

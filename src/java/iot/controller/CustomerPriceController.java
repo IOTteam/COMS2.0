@@ -119,14 +119,24 @@ public class CustomerPriceController {
      * 功能簡述：通過客戶編號查詢客戶產品單價資訊
      * 
      * @param customerId
+     * @param productId
+     * @param rangeMin
+     * @param rangeMax
+     * @param isCross
      * @param pageNo
      * @return 
+     * @throws iot.dao.repository.exceptions.NonexistentEntityException 
      ********************************************************************************/
     @RequestMapping(value = "queryCustomerPriceByCustomerId")
     @ResponseBody
-    public Response queryCustomerPrice( @RequestParam("customerId") String customerId, @RequestParam(value = "pageNo",defaultValue = "0") int pageNo) throws NonexistentEntityException{
+    public Response queryCustomerPrice( @RequestParam("customerId") String customerId,
+                                    @RequestParam(value = "isCross",defaultValue = "false") boolean isCross,
+                                    @RequestParam("productId") String productId,
+                                    @RequestParam(value = "rangeMin",defaultValue = "") String rangeMin ,
+                                    @RequestParam(value = "rangeMax",defaultValue = "") String rangeMax,
+                                    @RequestParam(value = "pageNo",defaultValue = "0") int pageNo) throws NonexistentEntityException{
         
-        return customerPriceService.queryCustomerPriceService(customerId, pageNo);
+        return customerPriceService.queryCustomerPriceService(customerId, pageNo, isCross, productId, rangeMin, rangeMax);
     } 
     
     /*******************************************************************************

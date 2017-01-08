@@ -75,6 +75,24 @@ public class CustomerPriceService {
      ********************************************************************************/
     public Response queryCustomerPriceService(String customerId,int pageNo) throws NonexistentEntityException{
     
+        return queryCustomerPriceService(customerId, pageNo, false, "", "-1", "-1");
+    }
+    
+    /*******************************************************************************
+     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 功能簡述：通過客戶編號、產品編號、數量區間查詢指定客戶產品單價資訊
+     * 
+     * @param customerId
+     * @param pageNo
+     * @param isCross
+     * @param productId
+     * @param rangeMin
+     * @param rangeMax
+     * @return 
+     * @throws iot.dao.repository.exceptions.NonexistentEntityException 
+     ********************************************************************************/
+    public Response queryCustomerPriceService(String customerId,int pageNo, boolean isCross,String productId,String rangeMin,String rangeMax) throws NonexistentEntityException{
+    
         CustomerDAO customerDAO = new CustomerDAO(emf);
         Response response = customerDAO.findCustomerByCustomerId(customerId);
         
@@ -88,46 +106,57 @@ public class CustomerPriceService {
         
         int count = 0;
         List responseList = new ArrayList<>();
-        
-        //使用迭代器移除被邏輯刪除的客戶產品單價并順序取5條數據
-//        Iterator iterator = customerPriceList.listIterator();
-//        while(iterator.hasNext()){
-//            CustomerPrice customerPrice = (CustomerPrice) iterator.next();
-//            
-//            if(customerPrice.getDeleteStatus() == false){
-//                ++count;
-//                if(count > pageNo*5 && responseList.size() < 5){
-//                    responseList.add(customerPrice);
-//                }
-//            }
-//            if(customerPrice.getDeleteStatus() == true){
-//                 iterator.remove();
-//            }
-//        }
         int size = customerPriceList.size();
+        int totalPage = 1;
         
-        //倒序取customerPriceList中的數據，每次5條
-        for(int j = 1; j <= size; j++){
-            CustomerPrice customerPrice = customerPriceList.get(size - j);
-            if(customerPrice.getDeleteStatus() == false){
-                ++count;
-                if(count > pageNo*5){
-                    List list_row = new ArrayList();
-                    list_row.add(customerPrice.getCustomerPriceId() + ":" + customerPrice.getVersionNumber());
-                    list_row.add(customerPrice.getCustomerMasterId().getCustomerId() + " : " + customerPrice.getCustomerMasterId().getCustomerName());
-                    list_row.add(customerPrice.getProductMasterId().getProductId() + " : " + customerPrice.getProductMasterId().getProductName());
-                    list_row.add(customerPrice.getRangeMin() + "~" + customerPrice.getRangeMax());
-                    list_row.add(customerPrice.getRangePrice());
-                    responseList.add(list_row);
+        if(isCross){
+            //倒序取customerPriceList中的數據，每次5條
+            for(int j = 1; j <= size; j++){
+                CustomerPrice customerPrice = customerPriceList.get(size - j);
+                if(customerPrice.getProductMasterId().getProductId().equals(productId) && (Integer.parseInt(rangeMax) > customerPrice.getRangeMin() && Integer.parseInt(rangeMin) < customerPrice.getRangeMax())){
+                    ++count;
+                    if(count > pageNo*5){
+                        List list_row = new ArrayList();
+                        list_row.add(customerPrice.getCustomerPriceId() + ":" + customerPrice.getVersionNumber());
+                        list_row.add(customerPrice.getCustomerMasterId().getCustomerId() + " : " + customerPrice.getCustomerMasterId().getCustomerName());
+                        list_row.add(customerPrice.getProductMasterId().getProductId() + " : " + customerPrice.getProductMasterId().getProductName());
+                        list_row.add(customerPrice.getRangeMin() + "~" + customerPrice.getRangeMax());
+                        list_row.add(customerPrice.getRangePrice());
+                        responseList.add(list_row);
+                    }
+                }
+                if(responseList.size() == 5){
+                    totalPage = pageNo + 2;
+                    break;
                 }
             }
-            if(responseList.size() == 5){
-                break;
-            }
         }
-
-        return new Response().success("通過外鍵關聯獲取客戶產品單價",responseList,((size-1)/5) + 1);
+        else{
+            for(int j = 1; j <= size; j++){
+                CustomerPrice customerPrice = customerPriceList.get(size - j);
+                if(customerPrice.getDeleteStatus() == false){
+                    ++count;
+                    if(count > pageNo*5){
+                        List list_row = new ArrayList();
+                        list_row.add(customerPrice.getCustomerPriceId() + ":" + customerPrice.getVersionNumber());
+                        list_row.add(customerPrice.getCustomerMasterId().getCustomerId() + " : " + customerPrice.getCustomerMasterId().getCustomerName());
+                        list_row.add(customerPrice.getProductMasterId().getProductId() + " : " + customerPrice.getProductMasterId().getProductName());
+                        list_row.add(customerPrice.getRangeMin() + "~" + customerPrice.getRangeMax());
+                        list_row.add(customerPrice.getRangePrice());
+                        responseList.add(list_row);
+                    }
+                }
+                if(responseList.size() == 5){
+                    break;
+                }
+            }
+            totalPage = ((size-1)/5) + 1;
+        }
+        
+        return new Response().success("通過外鍵關聯獲取客戶產品單價",responseList,totalPage);
     }
+    
+    
     
     /*******************************************************************************
      * 建立者：Saulden  建立日期：-  最後修訂日期：-

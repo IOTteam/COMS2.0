@@ -37,6 +37,20 @@ public class ExceptionAdvice {
     
     /*******************************************************************************
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 功能簡述：處理字符串轉換數字異常
+     * 
+     * @param e
+     * @return 
+     ********************************************************************************/
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public Response NumberFormatExceptionHandle(NumberFormatException e) {
+        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
+        return new Response().failure(e.getMessage());
+    }
+    
+    /*******************************************************************************
+     * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：處理驗證異常
      * 
      * @param e
@@ -154,20 +168,6 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NoSuchFieldException.class)
     public Response NoSuchFieldExceptionHandle(NoSuchFieldException e) {
-        Logger.getLogger("Exception").log(Level.SEVERE, "", e);
-        return new Response().failure(e.getMessage());
-    }
-    
-    /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
-     * 功能簡述：處理字符串轉換數字異常
-     * 
-     * @param e
-     * @return 
-     ********************************************************************************/
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NumberFormatException.class)
-    public Response NumberFormatExceptionHandle(NumberFormatException e) {
         Logger.getLogger("Exception").log(Level.SEVERE, "", e);
         return new Response().failure(e.getMessage());
     }

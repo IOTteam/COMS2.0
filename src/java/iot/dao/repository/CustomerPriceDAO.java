@@ -25,7 +25,6 @@ import javax.persistence.criteria.Predicate;
 import javax.validation.ValidationException;
 import iot.response.Response;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 import javax.persistence.NoResultException;
 import javax.persistence.OptimisticLockException;
 
