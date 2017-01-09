@@ -163,7 +163,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <!--订单信息列表-->           
     <section class="Hui-article-box">
         <div class="page-container">
-            <form action="queryOrderHeadList" method="post">
+            <form id="queryOrderHeadForm" action="queryOrderHeadList" method="post">
 		<h3 align="center">訂單頭檔信息列表</h3>
                 <br/>
                 <p align="center">
@@ -499,6 +499,53 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     dealWithOD();
                 });
               });
+     
+     
+     
+     
+        $(document).ready(function() { 
+        $('#queryOrderHeadForm').ajaxForm({ 
+            success:function (data){
+               var html =  data.split("<div id=\"CusPriceTableDiv\">")[1].split("</div>")[0];
+                $("#CusPriceTableDiv").html(html);
+                $('#custPriceEditBotton').removeAttr('href');
+                $("#custPriceEditBotton").removeClass("btn btn-primary radius");
+                $("#custPriceEditBotton").addClass("btn btn-default radius");
+                
+                $("tr").click(function(){
+                $(this).find("td").each(function(){
+                    var text = $(this).text();
+                    if(/CUSPRO[0-9]{6}/g.test(text)){
+                        $("tr").each(function (){
+                        $(this).removeClass("success");
+                    })
+                    $(this).parents("tr").attr('class',"success");
+                    $('#custPriceEditBotton').attr('href',"#updateCustomerPrice");//添加标签中的href属
+                    $("#custPriceEditBotton").removeClass("btn btn-default radius");
+                    $("#custPriceEditBotton").addClass("btn btn-primary radius");
+                    }
+                    customerPrice[0] = text;
+                    return false;
+                });
+            });
+            },
+            error:function (data){
+                try {
+                    var response = JSON.parse(data.responseText.toString());
+                    $("#alter_message").html(response.message);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
+                }
+                catch(e){
+                    var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                    $("#alter_message").html(message);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
+                }
+            }
+         }); 
+    })
+     
      
 
 //點擊訂單詳細時，分頁顯示訂單身檔內容
