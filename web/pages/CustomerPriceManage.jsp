@@ -185,7 +185,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <datalist id="priceMax_list"> 
                     </datalist>
                     <input class="btn btn-primary radius"  type="submit" value="查询" id="query_Cust_Price"/>
-                    <a class="btn btn-default radius" type="button" id="custPriceEditBotton" onclick="getCustomerPriceForUpdate()" data-toggle="modal" style="display: inline-block;" >修改</a>    
+                    <a class="btn btn-default radius" type="button" id="custPriceEditBotton" data-toggle="modal" style="display: inline-block;" >修改</a>    
                 </p>
             </form>
             <div id="CusPriceTableDiv">
@@ -573,6 +573,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      * 功能簡述：獲取要修改的客戶產品單價資訊
      * 
      ********************************************************************************/
+    $("#updateCustomerPrice").bind('show', function() {
+        getCustomerPriceForUpdate();
+    });
+    $("#updateCustomerPrice").bind("hide",function (){
+        $("#presentPrice_update").val(null);
+    });
     function getCustomerPriceForUpdate(){
         
         var customerPriceId =  customerPrice[0];
@@ -697,23 +703,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             if(/CUSPRO[0-9]{6}/g.test(text)){
                 $("tr").each(function (){
                 $(this).removeClass("success");
+                $('#custPriceEditBotton').attr('href',"#updateCustomerPrice");//添加标签中的href属
+                $("#custPriceEditBotton").removeClass("btn btn-default radius");
+                $("#custPriceEditBotton").addClass("btn btn-primary radius");
             })
             $(this).parents("tr").attr('class',"success");
-            }
             customerPrice[0] = text;
+            }
             return false;
         });
-
-        if(/CUSPRO[0-9]{6}/g.test(customerPrice[0])){   
-            
-            $('#custPriceEditBotton').attr('href',"#updateCustomerPrice");//添加标签中的href属
-            $("#custPriceEditBotton").removeClass("btn btn-default radius");
-            $("#custPriceEditBotton").addClass("btn btn-primary radius");
-        }else{
-            $('#custPriceEditBotton').removeAttr('href');
-            $("#custPriceEditBotton").removeClass("btn btn-primary radius");
-            $("#custPriceEditBotton").addClass("btn btn-default radius");
-        }
     });
 
 // /**

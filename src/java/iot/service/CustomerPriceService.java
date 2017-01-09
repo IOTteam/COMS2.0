@@ -1,8 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*******************************************************************************
+* 建立者：Saulden  建立日期：2016/12/13  最後修訂日期：2017/01/09
+* 功能簡述：客戶產品單價管理Service
+* 
+********************************************************************************/
 package iot.service;
 
 
@@ -22,36 +22,33 @@ import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- *
- * @author hatanococoro
- */
 @Service
 public class CustomerPriceService {
 
     @Autowired
-    private EntityManagerFactory emf;//声明一个实体管理工厂，创建实体管理，使用实体管理操作数据库
+    private EntityManagerFactory emf;
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：條件查詢客戶產品單價
      * 
-     * @param productName
-     * @param priceMin
-     * @param rangeMin
-     * @param priceMax
-     * @param rangeMax
-     * @param customerName
-     * @param pageNo
+     * @param productName   產品名稱
+     * @param priceMin      價格起始
+     * @param rangeMin      數量級起始
+     * @param priceMax      價格終值
+     * @param rangeMax      數量級終值
+     * @param customerName  客戶姓名
+     * @param pageNo        要查詢的頁碼
      * @return 
      * @throws iot.dao.repository.exceptions.JPAQueryException 
      ********************************************************************************/
     public Response queryCustomerPriceService(String customerName, String productName, String priceMin,String priceMax, String rangeMin, String rangeMax, int pageNo) throws JPAQueryException{
     
+        //模糊查詢客戶實體
         CustomerDAO customerDAO = new CustomerDAO(emf);
         List<Customer> customerList = (List<Customer>) customerDAO.findCustomerByCustomerName(customerName).getData();
         
-        //通过模糊查询产品名称找到产品实体
+        //模糊查詢產品實體
         ProductDAO productDAO = new ProductDAO(emf);
         List<Product> productList = (List<Product>) productDAO.findProductByProductName(productName).getData();
         
@@ -63,11 +60,11 @@ public class CustomerPriceService {
     }
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：通過客戶編號查詢客戶產品單價資訊
      * 
-     * @param customerId
-     * @param pageNo
+     * @param customerId  客戶編號
+     * @param pageNo      要查詢的頁碼
      * @return 
      * @throws iot.dao.repository.exceptions.NonexistentEntityException 
      ********************************************************************************/
@@ -77,15 +74,15 @@ public class CustomerPriceService {
     }
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：通過客戶編號、產品編號、數量區間查詢指定客戶產品單價資訊
      * 
-     * @param customerId
-     * @param pageNo
-     * @param isCross
-     * @param productId
-     * @param rangeMin
-     * @param rangeMax
+     * @param customerId   客戶編號
+     * @param pageNo       要查詢的頁碼
+     * @param isCross      是否是查詢區間交叉的資料
+     * @param productId    產品編號
+     * @param rangeMin     數量級起始
+     * @param rangeMax     數量級終值
      * @return 
      * @throws iot.dao.repository.exceptions.NonexistentEntityException 
      ********************************************************************************/
@@ -94,12 +91,12 @@ public class CustomerPriceService {
         CustomerDAO customerDAO = new CustomerDAO(emf);
         Response response = customerDAO.findCustomerByCustomerId(customerId);
         
-        if(response.isEmpty()){
+        if(response.isEmpty()){//未查詢到客戶，拋出異常
             throw new NonexistentEntityException(response.getMessage());
         }
         
         Customer customer = (Customer)response.getData();
-        
+        //通過客戶的映射集合獲得客戶產品單價
         List<CustomerPrice> customerPriceList = (List<CustomerPrice>)customer.getCustomerPriceMasterCollection();
         
         int count = 0;
@@ -107,13 +104,14 @@ public class CustomerPriceService {
         int size = customerPriceList.size();
         int totalPage = 1;
         
-        if(isCross){
+        if(isCross){//查詢區間交叉的資料
             //倒序取customerPriceList中的數據，每次5條
             for(int j = 1; j <= size; j++){
                 CustomerPrice customerPrice = customerPriceList.get(size - j);
+                //客戶編號相同，數量級區間有交叉
                 if(customerPrice.getProductMasterId().getProductId().equals(productId) && (Integer.parseInt(rangeMax) >= customerPrice.getRangeMin() && Integer.parseInt(rangeMin) <= customerPrice.getRangeMax())){
-                    ++count;
-                    if(count > pageNo*5 && count <= pageNo*5 + 5){
+                    ++count;//統計區間交叉資料的數量
+                    if(count > pageNo*5 && count <= pageNo*5 + 5){//從指定的頁數開始取值，取5條
                         List list_row = new ArrayList();
                         list_row.add(customerPrice.getCustomerPriceId() + ":" + customerPrice.getVersionNumber());
                         list_row.add(customerPrice.getCustomerMasterId().getCustomerId() + " : " + customerPrice.getCustomerMasterId().getCustomerName());
@@ -127,7 +125,7 @@ public class CustomerPriceService {
             totalPage = (count - 1)/5 + 1;
         }
         else{
-            for(int j = 1; j <= size; j++){
+            for(int j = 1; j <= size; j++){//倒序遍歷集合，取指定頁數的資料
                 CustomerPrice customerPrice = customerPriceList.get(size - j);
                 if(customerPrice.getDeleteStatus() == false){
                     ++count;
@@ -141,7 +139,7 @@ public class CustomerPriceService {
                         responseList.add(list_row);
                     }
                 }
-                if(responseList.size() == 5){
+                if(responseList.size() == 5){//取到5條資料后跳出循環
                     break;
                 }
             }
@@ -154,24 +152,24 @@ public class CustomerPriceService {
     
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：查詢客戶姓名、產品名稱輸入框下拉列表數據
      * 
-     * @param inputId
-     * @param customerName
-     * @param productName
+     * @param inputId        前台聚焦的輸入框id
+     * @param customerName   客戶姓名
+     * @param productName    產品名稱
      * @return 
      * @throws java.lang.NoSuchFieldException 
      ********************************************************************************/
     public Response getCustomerAndProductListService(String inputId, String customerName, String productName) throws NoSuchFieldException{
     
-        if("customer_name_input".equals(inputId)){
+        if("customer_name_input".equals(inputId)){//輸入框為客戶姓名輸入框
             CustomerDAO customerDAO = new CustomerDAO(emf);
             List customerNameList = (List) customerDAO.findCustomerNameListByCustomerName(customerName, false, 0, 10).getData();
             return new Response().success("查詢產品名列表成功", customerNameList);
         }
         
-        if("product_name_input".equals(inputId)){
+        if("product_name_input".equals(inputId)){//輸入框為產品名稱輸入框
             ProductDAO productDAO = new ProductDAO(emf);
             List productNameList = (List) productDAO.findProductNameListByProductName(productName, false, 0, 10).getData();
             return new Response().success("查詢產品名列表成功", productNameList);
@@ -181,15 +179,15 @@ public class CustomerPriceService {
     }
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：查詢數量級、價格輸入框下拉列表數據
      * 
-     * @param inputId
-     * @param customerName
-     * @param productName
-     * @param priceMin
-     * @param rangeMin
-     * @param rangeMax
+     * @param inputId        前台聚焦的輸入框id
+     * @param customerName   客戶姓名
+     * @param productName    產品姓名
+     * @param priceMin       價格起始
+     * @param rangeMin       數量級起始
+     * @param rangeMax       數量級終值
      * @return 
      * @throws java.lang.NoSuchFieldException 
      ********************************************************************************/
@@ -453,8 +451,7 @@ public class CustomerPriceService {
         count = count + 1;
         String number = String.format("%06d", count);
         customerPrice.setCustomerPriceId("CUSPRO" + number);
-   
-            customerPriceDAO.create(customerPrice);
+        customerPriceDAO.create(customerPrice);
        
         //CustomerPrice customerPriceNew = customerPriceDAO.findCustomerPriceByConditions(productMasterId, customerMasterId, rangeMin, rangeMax);
         return customerPrice;

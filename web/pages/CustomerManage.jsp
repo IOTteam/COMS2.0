@@ -168,7 +168,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </datalist>
                     <input class="btn btn-primary radius"  type="submit" value="查詢"/>
                     <a class="btn btn-primary radius" data-toggle="modal" href="#addCustomer">新增</a>
-                    <a class="btn btn-default radius" data-toggle="modal"  id="custEditButton" onclick="getCustomerForUpdate()">修改</a>
+                    <a class="btn btn-default radius" data-toggle="modal"  id="custEditButton" >修改</a>
                     <a data-toggle="modal" class="btn btn-default radius" id="custDelButton">刪除</a>
                 </p>
             </form>
@@ -520,6 +520,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      * 功能簡述：新增客戶
      * 
      ********************************************************************************/
+    $("#addCustomer").bind("hide",function (){
+        $("#customer_name_add").val(null);
+        $("#customer_mail_add").val(null);
+        $("#customer_phone_add").val(null);
+    });
     function addCustomer(){
         var customerName = $("#customer_name_add").val();
         var customerMail = $("#customer_mail_add").val();
@@ -531,7 +536,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 datatype:"json",  
                 data : {customerName:customerName,customerMail:customerMail,customerPhone:customerPhone},  
                 success : function(data) { 
-                    $("#addCustomer").modal("toggle");
+                    $("#addCustomer").modal("hide");
                     
                     $("#alter_message").html(data.message);
                     $("#modal-message").modal("show");
@@ -866,6 +871,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      * 功能簡述：獲取要修改的客戶資訊
      * 
      ********************************************************************************/
+    $("#updateCustomer").bind('show', function() {
+        getCustomerForUpdate();
+    });
     function getCustomerForUpdate(){
         
         var customerId =  customerInfo[0];
@@ -1024,36 +1032,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $(this).removeClass("success");
                 })
                $(this).parent("tr").attr('class',"success");
+                $('#custEditButton').attr('href',"#updateCustomer");//添加标签中的href属
+                $("#custEditButton").removeClass("btn btn-default radius");
+                $("#custEditButton").addClass("btn btn-primary radius");
+            
+                $('#addCustomerPriceButton').attr('href',"#addCustomerPrice");//添加标签中的href属
+                $("#addCustomerPriceButton").removeClass("btn btn-default radius");
+                $("#addCustomerPriceButton").addClass("btn btn-primary radius");
+        
+                $('#custDelButton').attr('href',"#deleteInfo");//添加标签中的href属
+                $("#custDelButton").removeClass("btn btn-default radius");
+                $("#custDelButton").addClass("btn btn-primary radius");
            }
            return false;
-           });
-           
-        if(/CUS[0-9]{11}/g.test(customerInfo[0])){   
-
-            $('#custEditButton').attr('href',"#updateCustomer");//添加标签中的href属
-            $("#custEditButton").removeClass("btn btn-default radius");
-            $("#custEditButton").addClass("btn btn-primary radius");
-            
-            $('#addCustomerPriceButton').attr('href',"#addCustomerPrice");//添加标签中的href属
-            $("#addCustomerPriceButton").removeClass("btn btn-default radius");
-            $("#addCustomerPriceButton").addClass("btn btn-primary radius");
-        
-            $('#custDelButton').attr('href',"#deleteInfo");//添加标签中的href属
-            $("#custDelButton").removeClass("btn btn-default radius");
-            $("#custDelButton").addClass("btn btn-primary radius");
-        }else{
-            $('#custEditButton').removeAttr('href');//清除标签中的href属
-            $("#custEditButton").removeClass("btn btn-primary radius");
-            $("#custEditButton").addClass("btn btn-default radius");
-            
-            $('#addCustomerPriceButton').removeAttr('href');//清除标签中的href属
-            $("#addCustomerPriceButton").removeClass("btn btn-primary radius");
-            $("#addCustomerPriceButton").addClass("btn btn-default radius");
-        
-            $('#custDelButton').removeAttr('href');//清除标签中的href属
-            $("#custDelButton").removeClass("btn btn-primary radius");
-            $("#custDelButton").addClass("btn btn-default radius");
-        }
+           });       
     });
    
     
