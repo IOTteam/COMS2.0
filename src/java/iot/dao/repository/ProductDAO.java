@@ -270,7 +270,7 @@ public class ProductDAO implements Serializable {
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：獲取未刪除的產品列表信息，用於新增客戶產品單價
      * 
-     * @param productId
+     * @param productId  客戶編號
      * @return 
      ********************************************************************************/
         public Response findProductListByProductId(String productId) {
@@ -337,20 +337,20 @@ public class ProductDAO implements Serializable {
         
         
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：通過產品編號獲取產品實體
      * 
-     * @param productId
+     * @param productId  客戶編號
      * @return 
      ********************************************************************************/
         public Response findProductByProductId(String productId) {
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢語句
             CriteriaQuery<Product> cq = cb.createQuery(Product.class);
-            //定义实体类型
+            //定義實體類型
             Root<Product> product = cq.from(Product.class);
 
             List<Predicate> predicatesList = new ArrayList<>();
@@ -369,37 +369,38 @@ public class ProductDAO implements Serializable {
     }
         
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：通過產品名稱獲取產品實體
      * 
-     * @param productName
-     * @param all
-     * @param firstResult
-     * @param maxResult
+     * @param productName   產品名稱
+     * @param all           是否查詢全部
+     * @param isDiscount    是否只查詢有優惠資料
+     * @param firstResult   查詢起始位置
+     * @param maxResult     最大查詢數量
      * @return 
      ********************************************************************************/
         public Response findProductByProductName(String productName,boolean all,boolean isDiscount,int firstResult, int maxResult) {
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢語句
             CriteriaQuery<Product> cq = cb.createQuery(Product.class);
-            //定义实体类型
+            //定義實體類型
             Root<Product> product = cq.from(Product.class);
 
             List<Predicate> predicatesList = new ArrayList<>();
             predicatesList.add(cb.like(product.get(Product_.productName), "%" + productName + "%"));
             predicatesList.add(cb.equal(product.get(Product_.deleteStatus), false));
             
-            if(isDiscount){
+            if(isDiscount){//只查詢有優惠的產品
                 predicatesList.add(cb.equal(product.get(Product_.discountStatus), true));
             }
             
             cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
             Query q = em.createQuery(cq);
             
-            if(!all){
+            if(!all){//不查詢全部時，設置分頁條件
                 q.setFirstResult(firstResult);
                 q.setMaxResults(maxResult);
             }
@@ -415,7 +416,7 @@ public class ProductDAO implements Serializable {
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：通過產品名稱查詢全部產品實體
      * 
-     * @param productName
+     * @param productName  產品名稱
      * @return 
      ********************************************************************************/
     public Response findProductByProductName(String productName){
@@ -423,34 +424,36 @@ public class ProductDAO implements Serializable {
     }
     
      /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：通過產品名稱獲取相似的產品名稱
      * 
-     * @param productName
-     * @param all
-     * @param firstResult
-     * @param maxResult
+     * @param productName  產品名稱
+     * @param all          是否查詢全部
+     * @param firstResult  查詢起始位置
+     * @param maxResult    最大查詢數量
      * @return 
      ********************************************************************************/
         public Response findProductNameListByProductName(String productName,boolean all, int firstResult, int maxResult) {
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建安全查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢語句
             CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
-            //定义实体类型
+            //定義實體類型
             Root<Product> product = cq.from(Product.class);
+            //設置查詢的字段
             cq.select(cb.array(product.get(Product_.productName)));
             cq.distinct(true);
 
+            //構造過濾條件
             List<Predicate> predicatesList = new ArrayList<>();
             predicatesList.add(cb.like(product.get(Product_.productName), "%" + productName + "%"));
             predicatesList.add(cb.equal(product.get(Product_.deleteStatus), false));
             cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
             Query q = em.createQuery(cq);
             
-            if(!all){
+            if(!all){//不查詢全部時設置分頁條件
                 q.setFirstResult(firstResult);
                 q.setMaxResults(maxResult);
             }

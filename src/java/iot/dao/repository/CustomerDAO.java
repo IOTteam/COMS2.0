@@ -1,8 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*******************************************************************************
+* 建立者：Saulden  建立日期：2016/12/13  最後修訂日期：2017/01/09
+* 功能簡述：客戶管理DAO
+* 
+********************************************************************************/
 package iot.dao.repository;
 
 import iot.dao.entity.Customer;
@@ -32,10 +32,7 @@ import java.util.Iterator;
 import javax.persistence.NoResultException;
 import javax.persistence.OptimisticLockException;
 
-/**
- *
- * @author hatanococoro
- */
+
 public class CustomerDAO implements Serializable {
 
     public CustomerDAO(EntityManagerFactory emf) {
@@ -313,17 +310,16 @@ public class CustomerDAO implements Serializable {
         }
     }
 
-    /**
-     * *****************************************************************************
-     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：客戶條件查詢
+    /*******************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：2017/01/09
+     * 功能簡述：客戶條件查詢
      *
-     * @param customerIdMin
-     * @param customerIdMax
-     * @param customerName
-     * @param pageNo
+     * @param customerIdMin  客戶編號起始
+     * @param customerIdMax  客戶編號終值
+     * @param customerName   客戶姓名
+     * @param pageNo         要查詢的頁碼
      * @return
-     * ******************************************************************************
-     */
+     * *******************************************************************************/
     public Response queryCustomerByCondition(String customerIdMin, String customerIdMax, String customerName, int pageNo) throws JPAQueryException {
         EntityManager em = getEntityManager();
         try {
@@ -376,21 +372,20 @@ public class CustomerDAO implements Serializable {
         }
     }
 
-    /**
-     * *****************************************************************************
-     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：查詢新增客戶編號
+    /*******************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：2017/01/09
+     * 功能簡述：查詢新增客戶編號
      *
      * @return
-     * ******************************************************************************
-     */
+     * *******************************************************************************/
     public String getCustomerId() {
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建安全查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢語句
             CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-            //定义实体类型
+            //定義實體類型
             Root<Customer> customer = cq.from(Customer.class);
             cq.select(cb.count(customer));
 
@@ -413,22 +408,21 @@ public class CustomerDAO implements Serializable {
         }
     }
 
-    /**
-     * *****************************************************************************
-     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：通過客戶編號查詢客戶實體
+    /*******************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：2017/01/09
+     * 功能簡述：通過客戶編號查詢客戶實體
      *
      * @param customerId
      * @return
-     * ******************************************************************************
-     */
+     * *******************************************************************************/
     public Response findCustomerByCustomerId(String customerId) {
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建安全查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢語句
             CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
-            //定义实体类型
+            //定義實體類型
             Root<Customer> customer = cq.from(Customer.class);
 
             List<Predicate> predicatesList = new ArrayList<>();
@@ -446,27 +440,26 @@ public class CustomerDAO implements Serializable {
         }
     }
 
-    /**
-     * *****************************************************************************
-     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：通過客戶姓名查詢客戶實體
+    /*******************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：2017/01/09
+     * 功能簡述：通過客戶姓名查詢客戶實體
      *
-     * @param customerName
-     * @param all
-     * @param firstResult
-     * @param maxResult
+     * @param customerName  客戶姓名
+     * @param all           是否查詢全部
+     * @param firstResult   查詢起始位置
+     * @param maxResult     最大查詢數量
      * @return
-     * ******************************************************************************
-     */
+     * *******************************************************************************/
     public Response findCustomerByCustomerName(String customerName, boolean all, int firstResult, int maxResult) {
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建安全查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢語句
             CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
-            //定义实体类型
+            //定義實體類型
             Root<Customer> customer = cq.from(Customer.class);
-
+            //構造過濾條件
             List<Predicate> predicatesList = new ArrayList<>();
             predicatesList.add(cb.like(customer.get(Customer_.customerName), "%" + customerName + "%"));
             predicatesList.add(cb.equal(customer.get(Customer_.deleteStatus), false));
@@ -474,7 +467,7 @@ public class CustomerDAO implements Serializable {
 
             Query q = em.createQuery(cq);
 
-            if (!all) {
+            if (!all) {//不查詢全部時，設置分頁條件
                 q.setFirstResult(firstResult);
                 q.setMaxResults(maxResult);
             }
@@ -486,41 +479,40 @@ public class CustomerDAO implements Serializable {
         }
     }
 
-    /**
-     * *****************************************************************************
-     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：通過客戶姓名查詢全部客戶實體
+    /*******************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：2017/01/09
+     * 功能簡述：通過客戶姓名查詢全部客戶實體
      *
      * @param customerName
      * @return
-     * ******************************************************************************
-     */
+     * ******************************************************************************/
     public Response findCustomerByCustomerName(String customerName) {
         return findCustomerByCustomerName(customerName, true, -1, -1);
     }
 
-    /**
-     * *****************************************************************************
-     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：通過客戶姓名查詢相似的客戶姓名
+    /*******************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：2017/01/09
+     * 功能簡述：通過客戶姓名查詢相似的客戶姓名
      *
-     * @param customerName
-     * @param all
-     * @param firstResult
-     * @param maxResult
+     * @param customerName  客戶姓名
+     * @param all           是否查詢全部
+     * @param firstResult   查詢起始位置
+     * @param maxResult     最大查詢數量
      * @return
-     * ******************************************************************************
-     */
+     * ******************************************************************************/
     public Response findCustomerNameListByCustomerName(String customerName, boolean all, int firstResult, int maxResult) {
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建安全查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢語句
             CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
-            //定义实体类型
+            //定義實體類型
             Root<Customer> customer = cq.from(Customer.class);
+            //設置查詢的字段
             cq.select(cb.array(customer.get(Customer_.customerName)));
             cq.distinct(true);
-
+            //構造過濾條件
             List<Predicate> predicatesList = new ArrayList<>();
             predicatesList.add(cb.like(customer.get(Customer_.customerName), "%" + customerName + "%"));
             predicatesList.add(cb.equal(customer.get(Customer_.deleteStatus), false));
@@ -528,7 +520,7 @@ public class CustomerDAO implements Serializable {
 
             Query q = em.createQuery(cq);
 
-            if (!all) {
+            if (!all) {//不查詢全部時，設置分頁條件
                 q.setFirstResult(firstResult);
                 q.setMaxResults(maxResult);
             }
@@ -540,40 +532,40 @@ public class CustomerDAO implements Serializable {
         }
     }
 
-    /**
-     * *****************************************************************************
-     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：通過客戶編號查詢相似的客戶編號
+    /*******************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：2017/01/09
+     * 功能簡述：通過客戶編號查詢相似的客戶編號
      *
-     * @param inputId
-     * @param customerIdMIn
-     * @param customerIdMax
-     * @param all
-     * @param firstResult
-     * @param maxResult
+     * @param inputId        前台聚焦的輸入框id
+     * @param customerIdMIn  客戶編號起始
+     * @param customerIdMax  客戶編號終值
+     * @param all            是否查詢全部
+     * @param firstResult    查詢起始位置 
+     * @param maxResult      最大查詢數量
      * @return
-     * ******************************************************************************
-     */
+     * ******************************************************************************/
     public Response findCustomerIdListByCustomerId(String inputId, String customerIdMIn, String customerIdMax, boolean all, int firstResult, int maxResult) {
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢語句
             CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
-            //定义实体类型
+            //定義實體類型
             Root<Customer> customer = cq.from(Customer.class);
+            //設置查詢字段
             cq.select(cb.array(customer.get(Customer_.customerId)));
             cq.distinct(true);
 
             List<Predicate> predicatesList = new ArrayList<>();
-            if ("customer_idMin".equals(inputId)) {
+            if ("customer_idMin".equals(inputId)) {//設置客戶編號起始輸入框的過濾條件
                 predicatesList.add(cb.like(customer.get(Customer_.customerId), "%" + customerIdMIn + "%"));
                 if (!customerIdMax.isEmpty()) {
                     Predicate p1 = cb.lessThanOrEqualTo(customer.get(Customer_.customerId), customerIdMax);
                     predicatesList.add(p1);
                 }
             }
-            if ("customer_idMax".equals(inputId)) {
+            if ("customer_idMax".equals(inputId)) {//設置客戶編號終值輸入框的過濾條件
                 predicatesList.add(cb.like(customer.get(Customer_.customerId), "%" + customerIdMax + "%"));
                 if (!customerIdMIn.isEmpty()) {
                     Predicate p2 = cb.greaterThanOrEqualTo(customer.get(Customer_.customerId), customerIdMIn);
@@ -590,7 +582,7 @@ public class CustomerDAO implements Serializable {
             
             Query q = em.createQuery(cq);
 
-            if (!all) {
+            if (!all) {//不查詢全部時設置分頁條件
                 q.setFirstResult(firstResult);
                 q.setMaxResults(maxResult);
             }
@@ -602,21 +594,23 @@ public class CustomerDAO implements Serializable {
         }
     }
 
-    /**
-     * *****************************************************************************
-     * 建立者：Saulden 建立日期：- 最後修訂日期：- 功能簡述：邏輯刪除客戶，級聯刪除客戶產品單價
+    /*******************************************************************************
+     * 建立者：Saulden 建立日期：- 最後修訂日期：2017/01/09
+     * 功能簡述：邏輯刪除客戶，級聯刪除客戶產品單價
      *
-     * @param customer
+     * @param customer 客戶實體
      * @return
      * @throws iot.dao.repository.exceptions.PreexistingEntityException
-     * ******************************************************************************
-     */
+     * @throws iot.dao.repository.exceptions.NonexistentEntityException
+     * ******************************************************************************/
     public Response deleteCustomer(Customer customer) throws PreexistingEntityException, NonexistentEntityException {
         EntityManager em = getEntityManager();
         try {
+            //開始事務
             em.getTransaction().begin();
 
             try {
+                //遍歷客戶實體中映射的客戶產品單價集合，設置為被刪除狀態
                 Collection<CustomerPrice> customerPriceCollection = customer.getCustomerPriceMasterCollection();
                 Iterator iterator = customerPriceCollection.iterator();
                 while (iterator.hasNext()) {
@@ -624,12 +618,15 @@ public class CustomerDAO implements Serializable {
                     customerPrice.setDeleteStatus(true);
                     em.merge(customerPrice);
                 }
+                //設置客戶實體中的集合為邏輯刪除后的集合
                 customer.setCustomerPriceMasterCollection(customerPriceCollection);
+                //邏輯刪除客戶
                 customer.setDeleteStatus(true);
                 em.merge(customer);
+                //提交事務
                 em.getTransaction().commit();
 
-            } catch (OptimisticLockException optimisticLockException) {
+            } catch (OptimisticLockException ole) {//捕獲樂觀鎖拋出異常
                 if (findCustomerByCustomerId(customer.getCustomerId()).isEmpty()) {
                     throw new NonexistentEntityException("該客戶已被刪除");
                 }

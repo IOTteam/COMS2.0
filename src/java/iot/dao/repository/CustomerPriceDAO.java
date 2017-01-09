@@ -1,8 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*******************************************************************************
+* 建立者：Saulden  建立日期：2016/12/13  最後修訂日期：2017/01/09
+* 功能簡述：客戶產品單價管理DAO
+* 
+********************************************************************************/
 package iot.dao.repository;
 
 import java.io.Serializable;
@@ -28,10 +28,6 @@ import java.util.ArrayList;
 import javax.persistence.NoResultException;
 import javax.persistence.OptimisticLockException;
 
-/**
- *
- * @author hatanococoro
- */
 public class CustomerPriceDAO implements Serializable {
 
     public CustomerPriceDAO(EntityManagerFactory emf) {
@@ -232,17 +228,19 @@ public class CustomerPriceDAO implements Serializable {
     public Response findCustomerPriceByCustomerPriceId(String customerPriceId) {
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢語句
             CriteriaQuery<CustomerPrice> cq = cb.createQuery(CustomerPrice.class);
-            //定义实体类型
+            //定義實體類型
             Root<CustomerPrice> customerPrice = cq.from(CustomerPrice.class);
 
+            //創建過濾條件
             List<Predicate> predicatesList = new ArrayList<>();
             predicatesList.add(cb.equal(customerPrice.get(CustomerPrice_.customerPriceId), customerPriceId));
             predicatesList.add(cb.equal(customerPrice.get(CustomerPrice_.deleteStatus), false));
             cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            
             Query q = em.createQuery(cq);
 
             return new Response().success("查詢客戶產品單價實體成功", q.getSingleResult());
@@ -255,29 +253,29 @@ public class CustomerPriceDAO implements Serializable {
     }
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：條件查詢客戶產品單價
      * 
-     * @param customerList
-     * @param productList
-     * @param priceMin
-     * @param priceMax
-     * @param rangeMax
-     * @param rangeMin
-     * @param pageNo
+     * @param customerList  客戶實體列表
+     * @param productList   產品實體列表
+     * @param priceMin      價格起始
+     * @param priceMax      價格終值
+     * @param rangeMax      數量級終值
+     * @param rangeMin      數量級起始
+     * @param pageNo        要查詢的頁碼
      * @return 
      ********************************************************************************/
     public Response findCustomerPricesByCondition(List<Customer> customerList, List<Product> productList,String priceMin, String priceMax, String rangeMin, String rangeMax ,int pageNo) throws JPAQueryException{
         EntityManager em = getEntityManager(); 
         try { 
-        //创建安全查询工厂
+        //創建查詢工廠
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        //创建查询主语句
+        //創建查詢語句
         CriteriaQuery<CustomerPrice> cq = cb.createQuery(CustomerPrice.class);
-        //定义实体类型
+        //定義實體類型
         Root<CustomerPrice> customerPrice = cq.from(CustomerPrice.class);
         
-        //构造过滤条件
+        //創建過濾條件
         List<Predicate> predicatesList = new ArrayList<>();
         
         //將客戶資訊加入查詢條件
@@ -315,16 +313,16 @@ public class CustomerPriceDAO implements Serializable {
         //添加過濾條件，未被邏輯刪除
         predicatesList.add(cb.equal(customerPrice.get(CustomerPrice_.deleteStatus), false));
         
-        //将查询条件加入查询主语句
+        //將過濾條件加入語句
         cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
         
-        //按customerMasterId升序排序
+        //設置查詢排序
         cq.orderBy(cb.asc(customerPrice.get(CustomerPrice_.customerMasterId)),cb.asc(customerPrice.get(CustomerPrice_.productMasterId)),cb.asc(customerPrice.get(CustomerPrice_.rangeMin)));
 
-        //创建查询
+        //創建查詢對象
         Query q = em.createQuery(cq);
         
-        //查询分页
+        //設置分頁
         q.setFirstResult(pageNo*10);
         q.setMaxResults(10);
         
@@ -356,27 +354,27 @@ public class CustomerPriceDAO implements Serializable {
     }
     
      /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：查詢數量級、價格輸入框下拉列表數據
      * 
-     * @param inputId
-     * @param customerList
-     * @param productList
-     * @param priceMin
-     * @param rangeMax
-     * @param rangeMin
-     * @param all
-     * @param firstResult
-     * @param maxResult
+     * @param inputId       前台聚焦的輸入框id
+     * @param customerList  客戶實體列表
+     * @param productList   產品實體列表
+     * @param priceMin      價格起始
+     * @param rangeMax      數量級終值
+     * @param rangeMin      數量級起始
+     * @param all           是否查詢全部
+     * @param firstResult   查詢起始位置
+     * @param maxResult     最大查詢數量
      * @return 
      * @throws java.lang.NoSuchFieldException 
      ********************************************************************************/
     public Response findRangesAndPriceListByCondition(String inputId, List<Customer> customerList, List<Product> productList,String priceMin, String rangeMin, String rangeMax ,boolean all,int firstResult, int maxResult) throws NoSuchFieldException{
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-
+            //創建查詢語句，設置實體類型
             CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
             Root<CustomerPrice> customerPrice = cq.from(CustomerPrice.class);
             
@@ -450,7 +448,7 @@ public class CustomerPriceDAO implements Serializable {
     }
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：查詢新增客戶產品單價編號
      * 
      * @return 
@@ -458,12 +456,13 @@ public class CustomerPriceDAO implements Serializable {
     public String getCustomerPriceId() {
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢語句
             CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-            //定义实体类型
+            //定義實體類型
             Root<CustomerPrice> customerPrice = cq.from(CustomerPrice.class);
+            //設置查詢字段
             cq.select(cb.count(customerPrice));
             
             Query count = em.createQuery(cq);
@@ -480,20 +479,20 @@ public class CustomerPriceDAO implements Serializable {
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：檢驗數量區間是否與其他區間有交叉
      * 
-     * @param customer
-     * @param product
-     * @param rangeMin
-     * @param rangeMax
+     * @param customer  客戶實體
+     * @param product   產品實體
+     * @param rangeMin  數量級起始
+     * @param rangeMax  數量級終值
      * @return  
      ********************************************************************************/
     public Response validateRanges(Customer customer,Product product,int rangeMin,int rangeMax){
         EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢語句
              CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-            //定义实体类型
+            //定義實體類型
             Root<CustomerPrice> customerPrice = cq.from(CustomerPrice.class);
             cq.select(cb.count(customerPrice));
             
@@ -503,11 +502,10 @@ public class CustomerPriceDAO implements Serializable {
             
 //            Predicate predicate_range_min = cb.and(cb.le(customerPrice.get(CustomerPrice_.rangeMin), rangeMin),cb.ge(customerPrice.get(CustomerPrice_.rangeMax), rangeMin));
 //            Predicate predicate_range_max = cb.and(cb.le(customerPrice.get(CustomerPrice_.rangeMin), rangeMax),cb.ge(customerPrice.get(CustomerPrice_.rangeMax), rangeMax));
-            Predicate predicate_range_min = cb.and(cb.ge(customerPrice.get(CustomerPrice_.rangeMax), rangeMin),cb.le(customerPrice.get(CustomerPrice_.rangeMin), rangeMax));
-            //Predicate predicate_range_max = cb.and(cb.le(customerPrice.get(CustomerPrice_.rangeMin), rangeMax),cb.ge(customerPrice.get(CustomerPrice_.rangeMax), rangeMax));
+            Predicate predicate_range = cb.and(cb.ge(customerPrice.get(CustomerPrice_.rangeMax), rangeMin),cb.le(customerPrice.get(CustomerPrice_.rangeMin), rangeMax));
             Predicate predicate_cus_pro = cb.and(cb.equal(customerPrice.get(CustomerPrice_.customerMasterId), customer),cb.equal(customerPrice.get(CustomerPrice_.productMasterId), product));
             Predicate predicate_not_delete = cb.equal(customerPrice.get(CustomerPrice_.deleteStatus), false);
-            cq.where(cb.and(predicate_cus_pro,predicate_range_min,predicate_not_delete));
+            cq.where(cb.and(predicate_cus_pro,predicate_range,predicate_not_delete));
             
             Query count = em.createQuery(cq);
             
@@ -539,11 +537,11 @@ public class CustomerPriceDAO implements Serializable {
     public Response queryCustomerPriceByOrderQty(int orderQty,Product product,Customer customer){
     EntityManager em = getEntityManager();
         try {
-            //创建安全查询工厂
+            //創建安全查詢工廠
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
+            //創建查詢主語句
             CriteriaQuery<CustomerPrice> cq = cb.createQuery(CustomerPrice.class);
-            //定义实体类型
+           //定義實體類型
             Root<CustomerPrice> customerPrice = cq.from(CustomerPrice.class);
 
             List<Predicate> predicatesList = new ArrayList<>();
