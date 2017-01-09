@@ -480,22 +480,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 data : {pageNo:pageNo_},  
                 success : function(data) {  
   
-                    if(data.length < 10){
                     $("#customerTable").find("tr").each(function(){
+                        $(this).removeClass("success");
+                        $('#custEditButton').removeAttr('href');//清除标签中的href属
+                        $("#custEditButton").removeClass("btn btn-primary radius");
+                        $("#custEditButton").addClass("btn btn-default radius");
+
+                        $('#addCustomerPriceButton').removeAttr('href');//清除标签中的href属
+                        $("#addCustomerPriceButton").removeClass("btn btn-primary radius");
+                        $("#addCustomerPriceButton").addClass("btn btn-default radius");
+
+                        $('#custDelButton').removeAttr('href');//清除标签中的href属
+                        $("#custDelButton").removeClass("btn btn-primary radius");
+                        $("#custDelButton").addClass("btn btn-default radius");
                         $(this).find("td").each(function(){
                             $(this).html(null);
                         });
                     })
-                    }
-                    var i = -1;
-                    $("#customerTable").find("tr").each(function(){
-                        var j = 0;
-                        $(this).find("td").each(function(){
-                            $(this).html(data[i][j]);
-                            j++;
+                    
+                    try {
+                       var i = -1;
+                        $("#customerTable").find("tr").each(function(){
+                            var j = 0;
+                            $(this).find("td").each(function(){
+                                $(this).html(data[i][j]);
+                                j++;
+                            });
+                            i++;
                         });
-                        i++;
-                    });
+                    } catch (e) {}
                 },  
                 error : function(data) {  
                     $("#pageNo").val(pageNo);
@@ -632,19 +645,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             $(this).html(null);
                         });
                     });
-                    
-                    var i = -1;
-                    $("#cutomerPriceTable").find("tr").each(function(){
-                        var j = 0;
-                        $(this).find("td").each(function(){
-                            $(this).html(customerPriceList[i][j]);
-                            if(j === 5){
-                                $(this).html("<input type=\"button\" id=\"delete_cp\" class=\"btn btn-default radius\" onclick=\"deleteCustomerPrice(this)\" value=\"删除\"/>");
-                            }
-                            j++;
+                    try {
+                        var i = -1;
+                        $("#cutomerPriceTable").find("tr").each(function(){
+                            var j = 0;
+                            $(this).find("td").each(function(){
+                                $(this).html(customerPriceList[i][j]);
+                                if(j === 5){
+                                    $(this).html("<input type=\"button\" id=\"delete_cp\" class=\"btn btn-default radius\" onclick=\"deleteCustomerPrice(this)\" value=\"删除\"/>");
+                                }
+                                j++;
+                            });
+                            i++;
                         });
-                        i++;
-                    });
+                    } catch (e) {}
                     
                 },  
                 error : function(data) { 
@@ -768,18 +782,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             $(this).html(null);
                         });
                     });
-                    var i = -1;
-                    $("#cutomerPriceTable").find("tr").each(function(){
-                        var j = 0;
-                        $(this).find("td").each(function(){
-                            $(this).html(customerPriceList[i][j]);
-                             if(j === 5){
-                               $(this).html("<input type=\"button\" id=\"delete_cp\" class=\"btn btn-default radius\" onclick=\"deleteCustomerPrice(this)\" value=\"删除\"/>");
-                            }
-                            j++;
+                    try {
+                        var i = -1;
+                        $("#cutomerPriceTable").find("tr").each(function(){
+                            var j = 0;
+                            $(this).find("td").each(function(){
+                                $(this).html(customerPriceList[i][j]);
+                                if(j === 5){
+                                    $(this).html("<input type=\"button\" id=\"delete_cp\" class=\"btn btn-default radius\" onclick=\"deleteCustomerPrice(this)\" value=\"删除\"/>");
+                                }
+                                j++;
+                            });
+                            i++;
                         });
-                        i++;
-                    });
+                    } catch (e) {}
                 },  
                 error : function(data) { 
                     try {
@@ -835,18 +851,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     if(customerPriceList.length === 0){
                         return;
                     }
-                    var i = -1;
-                    $("#cutomerPriceTable").find("tr").each(function(){
-                        var j = 0;
-                        $(this).find("td").each(function(){
-                            $(this).html(customerPriceList[i][j]);
-                             if(j === 5){
-                               $(this).html("<input type=\"button\" id=\"delete_cp\" class=\"btn btn-default radius\" onclick=\"deleteCustomerPrice(this)\" value=\"删除\"/>");
-                            }
-                            j++;
+                    try {
+                        var i = -1;
+                        $("#cutomerPriceTable").find("tr").each(function(){
+                            var j = 0;
+                            $(this).find("td").each(function(){
+                                $(this).html(customerPriceList[i][j]);
+                                if(j === 5){
+                                    $(this).html("<input type=\"button\" id=\"delete_cp\" class=\"btn btn-default radius\" onclick=\"deleteCustomerPrice(this)\" value=\"删除\"/>");
+                                }
+                                j++;
+                            });
+                            i++;
                         });
-                        i++;
-                    });
+                    } catch (e) {}
                 },  
                 error : function(data) {
                     getCustomerPriceList("addCustomerPrice",isCross);
@@ -938,7 +956,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $("#modal-message").modal("show");
                     setTimeout("$(\"#modal-message\").modal(\"hide\")",3000);
                     
-                    var customer = new Array(data.data.customerId,data.data.customerName,data.data.customerMail,data.data.customerPhone);
+                    var customer = new Array(data.data.customerId,data.data.versionNumber,data.data.customerName,data.data.customerMail,data.data.customerPhone);
                     
                     $("#customerTable").find("tr").each(function(){
                         $(this).find("td").each(function(){

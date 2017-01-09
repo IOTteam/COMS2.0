@@ -322,8 +322,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     $('#custPriceEditBotton').attr('href',"#updateCustomerPrice");//添加标签中的href属
                     $("#custPriceEditBotton").removeClass("btn btn-default radius");
                     $("#custPriceEditBotton").addClass("btn btn-primary radius");
+                     customerPrice[0] = text;
                     }
-                    customerPrice[0] = text;
                     return false;
                 });
             });
@@ -530,25 +530,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 data : {pageNo:pageNo_},  
                 success : function(data) {  
   
-                    if(data.length < 10){
                     $("#CusPriceTable").find("tr").each(function(){
+                        $(this).removeClass("success");
+                        $('#custPriceEditBotton').removeAttr('href');
+                        $("#custPriceEditBotton").removeClass("btn btn-primary radius");
+                        $("#custPriceEditBotton").addClass("btn btn-default radius");
                         $(this).find("td").each(function(){
                             $(this).html(null);
                         });
-                    })
-                    }
-                    var i = -1;
-                    $("#CusPriceTable").find("tr").each(function(){
-                        var j = 0;
-                        $(this).find("td").each(function(){
-                            $(this).html(data[i][j]);
-                            if(j === 6){
-                                $(this).html(parseFloat(data[i][j]).toFixed(1));
-                            }
-                            j++;
-                        });
-                        i++;
                     });
+                    try {
+                        var i = -1;
+                        $("#CusPriceTable").find("tr").each(function(){
+                            var j = 0;
+                            $(this).find("td").each(function(){
+                                $(this).html(data[i][j]);
+                                if(j === 6){
+                                    $(this).html(parseFloat(data[i][j]).toFixed(1));
+                                }
+                                j++;
+                            });
+                            i++;
+                        });
+                    } catch (e) {}
                 },  
                 error : function(data) {  
                     $("#pageNo").val(pageNo);
@@ -643,10 +647,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 data : {customerPriceId:customerPriceId,rangeMin:rangeMin,rangeMax:rangeMax,rangePrice:rangePrice,versionNumber:versionNumber,cusPriceMasterId:cusPriceMasterId},  
                 success : function(data) {  
 
-                    $("#updateCustomerPrice").modal("toggle");
+                    $("#updateCustomerPrice").modal("hide");
                     $("#alter_message").html(data.message);
-                    $("#modal-message").modal("toggle");
-                    setTimeout("$(\"#modal-message\").modal(\"toggle\")",3000);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",3000);
                     
                     var customerPrice = new Array(data.data.customerPriceId,data.data.customerMasterId.customerId,data.data.customerMasterId.customerName,
                                                   data.data.productMasterId.productId,data.data.productMasterId.productName,data.data.rangeMin +"~"+data.data.rangeMax,
@@ -706,7 +710,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 $('#custPriceEditBotton').attr('href',"#updateCustomerPrice");//添加标签中的href属
                 $("#custPriceEditBotton").removeClass("btn btn-default radius");
                 $("#custPriceEditBotton").addClass("btn btn-primary radius");
-            })
+            });
             $(this).parents("tr").attr('class',"success");
             customerPrice[0] = text;
             }

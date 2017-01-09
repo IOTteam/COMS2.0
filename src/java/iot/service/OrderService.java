@@ -15,6 +15,7 @@ import iot.dao.repository.CustomerPriceDAO;
 import iot.dao.repository.OrderDetailDAO;
 import iot.dao.repository.OrderHeadDAO;
 import iot.dao.repository.ProductDAO;
+import iot.dao.repository.exceptions.NonexistentEntityException;
 import iot.dao.repository.exceptions.PreexistingEntityException;
 import javax.persistence.EntityManagerFactory;
 import iot.response.Response;
@@ -224,12 +225,17 @@ public class OrderService {
      * 刪除訂單頭檔
      *
      * @param orderHeadId
+     * @param versionNumber
      * @return
      * @throws PreexistingEntityException
      */
-    public Response deleteOrderHeadService(String orderHeadId) throws PreexistingEntityException {
+    public Response deleteOrderHeadService(String orderHeadId,String versionNumber) throws PreexistingEntityException, NonexistentEntityException {
         OrderHeadDAO ohdao = new OrderHeadDAO(emf);
         OrderHead oh = ohdao.queryOrderHeadByOrderHeadId(orderHeadId);
+        if (oh==null) {
+            throw new NonexistentEntityException("編號爲:"+oh.getOrderHeadId()+" 的訂單身檔已不存在！");
+        }
+        oh.setVersionNumber(Integer.parseInt(versionNumber));
         return ohdao.deleteOrderHead(oh);
     }
 

@@ -59,7 +59,7 @@ public class OrderValidate {
     public Object validateQueryOrderHeadList(ProceedingJoinPoint pjp, String orderHeadIdMin, String orderHeadIdMax,
             String customerName, String orderDateMin, String orderDateMax, String pageNo,ModelMap model) throws Throwable {
         Object result;
-        Pattern p = Pattern.compile("^((?!0000)[0-9]{4}-((0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-8])|(0[13-9]|1[0-2])-(29|30)|(0[13578]|1[02])-31)|([0-9]{2}(0[48]|[2468][048]|[13579][26])|(0[48]|[2468][048]|[13579][26])00)-02-29)$");
+        Pattern p = Pattern.compile("^((?!0000)[0-9]{4}-((0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-8])|(0[13-9]|1[0-2])-(29|30)|(0[13578]|1[02])-31)|([0-9]{2}(0[48]|[2468][048]|[13579][26])|(0[48]|[2468][048]|[13579][26])00)-02-29)|(?)$");
         Matcher m1 = p.matcher(orderDateMax);
         Matcher m2 = p.matcher(orderDateMin);
         if (!m2.matches()) {
