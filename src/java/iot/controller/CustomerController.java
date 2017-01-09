@@ -1,8 +1,9 @@
 /*******************************************************************************
-* 建立者：Saulden  建立日期：2016/12/13  最後修訂日期：2016/12/13
-* 功能簡述：客戶管理
+* 建立者：Saulden  建立日期：2016/12/13  最後修訂日期：2017/01/09
+* 功能簡述：客戶管理Controller
 * 
 ********************************************************************************/
+
 package iot.controller;
 
 import iot.dao.entity.Customer;
@@ -33,13 +34,13 @@ public class CustomerController {
     private CustomerService customerService;
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：跳轉到客戶頁面，查詢第一頁的資訊
      * 
-     * @param customerIdMin
-     * @param customerIdMax
-     * @param customerName
-     * @param model
+     * @param customerIdMin  客戶編號起始
+     * @param customerIdMax  客戶編號終值
+     * @param customerName   客戶姓名
+     * @param model  
      * @return 
      ********************************************************************************/
     @RequestMapping(value = "CustomerQuery")
@@ -72,13 +73,13 @@ public class CustomerController {
     } 
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2016/01/09
      * 功能簡述：查詢客戶姓名、產品名稱輸入框下拉列表數據
      * 
-     * @param inputId
-     * @param customerName
-     * @param customerIdMin
-     * @param customerIdMax
+     * @param inputId       前台聚焦的輸入框id
+     * @param customerName  客戶姓名
+     * @param customerIdMin 客戶編號起始
+     * @param customerIdMax 客戶編號終值
      * @return 
      * @throws java.lang.NoSuchFieldException 
      ********************************************************************************/
@@ -96,8 +97,8 @@ public class CustomerController {
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：查詢某一頁的的資訊，返回JSON數據
      * 
-     * @param queryCondition
-     * @param pageNo
+     * @param queryCondition  查詢條件
+     * @param pageNo          要查詢的頁數
      * @return 
      * @throws iot.dao.repository.exceptions.JPAQueryException 
      ********************************************************************************/
@@ -128,7 +129,7 @@ public class CustomerController {
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：新增客戶
      * 
-     * @param customer
+     * @param customer  客戶實體
      * @return 
      * @throws java.lang.Exception 
      ********************************************************************************/
@@ -144,7 +145,7 @@ public class CustomerController {
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：獲取產品列表信息，用於新增客戶產品單價
      * 
-     * @param productId
+     * @param productId  產品編號
      * @return 
      ********************************************************************************/
     @RequestMapping(value = "getProductList",method = RequestMethod.POST)
@@ -159,7 +160,7 @@ public class CustomerController {
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：獲取要修改的客戶資訊
      * 
-     * @param customerId
+     * @param customerId  客戶編號
      * @return 
      * @throws iot.dao.repository.exceptions.NonexistentEntityException 
      ********************************************************************************/
@@ -175,7 +176,7 @@ public class CustomerController {
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：修改客戶資訊
      * 
-     * @param customer
+     * @param customer  客戶實體
      * @return 
      * @throws java.lang.Exception 
      ********************************************************************************/
@@ -191,8 +192,8 @@ public class CustomerController {
      * 建立者：Saulden  建立日期：-  最後修訂日期：-
      * 功能簡述：刪除客戶資訊
      * 
-     * @param customerId
-     * @param versionNumber
+     * @param customerId    客戶編號
+     * @param versionNumber 客戶點擊刪除前資料的版本號
      * @return 
      * @throws java.lang.Exception 
      ********************************************************************************/
