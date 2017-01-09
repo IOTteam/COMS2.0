@@ -32,7 +32,9 @@
     <context:component-scan base-package="iot.controller" />
     <context:component-scan base-package="iot.service" />
     <context:component-scan base-package="iot.exceptionHandle" />
+    <context:component-scan base-package="iot.validate" />
     
+    <!--開啓@Aspect註解支持-->
     <aop:aspectj-autoproxy />
     
     <bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"/>

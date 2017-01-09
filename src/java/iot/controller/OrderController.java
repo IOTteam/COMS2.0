@@ -187,9 +187,9 @@ public class OrderController {
     //新增訂單身檔
     @RequestMapping(value = "addOrderDetail", method = RequestMethod.POST)
     @ResponseBody
-    public Response addOrderDetail(@RequestParam("productId") String productId, @RequestParam("orderQty") int orderQty, @RequestParam("orderHeadId") String orderHeadId) throws Exception {
+    public Response addOrderDetail(@RequestParam("productId") String productId, @RequestParam("orderQty") String orderQty, @RequestParam("orderHeadId") String orderHeadId) throws Exception {
 
-        Response addOrderDetailResult = orderService.addOrderDetailService(productId, orderQty, orderHeadId);
+        Response addOrderDetailResult = orderService.addOrderDetailService(productId, Integer.parseInt(orderQty), orderHeadId);
         return addOrderDetailResult;
     }
 
