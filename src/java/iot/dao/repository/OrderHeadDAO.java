@@ -247,42 +247,42 @@ public class OrderHeadDAO implements Serializable {
         }
     }
     
-    /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
-     * 功能簡述：通過客戶實體查詢訂單頭檔數量
-     * 
-     * @param customer
-     * @return 
-     ********************************************************************************/
-    public Response findOrderHeadByCustomer(Customer customer) {
-        EntityManager em = getEntityManager();
-        try {
-            //创建安全查询工厂
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            //创建查询主语句
-            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-            //定义实体类型
-            Root<OrderHead> orderHead = cq.from(OrderHead.class);
-             cq.select(cb.count(orderHead));
-
-            List<Predicate> predicatesList = new ArrayList<>();
-            predicatesList.add(cb.equal(orderHead.get(OrderHead_.customerMasterId), customer));
-            predicatesList.add(cb.equal(orderHead.get(OrderHead_.deleteStatus), false));
-            cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
-            Query q = em.createQuery(cq);
-            
-            int count = ((Long)q.getSingleResult()).intValue();
-            
-            if(count > 0){
-                return new Response().success("該客戶有訂單存在");
-            }
-
-            return new Response().Empty("該客戶無訂單");
-
-        } finally {
-            em.close();
-        }
-    }
+//    /*******************************************************************************
+//     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+//     * 功能簡述：通過客戶實體查詢訂單頭檔數量
+//     * 
+//     * @param customer  客戶實體
+//     * @return 
+//     ********************************************************************************/
+//    public Response findOrderHeadByCustomer(Customer customer) {
+//        EntityManager em = getEntityManager();
+//        try {
+//            //创建安全查询工厂
+//            CriteriaBuilder cb = em.getCriteriaBuilder();
+//            //创建查询主语句
+//            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+//            //定义实体类型
+//            Root<OrderHead> orderHead = cq.from(OrderHead.class);
+//             cq.select(cb.count(orderHead));
+//
+//            List<Predicate> predicatesList = new ArrayList<>();
+//            predicatesList.add(cb.equal(orderHead.get(OrderHead_.customerMasterId), customer));
+//            predicatesList.add(cb.equal(orderHead.get(OrderHead_.deleteStatus), false));
+//            cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+//            Query q = em.createQuery(cq);
+//            
+//            int count = ((Long)q.getSingleResult()).intValue();
+//            
+//            if(count > 0){
+//                return new Response().success("該客戶有訂單存在");
+//            }
+//
+//            return new Response().Empty("該客戶無訂單");
+//
+//        } finally {
+//            em.close();
+//        }
+//    }
      /**
      * 條件查詢訂單頭檔（訂單頭檔編號起止，下單日期起止，下單客戶）
      *

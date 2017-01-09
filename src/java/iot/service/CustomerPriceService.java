@@ -203,10 +203,10 @@ public class CustomerPriceService {
     }
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：通過客戶產品單價編號獲取客戶資訊
      * 
-     * @param customerPriceId
+     * @param customerPriceId  客戶產品單價編號
      * @return 
      ********************************************************************************/
     public Response getCustomerPriceForUpdateService(String customerPriceId) throws NonexistentEntityException{
@@ -221,12 +221,12 @@ public class CustomerPriceService {
     }
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：新增客戶產品單價
      * 
-     * @param customerId
-     * @param productId
-     * @param customerPrice
+     * @param customerId 客戶編號
+     * @param productId  產品編號
+     * @param customerPrice  客戶產品單價實體
      * @return 
      * @throws java.lang.Exception 
      ********************************************************************************/
@@ -250,6 +250,7 @@ public class CustomerPriceService {
         customerPrice.setCustomerPriceId(customerPriceDAO.getCustomerPriceId());
         
         Response customerPriceAddResult = customerPriceDAO.create(customerPrice);
+        //查詢該客戶擁有的客戶產品單價資訊
         Response customerPriceQueryResult = queryCustomerPriceService(customerId,0);
         
         return new Response().success(customerPriceAddResult.getMessage(), customerPriceQueryResult.getData(), customerPriceQueryResult.getCount());
@@ -257,10 +258,10 @@ public class CustomerPriceService {
     }
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：修改客戶產品單價資訊
      * 
-     * @param customerPrice
+     * @param customerPrice  客戶產品單價實體
      * @return 
      * @throws iot.dao.repository.exceptions.NonexistentEntityException 
      ********************************************************************************/
@@ -282,18 +283,18 @@ public class CustomerPriceService {
     }
     
     /*******************************************************************************
-     * 建立者：Saulden  建立日期：-  最後修訂日期：-
+     * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
      * 功能簡述：邏輯刪除客戶產品單價資訊
      * 
-     * @param customerPriceId
-     * @param versionNumber
+     * @param customerPriceId  客戶產品單價編號
+     * @param versionNumber    刪除資料前的版本號
      * @return 
      * @throws iot.dao.repository.exceptions.NonexistentEntityException 
      ********************************************************************************/
     public Response deleteCustomerPriceService(String customerPriceId,int versionNumber) throws NonexistentEntityException, Exception{
 
         CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
-         
+        //通過客戶產品單價編號獲取客戶產品單價實體
         Response response= customerPriceDAO.findCustomerPriceByCustomerPriceId(customerPriceId);
                 
         if(response.isEmpty()){
@@ -306,6 +307,7 @@ public class CustomerPriceService {
         customerPrice.setDeleteStatus(true);
         
         customerPriceDAO.edit(customerPrice);
+        //查詢該客戶剩餘的客戶產品單價資訊
         Response customerPriceQueryResult = queryCustomerPriceService(customerPrice.getCustomerMasterId().getCustomerId(),0);
         
         return new Response().success("刪除客戶產品單價資訊成功", customerPriceQueryResult.getData(), customerPriceQueryResult.getCount());
