@@ -431,6 +431,7 @@ input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit
 .col-xs-push-2 {left: 16.66666667%}
 .col-xs-push-1 {left: 8.33333333%}
 .col-xs-push-0 {left: auto}
+.col-xs-offset-13 {margin-left:2.6666667%}
 .col-xs-offset-12 {margin-left: 100%}
 .col-xs-offset-11 {margin-left: 91.66666667%}
 .col-xs-offset-10 {margin-left: 83.33333333%}

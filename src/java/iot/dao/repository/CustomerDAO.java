@@ -706,5 +706,28 @@ public class CustomerDAO implements Serializable {
             em.close();
         }
     }
+
+    public Response findCustomer() {
+        EntityManager em = getEntityManager();
+        try {
+            //创建安全查询工厂
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            //创建查询主语句
+            CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
+            //定义实体类型
+            Root<Customer> customer = cq.from(Customer.class);
+            
+            List<Predicate> predicatesList = new ArrayList<>();
+            predicatesList.add(cb.equal(customer.get(Customer_.deleteStatus), false));
+
+            cq.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            Query q = em.createQuery(cq);
+            
+            return new Response().success("客戶查詢成功", q.getResultList());
+
+        } finally {
+            em.close();
+        }
+    }
     
 }
