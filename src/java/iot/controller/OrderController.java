@@ -202,11 +202,11 @@ public class OrderController {
     }
 
     //刪除訂單身檔
-    @RequestMapping(value = "deleteOrderDetail", method = RequestMethod.POST)
-    @ResponseBody
-    public Response deleteOrderDetail(@RequestParam("orderDetailId") String orderDetailId) throws PreexistingEntityException {
-        return orderService.deleteOrderDetailService(orderDetailId);
-    }
+//    @RequestMapping(value = "deleteOrderDetail", method = RequestMethod.POST)
+//    @ResponseBody
+//    public Response deleteOrderDetail(@RequestParam("orderDetailId") String orderDetailId,@RequestParam("versionNumber") String versionNumber) throws PreexistingEntityException {
+//        return orderService.deleteOrderDetailService(orderDetailId，versionNumber);
+//    }
 
     //獲取訂單身檔，爲修改時展示修改的該條數據
     @RequestMapping(value = "getOrderDetailForUpdate", method = RequestMethod.POST)

@@ -82,7 +82,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <ul>
                 <li>
                     <a href="#">訂單管理</a>
-                    <!--<a href="<%=basePath%>OrderManage/queryOrderHeadList">訂單管理</a>-->
                 </li>
             </ul>
             <ul>
@@ -292,9 +291,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <th style="width:150px">產品名稱</th> 
                     <th style="width:60px">下單數量</th>  <!--訂單產品下單數量-->
                     <th style="width:60px">下單單價</th>   <!--訂單產品下單單價-->
+                    <th style="width:60px">版本號</th>
 		</tr>
                 
-                <tr>
+<!--                <tr>
                     <c:forEach items="${orderDetails}" var ="orderDetails"> 
 
                 <tr style=" height: 38px">
@@ -304,11 +304,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <td style="width:150px"><c:out value="${orderDetails.productMasterId.productName}"></c:out></td>
                     <td style="width:60px"><c:out value="${orderDetails.orderQty}"></c:out></td> 
                     <td style="width:60px"><c:out value="${orderDetails.orderPrice}"></c:out></td>
-                    
-                    <td hidden="true"><c:out value="${orderDetails.orderDetailMasterId}"></c:out></td>
+                    <td style="width:60px"><c:out value="${orderDetails.versionNumber}"></c:out></td>                   
                 </tr>
                 </c:forEach> 
-                </tr>
+                </tr>-->
 
 <!--            <tr height="48px"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
             <tr height="48px"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
@@ -584,7 +583,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     //繪製顯示訂單詳細的表格
                     //
                     //$("#orderDetailTable").append("<tr><td>"+list[i].orderDetailId+"</td><td>"+list[i].ordheadMasterId.orderHeadId+"</td><td>"+list[i].productMasterId.productId+"</td><td>"+list[i].productMasterId.productName+"</td><td>"+list[i].orderQty+"</td><td>"+list[i].orderPrice+"</td></tr>");
-                      $("#orderDetailTable").append("<tr><td>"+list[i][0]+"</td><td>"+list[i][1]+"</td><td>"+list[i][2]+"</td><td>"+list[i][3]+"</td><td>"+list[i][4]+"</td><td>"+list[i][5]+"</td></tr>");
+                      $("#orderDetailTable").append("<tr><td>"+list[i][0]+"</td><td>"+list[i][1]+"</td><td>"+list[i][2]+"</td><td>"+list[i][3]+"</td><td>"+list[i][4]+"</td><td>"+list[i][5]+"</td><td>"+list[i][6]+"</td></tr>");
                     //在訂單身檔信息列中，點擊行事件獲取到第一列的值（OrderDetailId），並把值放到了 orderInfo 變量中
                     //orderHeadId4Refresh=list[i][1];
                     
@@ -594,11 +593,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 //                        $(this).css({"background":"#99ffff"}).siblings().css({"background":"white"});
 //                        });
 //                    });
-                                                            
+                    }
                     $("tr").click(function(){
-                        $(this).find("td").each(function(i){
+                        console.dir("dianjain")
+                        $(this).find("td").each(function(){
                             var text = $(this).text();
+                            console.dir(text);
                             if(/ORDD[0-9]{11}/g.test(text)){
+                            orderDetail[1]=$(this).parent("tr").children().eq(6).text();
+                            console.dir(orderDetail[1]);
                             orderDetail[0] = text;
                             $(this).parent("tr").css({"background":"#99ffff"}).siblings().css({"background":"white"});
                             return false;
@@ -624,7 +627,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $("#orderDetailUpBtn").addClass("btn btn-default radius");
                         }
                     });
-                    }
    
                 },  
                 error : function(data) { 
@@ -945,7 +947,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function deleteOrderHead(){
     var orderHeadId=orderHead[0];
     var versionNumber=orderHead[1];
-    console.dir(versionNumber);
     $.ajax({  
                 url : "deleteOrderHead",  
                 type : "post",  
@@ -980,11 +981,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function deleteOrderDetail(){
 
     var orderDetailId=orderDetail[0];
+    var versionNumber=orderDetail[1];
     $.ajax({  
                 url : "deleteOrderDetail",  
                 type : "post",  
                 datatype:"json",  
-                data : {orderDetailId:orderDetailId},  
+                data : {orderDetailId:orderDetailId,versionNumber:versionNumber},  
                 success : function(data) {                           
                     $("#alter_message").html(data.message);
                     $("#modal-message").modal("show");

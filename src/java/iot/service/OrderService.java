@@ -118,6 +118,7 @@ public class OrderService {
                     list_row.add(od.getProductMasterId().getProductName());
                     list_row.add(od.getOrderQty());
                     list_row.add(od.getOrderPrice());
+                    list_row.add(od.getVersionNumber());
                     responseList.add(list_row);
                 }
             }
@@ -233,7 +234,7 @@ public class OrderService {
         OrderHeadDAO ohdao = new OrderHeadDAO(emf);
         OrderHead oh = ohdao.queryOrderHeadByOrderHeadId(orderHeadId);
         if (oh==null) {
-            throw new NonexistentEntityException("編號爲:"+oh.getOrderHeadId()+" 的訂單身檔已不存在！");
+            throw new NonexistentEntityException("編號爲:"+oh.getOrderHeadId()+" 的訂單頭檔已不存在！");
         }
         oh.setVersionNumber(Integer.parseInt(versionNumber));
         return ohdao.deleteOrderHead(oh);
@@ -243,12 +244,19 @@ public class OrderService {
      * 刪除訂單身檔
      *
      * @param orderDetailId
+     * @param versionNumber
      * @return
      * @throws PreexistingEntityException
+     * @throws iot.dao.repository.exceptions.NonexistentEntityException
      */
-    public Response deleteOrderDetailService(String orderDetailId) throws PreexistingEntityException {
+    public Response deleteOrderDetailService(String orderDetailId,String versionNumber) throws PreexistingEntityException, NonexistentEntityException {
         OrderDetailDAO oddao = new OrderDetailDAO(emf);
         OrderDetail od = (OrderDetail) oddao.queryOrderDetailByOrderDetailId(orderDetailId).getData();
+         if (od==null) {
+            throw new NonexistentEntityException("編號爲:"+od.getOrderDetailId()+" 的訂單身檔已不存在！");
+        }
+        od.setVersionNumber(Integer.parseInt(versionNumber));
+        
         return oddao.deleteOrderDetail(od);
     }
 

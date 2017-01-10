@@ -97,9 +97,14 @@ public class ProductService {
         }
         Product newProduct = (Product)productDAO.findProductByProductId(product.getProductId()).getData();
         HashMap<String,String> customerPriceMap = new HashMap<>();
+        if (newProduct == null) {
+            customerPriceMap.put("message", "新增產品失敗!");
+        } else {
             customerPriceMap.put("productId", newProduct.getProductId());
             customerPriceMap.put("productName", newProduct.getProductName());
             customerPriceMap.put("productMasterId", newProduct.getProductMasterId());
+            customerPriceMap.put("message", "新增產品成功!");
+        }
         return customerPriceMap;
     }
     
@@ -125,21 +130,28 @@ public class ProductService {
         
         Product newProduct = (Product)productDAO.findProductByProductId(productId).getData();
         HashMap<String,String> customerPriceMap = new HashMap<>();
+            if (newProduct == null) {
+            customerPriceMap.put("message", "產品修改失敗!");
+        } else {
             customerPriceMap.put("productId", newProduct.getProductId());
             customerPriceMap.put("productName", newProduct.getProductName());
             customerPriceMap.put("productMasterId", newProduct.getProductMasterId());
+            customerPriceMap.put("message", "產品修改成功!");
+        }
         return customerPriceMap;
     }
 
-    public String deleteProductByProductId(String productId) throws Exception {
+    public HashMap<String, String> deleteProductByProductId(String productId) throws Exception {
         ProductDAO productDAO = new ProductDAO(emf);
         Product product = (Product)productDAO.findProductByProductId(productId).getData();
         OrderDetailDAO orderDetailDAO = new OrderDetailDAO(emf);
         List<OrderDetail> OrderDetail = orderDetailDAO.findOrderDetailByProductMasterId(product);
-        String message;
+        HashMap<String,String> deleteMap = new HashMap<>();
         if (OrderDetail.isEmpty()) {
             product.setDeleteStatus(true);
             productDAO.edit(product);
+            Integer count =Integer.parseInt(productDAO.getProductCountByStatus());
+            String totalPages = String.valueOf((count -1)/10 + 1);
             CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
             List<CustomerPrice> customerPriceList = customerPriceDAO.findCustomerPriceByProductMasterId(product);
             for (int i = 0; i < customerPriceList.size(); i++) {
@@ -147,11 +159,12 @@ public class ProductService {
                 customerPrice.setDeleteStatus(true);
                 customerPriceDAO.edit(customerPrice);
             }
-            message = "產品已經成功刪除";
-            return message;
+            deleteMap.put("message", "產品已經成功刪除");
+            deleteMap.put("totalPages", totalPages);
+            return deleteMap;
         } else {
-            message = "該產品已經擁有訂單，所以此產品不能刪除！！！請確認該產品的訂單是否已消除。";
-            return message;
+            deleteMap.put("message", "該產品已經擁有訂單，所以此產品不能刪除！！！請確認該產品的訂單是否已消除。");
+            return deleteMap;
         }
     }
     

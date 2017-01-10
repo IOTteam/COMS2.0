@@ -23,15 +23,11 @@ import org.springframework.ui.ModelMap;
 @Component
 public class OrderValidate {
 
+    //添加訂單身檔的輸入數據驗證--切入點
     @Pointcut(value = "execution(* iot.controller.OrderController.addOrderDetail(..))&&args(productId,orderQty,orderHeadId)", argNames = "productId,orderQty,orderHeadId")
     public void pointCutAddOrderDetail(String productId, String orderQty, String orderHeadId) {
     }
-
-    @Pointcut(value = "execution(* iot.controller.OrderController.queryOrderHeadList(..))&&args(orderHeadIdMin,orderHeadIdMax,customerName,orderDateMin,orderDateMax,pageNo,model)",
-            argNames = "orderHeadIdMin,orderHeadIdMax,customerName,orderDateMin,orderDateMax,pageNo,model")
-    public void pointCutQueryOrderHeadList(String orderHeadIdMin, String orderHeadIdMax, String customerName, String orderDateMin, String orderDateMax, String pageNo,ModelMap model) {
-    }
-
+    //添加訂單身檔的輸入數據驗證--驗證
     @Around(value = "pointCutAddOrderDetail(productId,orderQty,orderHeadId)", argNames = "productId,orderQty,orderHeadId")
     public Object validateAddOrderDetail(ProceedingJoinPoint pjp, String productId, String orderQty, String orderHeadId) throws Throwable {
         Object result;
@@ -54,19 +50,24 @@ public class OrderValidate {
         return result;
     }
 
+    @Pointcut(value = "execution(* iot.controller.OrderController.queryOrderHeadList(..))&&args(orderHeadIdMin,orderHeadIdMax,customerName,orderDateMin,orderDateMax,pageNo,model)",
+            argNames = "orderHeadIdMin,orderHeadIdMax,customerName,orderDateMin,orderDateMax,pageNo,model")
+    public void pointCutQueryOrderHeadList(String orderHeadIdMin, String orderHeadIdMax, String customerName, String orderDateMin, String orderDateMax, String pageNo, ModelMap model) {
+    }
+
     @Around(value = "pointCutQueryOrderHeadList(orderHeadIdMin,orderHeadIdMax,customerName,orderDateMin,orderDateMax,pageNo,model)",
             argNames = "orderHeadIdMin,orderHeadIdMax,customerName,orderDateMin,orderDateMax,pageNo,model")
     public Object validateQueryOrderHeadList(ProceedingJoinPoint pjp, String orderHeadIdMin, String orderHeadIdMax,
-            String customerName, String orderDateMin, String orderDateMax, String pageNo,ModelMap model) throws Throwable {
+            String customerName, String orderDateMin, String orderDateMax, String pageNo, ModelMap model) throws Throwable {
         Object result;
         Pattern p = Pattern.compile("^((?!0000)[0-9]{4}-((0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-8])|(0[13-9]|1[0-2])-(29|30)|(0[13578]|1[02])-31)|([0-9]{2}(0[48]|[2468][048]|[13579][26])|(0[48]|[2468][048]|[13579][26])00)-02-29)|(?)$");
         Matcher m1 = p.matcher(orderDateMax);
         Matcher m2 = p.matcher(orderDateMin);
         if (!m2.matches()) {
-            throw new ValidationException("您輸入的下單日期*起點*不符合規範！");
+            throw new ValidationException("您輸入的#下單日期起點#不符合規範！");
         }
         if (!m1.matches()) {
-            throw new ValidationException("您輸入的下單日期*終點*不符合規範！");
+            throw new ValidationException("您輸入的#下單日期終點#不符合規範！");
         }
         result = pjp.proceed();
         return result;
