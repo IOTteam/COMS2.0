@@ -506,7 +506,8 @@ public class OrderHeadDAO implements Serializable {
                 Iterator iterator=odCollection.iterator();
                 while (iterator.hasNext()) {
                     OrderDetail od=(OrderDetail) iterator.next();
-                    od.setDeleteStatus(true);                 
+                    od.setDeleteStatus(true);
+                    em.merge(od);
                 }
                 orderHead.setOrderDetailMasterCollection(odCollection);
                 orderHead.setDeleteStatus(true);

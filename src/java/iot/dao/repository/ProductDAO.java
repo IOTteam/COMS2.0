@@ -480,11 +480,11 @@ public class ProductDAO implements Serializable {
             List<Predicate> predicatesList = new ArrayList<>();
             //查詢productIdMin與productIdMax之間的數據
             if(!productIdMin.equals("")){
-                Predicate p1=criteriaBuilder.greaterThan(product.get(Product_.productId), productIdMin);
+                Predicate p1=criteriaBuilder.greaterThanOrEqualTo(product.get(Product_.productId), productIdMin);
                 predicatesList.add(p1);
             }
             if(!productIdMax.equals("")){
-                Predicate p2=criteriaBuilder.lessThan(product.get(Product_.productId), productIdMax);
+                Predicate p2=criteriaBuilder.lessThanOrEqualTo(product.get(Product_.productId), productIdMax);
                 predicatesList.add(p2);
             }
             //模糊查詢productName
@@ -493,11 +493,11 @@ public class ProductDAO implements Serializable {
             }
             //查詢productPriceMin與productPriceMax之間的數據
             if(!productPriceMin.equals("")){
-                Predicate p3=criteriaBuilder.greaterThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMin));
+                Predicate p3=criteriaBuilder.ge(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMin));
                 predicatesList.add(p3);
             }
             if(!productPriceMax.equals("")){
-                Predicate p4=criteriaBuilder.lessThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMax));
+                Predicate p4=criteriaBuilder.le(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMax));
                 predicatesList.add(p4);
             }
             //模糊查詢productSpec
@@ -533,11 +533,11 @@ public class ProductDAO implements Serializable {
             //利用Predicate過濾多個查詢條件
             List<Predicate> predicatesList = new ArrayList<>();
             if(!productIdMin.equals("")){
-                Predicate p1=criteriaBuilder.greaterThan(product.get(Product_.productId), productIdMin);
+                Predicate p1=criteriaBuilder.greaterThanOrEqualTo(product.get(Product_.productId), productIdMin);
                 predicatesList.add(p1);
             }
             if(!productIdMax.equals("")){
-                Predicate p2=criteriaBuilder.lessThan(product.get(Product_.productId), productIdMax);
+                Predicate p2=criteriaBuilder.lessThanOrEqualTo(product.get(Product_.productId), productIdMax);
                 predicatesList.add(p2);
             }
             //模糊查詢productName
@@ -546,11 +546,11 @@ public class ProductDAO implements Serializable {
             }
             //查詢productPriceMin與productPriceMax之間的數據
             if(!productPriceMin.equals("")){
-                Predicate p3=criteriaBuilder.greaterThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMin));
+                Predicate p3=criteriaBuilder.ge(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMin));
                 predicatesList.add(p3);
             }
             if(!productPriceMax.equals("")){
-                Predicate p4=criteriaBuilder.lessThan(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMax));
+                Predicate p4=criteriaBuilder.le(product.get(Product_.productStandardPrice),Float.parseFloat(productPriceMax));
                 predicatesList.add(p4);
             }
             //模糊查詢productSpec
@@ -580,6 +580,26 @@ public class ProductDAO implements Serializable {
             Root<Product> product = countQuery.from(Product.class);
             countQuery.select(criteriaBuilder.count(product));
             countQuery.where(criteriaBuilder.like(product.get(Product_.productId),"%" + productIdHead + "%"));
+            Query count = entityManager.createQuery(countQuery);
+            String count_String = count.getSingleResult().toString();
+            return count_String;
+                    
+        } finally {
+            entityManager.close();
+        }
+    }
+    
+    public String getProductCountByStatus() {
+        EntityManager entityManager = getEntityManager();
+        try {
+            //創建安全查詢工廠
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            //定義實體類型
+            
+            CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+            Root<Product> product = countQuery.from(Product.class);
+            countQuery.select(criteriaBuilder.count(product));
+            countQuery.where(criteriaBuilder.equal(product.get(Product_.deleteStatus),false));
             Query count = entityManager.createQuery(countQuery);
             String count_String = count.getSingleResult().toString();
             return count_String;

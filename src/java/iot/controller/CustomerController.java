@@ -116,6 +116,7 @@ public class CustomerController {
         for (Customer customer:customerList) {
             List list_row = new ArrayList();
             list_row.add(customer.getCustomerId());
+            list_row.add(customer.getVersionNumber());
             list_row.add(customer.getCustomerName());
             list_row.add(customer.getCustomerMail());
             list_row.add(customer.getCustomerPhone());

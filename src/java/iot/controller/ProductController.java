@@ -101,7 +101,8 @@ public class ProductController {
     @ResponseBody
     public List<Customer> queryCustomer(){
         CustomerDAO customerDAO = new CustomerDAO(emf);
-        List<Customer> customerList = customerDAO.findCustomerEntities();
+        Response customerQueryList = customerDAO.findCustomer();
+        List<Customer> customerList = (List<Customer>) customerQueryList.getData();
         return customerList;
     }
     
@@ -129,9 +130,9 @@ public class ProductController {
     }
     
     @RequestMapping("deleteProduct")
-    public String deleteProduct(@RequestParam String productId,ModelMap modelMap) throws Exception{
-        String message = productService.deleteProductByProductId(productId);
-        modelMap.addAttribute("message", message);
-        return "redirect:ProductQuery";
+    @ResponseBody
+    public HashMap<String, String> deleteProduct(@RequestParam String productId,ModelMap modelMap) throws Exception{
+        
+        return productService.deleteProductByProductId(productId);
     }
 }

@@ -8,6 +8,7 @@ package iot.controller;
 import iot.dao.entity.OrderDetail;
 import iot.dao.entity.OrderHead;
 import iot.dao.entity.Product;
+import iot.dao.repository.exceptions.NonexistentEntityException;
 import iot.dao.repository.exceptions.PreexistingEntityException;
 import iot.service.OrderService;
 import java.util.HashMap;
@@ -196,15 +197,15 @@ public class OrderController {
     //刪除訂單頭檔
     @RequestMapping(value = "deleteOrderHead", method = RequestMethod.POST)
     @ResponseBody
-    public Response deleteOrderHead(@RequestParam("orderHeadId") String orderHeadId) throws PreexistingEntityException {
-        return orderService.deleteOrderHeadService(orderHeadId);
+    public Response deleteOrderHead(@RequestParam("orderHeadId") String orderHeadId,@RequestParam("versionNumber") String versionNumber) throws PreexistingEntityException, NonexistentEntityException {
+        return orderService.deleteOrderHeadService(orderHeadId,versionNumber);
     }
 
     //刪除訂單身檔
     @RequestMapping(value = "deleteOrderDetail", method = RequestMethod.POST)
     @ResponseBody
-    public Response deleteOrderDetail(@RequestParam("orderDetailId") String orderDetailId) throws PreexistingEntityException {
-        return orderService.deleteOrderDetailService(orderDetailId);
+    public Response deleteOrderDetail(@RequestParam("orderDetailId") String orderDetailId,@RequestParam("versionNumber") String versionNumber) throws PreexistingEntityException, NonexistentEntityException {
+        return orderService.deleteOrderDetailService(orderDetailId,versionNumber);
     }
 
     //獲取訂單身檔，爲修改時展示修改的該條數據

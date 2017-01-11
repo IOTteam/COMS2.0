@@ -24,6 +24,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 
@@ -121,7 +122,10 @@ public class OrderDetailDAO implements Serializable {
 
             return new Response().success("修改訂單身檔成功", orderDetail);
 
-        } catch (Exception ex) {
+        }catch(OptimisticLockException ole){
+            throw new OptimisticLockException("編號爲："+orderDetail.getOrderDetailId()+"  的訂單身檔已被修改！");
+        } 
+        catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 String id = orderDetail.getOrddetailMasterId();

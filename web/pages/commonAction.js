@@ -15,7 +15,7 @@ function hello(session) {
     $("#time")[0].innerHTML = str;
 
     if (session === "null") {
-        window.location = "/coms2.0i/login";
+        window.location = "/coms2.0-master/login";
     }
 
 }
@@ -27,7 +27,7 @@ function editPassword() {
     var userPassConfirm = $("#userPassConfirm")[0].value;
 
     $.ajax({
-        url: "/coms2.0i/login/editPassword",
+        url: "/coms2.0-master/login/editPassword",
         type: "post",
         datatype: "json",
         data: {userPassOld: userPassOld, userPassNew: userPassNew, userPassConfirm: userPassConfirm},

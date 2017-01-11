@@ -82,7 +82,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <ul>
                 <li>
                     <a href="#">訂單管理</a>
-                    <!--<a href="<%=basePath%>OrderManage/queryOrderHeadList">訂單管理</a>-->
                 </li>
             </ul>
             <ul>
@@ -163,7 +162,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <!--订单信息列表-->           
     <section class="Hui-article-box">
         <div class="page-container">
-            <form action="queryOrderHeadList" method="post">
+            <form id="queryOrderHeadForm" action="queryOrderHeadList" method="post">
 		<h3 align="center">訂單頭檔信息列表</h3>
                 <br/>
                 <p align="center">
@@ -177,27 +176,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <a data-toggle="modal" id="orderHeadDelBtn" class="btn btn-default radius">删除</a>
                 </p>
             </form>
-            <table class="table table-border table-bordered table-hover" id="orderHeadTable">
+              <div id="orderHeadTableDiv">
+                    <table class="table table-border table-bordered table-hover" id="orderHeadTable">
 		<tr>
                     <th style="width:100px">訂單頭檔編號</th> 
                     <th style="width:100px">下單日期</th>  
                     <th style="width:100px">下單客戶</th> 
                     <th style="width:100px">操作</th> 
+                    <th hidden="true" style="width:100px">版本號</th> 
 		</tr>
                 <c:forEach items="${orderHeadList}" var ="orderHead"> 
                     <c:set var="date" value="${orderHead.orderDate}" />
                 <tr style=" height: 38px">
                     <td style="width:100px"><c:out value="${orderHead.orderHeadId}"></c:out></td>
                     <td style="width:100px"><fmt:formatDate type="both" value="${date}"></fmt:formatDate></td> 
-                    <td style="width:100px"><c:out value="${orderHead.customerMasterId.customerName}"></c:out></td>
+                    <td style="width:100px"><c:out value="${orderHead.customerMasterId.customerName}"></c:out></td>                   
                     <td>
                         <a data-toggle="modal" class="showOrderDetail" class="radius" >查看訂單身檔</a>
                     </td>
-                    <td hidden="true"><c:out value="${orderHead.orderHeadId}"></c:out></td>
+                    <td hidden="true" ><c:out value="${orderHead.versionNumber}"></c:out></td>
                 </tr>
                 
                 </c:forEach> 
             </table>
+           </div>
             <br/>
            <div align="center">
             <p> <input type="button" value="上一頁" onclick="OHprePage()"/>
@@ -289,9 +291,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <th style="width:150px">產品名稱</th> 
                     <th style="width:60px">下單數量</th>  <!--訂單產品下單數量-->
                     <th style="width:60px">下單單價</th>   <!--訂單產品下單單價-->
+                    <th style="width:60px">版本號</th>
 		</tr>
                 
-                <tr>
+<!--                <tr>
                     <c:forEach items="${orderDetails}" var ="orderDetails"> 
 
                 <tr style=" height: 38px">
@@ -301,11 +304,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <td style="width:150px"><c:out value="${orderDetails.productMasterId.productName}"></c:out></td>
                     <td style="width:60px"><c:out value="${orderDetails.orderQty}"></c:out></td> 
                     <td style="width:60px"><c:out value="${orderDetails.orderPrice}"></c:out></td>
-                    
-                    <td hidden="true"><c:out value="${orderDetails.orderDetailMasterId}"></c:out></td>
+                    <td style="width:60px"><c:out value="${orderDetails.versionNumber}"></c:out></td>                   
                 </tr>
                 </c:forEach> 
-                </tr>
+                </tr>-->
 
 <!--            <tr height="48px"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
             <tr height="48px"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
@@ -463,6 +465,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
 
 <script type="text/javascript" src="<%=basePath%>pages/lib/jquery/1.9.1/jquery.js"></script> 
+<script type="text/javascript" src="<%=basePath%>pages/lib/jquery/jquery.form.js"></script> 
 <script type="text/javascript" src="<%=basePath%>pages/static/h-ui/js/H-ui.js"></script>
 <script type="text/javascript" src="<%=basePath%>pages/lib/bootstrap-modal/2.2.4/bootstrap-modalmanager.js"></script>
 <script type="text/javascript" src="<%=basePath%>pages/lib/bootstrap-modal/2.2.4/bootstrap-modal.js"></script>
@@ -500,6 +503,54 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 });
               });
      
+     
+     
+     
+        $(document).ready(function() { 
+        $('#queryOrderHeadForm').ajaxForm({ 
+            success:function (data){
+               var html =  data.split("<div id=\"orderHeadTableDiv\">")[1].split("</div>")[0];
+                $("#orderHeadTableDiv").html(html);
+                $('#orderHeadDelBtn').removeAttr('href');
+                $("#orderHeadDelBtn").removeClass("btn btn-primary radius");
+                $("#orderHeadDelBtn").addClass("btn btn-default radius");
+                
+                $("tr").click(function(){
+                $(this).find("td").each(function(){
+                    var text = $(this).text();
+                    if(/ORDH[0-9]{11}/g.test(text)){
+                        $("tr").each(function (){
+                        $(this).removeClass("success");
+                    })
+                    $(this).parents("tr").attr('class',"success");
+                    $('#orderHeadDelBtn').attr('href',"#deleteOHInfo");//添加标签中的href属
+                    $("#orderHeadDelBtn").removeClass("btn btn-default radius");
+                    $("#orderHeadDelBtn").addClass("btn btn-primary radius");
+                    orderHead[0] = text;
+                    }
+                    
+                    return false;
+                });
+            });
+            },
+            error:function (data){
+                try {
+                    var response = JSON.parse(data.responseText.toString());
+                    $("#alter_message").html(response.message);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
+                }
+                catch(e){
+                    var message = data.responseText.split("<p class=\"error-description\">")[1].split(":")[1];
+                    $("#alter_message").html(message);
+                    $("#modal-message").modal("show");
+                    setTimeout("$(\"#modal-message\").modal(\"hide\")",4500);
+                }
+            }
+         }); 
+    })
+     
+     
 
 //點擊訂單詳細時，分頁顯示訂單身檔內容
     function dealWithOD(value){
@@ -532,7 +583,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     //繪製顯示訂單詳細的表格
                     //
                     //$("#orderDetailTable").append("<tr><td>"+list[i].orderDetailId+"</td><td>"+list[i].ordheadMasterId.orderHeadId+"</td><td>"+list[i].productMasterId.productId+"</td><td>"+list[i].productMasterId.productName+"</td><td>"+list[i].orderQty+"</td><td>"+list[i].orderPrice+"</td></tr>");
-                      $("#orderDetailTable").append("<tr><td>"+list[i][0]+"</td><td>"+list[i][1]+"</td><td>"+list[i][2]+"</td><td>"+list[i][3]+"</td><td>"+list[i][4]+"</td><td>"+list[i][5]+"</td></tr>");
+                      $("#orderDetailTable").append("<tr><td>"+list[i][0]+"</td><td>"+list[i][1]+"</td><td>"+list[i][2]+"</td><td>"+list[i][3]+"</td><td>"+list[i][4]+"</td><td>"+list[i][5]+"</td><td>"+list[i][6]+"</td></tr>");
                     //在訂單身檔信息列中，點擊行事件獲取到第一列的值（OrderDetailId），並把值放到了 orderInfo 變量中
                     //orderHeadId4Refresh=list[i][1];
                     
@@ -542,11 +593,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 //                        $(this).css({"background":"#99ffff"}).siblings().css({"background":"white"});
 //                        });
 //                    });
-                                                            
+                    }
                     $("tr").click(function(){
-                        $(this).find("td").each(function(i){
+                        console.dir("dianjain")
+                        $(this).find("td").each(function(){
                             var text = $(this).text();
+                            console.dir(text);
                             if(/ORDD[0-9]{11}/g.test(text)){
+                            orderDetail[1]=$(this).parent("tr").children().eq(6).text();
+                            console.dir(orderDetail[1]);
                             orderDetail[0] = text;
                             $(this).parent("tr").css({"background":"#99ffff"}).siblings().css({"background":"white"});
                             return false;
@@ -572,7 +627,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $("#orderDetailUpBtn").addClass("btn btn-default radius");
                         }
                     });
-                    }
    
                 },  
                 error : function(data) { 
@@ -729,14 +783,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       */
      var orderHead = [];
     $("tr").click(function(){
-        var num = 0;
         //訂單頭檔頁面,行點擊事件讀取到行的值
         $(this).find("td").each(function(i){
            var text = $(this).text();
            if(/ORDH[0-9]{11}/g.test(text)){
-           orderHead[num] = text;
+           orderHead[1]=$(this).parent("tr").children().eq(4).text();
+           orderHead[0] = text;
             $(this).parent("tr").css({"background":"#99ffff"}).siblings().css({"background":"white"});
-           num++;
             }
         });
            
@@ -893,11 +946,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      */
     function deleteOrderHead(){
     var orderHeadId=orderHead[0];
+    var versionNumber=orderHead[1];
     $.ajax({  
                 url : "deleteOrderHead",  
                 type : "post",  
                 datatype:"json",  
-                data : {orderHeadId:orderHeadId},  
+                data : {orderHeadId:orderHeadId,versionNumber:versionNumber},  
                 success : function(data) {                   
                     alert("刪除訂單頭檔成功！");
                     window.location = "<%=basePath%>OrderManage/queryOrderHeadList";
@@ -927,11 +981,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function deleteOrderDetail(){
 
     var orderDetailId=orderDetail[0];
+    var versionNumber=orderDetail[1];
     $.ajax({  
                 url : "deleteOrderDetail",  
                 type : "post",  
                 datatype:"json",  
-                data : {orderDetailId:orderDetailId},  
+                data : {orderDetailId:orderDetailId,versionNumber:versionNumber},  
                 success : function(data) {                           
                     $("#alter_message").html(data.message);
                     $("#modal-message").modal("show");
