@@ -566,6 +566,7 @@ public class ProductDAO implements Serializable {
         }
     }
 
+
     public String getProductCountByProductIdHead(String productIdHead) {
         EntityManager entityManager = getEntityManager();
         try {
