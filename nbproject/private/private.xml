@@ -3,7 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/service/ProductService.java</file>
             <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/web/pages/index.jsp</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/dao/repository/CustomerDAO.java</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/service/CustomerPriceService.java</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/dao/repository/ProductDAO.java</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/dao/repository/CustomerPriceDAO.java</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/controller/ProductController.java</file>
             <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/web/pages/ProductManage.jsp</file>
             <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/controller/OrderController.java</file>
         </group>
