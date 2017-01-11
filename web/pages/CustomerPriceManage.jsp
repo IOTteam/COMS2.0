@@ -214,7 +214,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <p>${message}</p>
         </div>
         <br/>
-        <div align="center">
+        <div id="page" align="center">
             <p> <input type="button" class="btn btn-default radius" value="上一頁" onclick="getPageData(this)"/>
             <input class="input-text radius" type="text" id="pageNo" value="1" readonly="true" style="width:30px" />/
             <input class="input-text radius" type="text" id="totalPage" value="${totalPage}" readonly="true" style="width:30px" />
@@ -304,8 +304,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     $(document).ready(function() { 
         $('#queryCustomerPriceForm').ajaxForm({ 
             success:function (data){
-               var html =  data.split("<div id=\"CusPriceTableDiv\">")[1].split("</div>")[0];
-                $("#CusPriceTableDiv").html(html);
+               var html =  data.split("<div id=\"CusPriceTableDiv\">")[1];
+               var html_table = html.split("</div>")[0];
+               var html_page = html.split("<div id=\"page\" align=\"center\">")[1].split("</div>")[0];
+               $("#page").html(html_page);
+                $("#CusPriceTableDiv").html(html_table);
                 $('#custPriceEditBotton').removeAttr('href');
                 $("#custPriceEditBotton").removeClass("btn btn-primary radius");
                 $("#custPriceEditBotton").addClass("btn btn-default radius");
