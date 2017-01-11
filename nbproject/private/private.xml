@@ -3,21 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/service/ProductService.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/web/pages/login.jsp</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/dao/repository/CustomerDAO.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/dao/repository/ProductDAO.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/web/pages/commonAction.js</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/controller/ProductController.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/controller/OrderController.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/validate/OrderValidate.java</file>
             <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/web/pages/index.jsp</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/service/OrderService.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/web/pages/CustomerPriceManage.jsp</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/web/pages/CustomerManage.jsp</file>
             <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/web/pages/ProductManage.jsp</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/controller/LoginController.java</file>
-            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/web/pages/OrderManage.jsp</file>
+            <file>file:/D:/MyFiles/Desktop/coms2.0integration/COMS2.0-master/src/java/iot/controller/OrderController.java</file>
         </group>
     </open-files>
 </project-private>

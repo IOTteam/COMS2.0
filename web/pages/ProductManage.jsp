@@ -715,13 +715,13 @@
                             }
 
                             function modifyCusPrice() {
+                            
                                 var customerMasterId = $("#customerMasterIdModify")[0].value;
                                 var rangeMin = $("#rangeMinModify")[0].value;
                                 var rangeMax = $("#rangeMaxModify")[0].value;
                                 var rangePrice = $("#rangePriceModify")[0].value;
                                 var productId = $("#productIdModify")[0].value;
                                 var productMasterId = $("#productMasterIdModify")[0].value;
-                                var customerName = $("#customerMasterIdModify").children().val();
                                 $.ajax({
                                     url: "modifyCustomerPrice",
                                     type: "Post",
@@ -741,7 +741,7 @@
                                             new_cell4 = new_row.insertCell();
                                             new_cell5 = new_row.insertCell();
                                             //新建行列中插入信息
-                                            new_cell1.innerHTML = customerName;
+                                            new_cell1.innerHTML =  data[0].customerMasterId.customerName;
                                             new_cell2.innerHTML = productId;
                                             new_cell3.innerHTML = rangeMin;
                                             new_cell4.innerHTML = rangeMax;
