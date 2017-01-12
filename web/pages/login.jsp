@@ -43,7 +43,7 @@
                                 <div class="col-xs-12  ">
                                     <div class="input-group input-group-lg">
                                         <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-                                        <input type="text" id="username" name="userName" autocomplete="off" value="admin2016" class="form-control" placeholder="用戶名">
+                                        <input type="text" id="username" name="userName" autocomplete="off" class="form-control" placeholder="用戶名">
                                     </div>
                                 </div>
                             </div>
@@ -51,7 +51,7 @@
                                 <div class="col-xs-12  ">
                                     <div class="input-group input-group-lg">
                                         <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-                                        <input type="password" id="password"  name="userPass"  autocomplete="off" value="admin2016" class="form-control" placeholder="密碼">
+                                        <input type="password" id="password"  name="userPass"  autocomplete="off" class="form-control" placeholder="密碼">
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +147,7 @@
                 var ndate = "現在是  " + years + "年" + month + "月" + days + "日 " + hours + ":" + minutes + ":" + seconds + " " + week;
                 var ndate2 = "今天是  " + years + "年" + month + "月" + days + "日 "  + " " + week;
 
-                $("#time")[0].innerHTML = ndate2;
+                //$("#time")[0].innerHTML = ndate2;
 
             });
         </script>

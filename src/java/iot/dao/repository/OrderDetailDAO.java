@@ -27,13 +27,17 @@ import javax.persistence.NoResultException;
 import javax.persistence.OptimisticLockException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author hatanococoro
  */
+@Repository
 public class OrderDetailDAO implements Serializable {
 
+    @Autowired
     public OrderDetailDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }

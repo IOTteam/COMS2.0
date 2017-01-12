@@ -36,8 +36,21 @@ import org.springframework.stereotype.Service;
 public class OrderService {
 
     @Autowired
-    private EntityManagerFactory emf;
-
+    private OrderHeadDAO ohdao;
+    
+    @Autowired
+    private OrderDetailDAO oddao;
+    
+    @Autowired
+    private CustomerDAO cdao;
+    
+    @Autowired
+    private ProductDAO pdao;
+    
+    @Autowired
+    private CustomerPriceDAO cpdao;
+    
+    
     /**
      * 查詢訂單頭檔列表
      *
@@ -53,8 +66,8 @@ public class OrderService {
      */
     //關於訂單頭檔條件查詢的數據結果
     public Response queryOrderHeadListService(String orderHeadIdMin, String orderHeadIdMax, String customerName, String orderDateMin, String orderDateMax,String pageNo) throws ParseException {
-        OrderHeadDAO ohdao = new OrderHeadDAO(emf);
-        CustomerDAO cdao = new CustomerDAO(emf);
+        //OrderHeadDAO ohdao = new OrderHeadDAO(emf);
+        //CustomerDAO cdao = new CustomerDAO(emf);
         List<Customer> cbCustomer = cdao.getCustomerByCustomerName(customerName);
 
         Response queryOrderHeadListResult = ohdao.queryOrderHeadByCondition(orderHeadIdMin, orderHeadIdMax, cbCustomer, orderDateMin, orderDateMax,pageNo);      
@@ -63,8 +76,8 @@ public class OrderService {
     }
     //關於訂單頭檔條件查詢數據數量的總計
     public Response queryCountOrderHeadListService(String orderHeadIdMin, String orderHeadIdMax, String customerName, String orderDateMin, String orderDateMax) throws ParseException {
-        OrderHeadDAO ohdao = new OrderHeadDAO(emf);
-        CustomerDAO cdao = new CustomerDAO(emf);
+        //OrderHeadDAO ohdao = new OrderHeadDAO(emf);
+        //CustomerDAO cdao = new CustomerDAO(emf);
         List<Customer> cbCustomer = cdao.getCustomerByCustomerName(customerName);
 
         Response queryOrderHeadListResult = ohdao.queryCountOrderHeadByCondition(orderHeadIdMin, orderHeadIdMax, cbCustomer, orderDateMin, orderDateMax);      
@@ -95,8 +108,8 @@ public class OrderService {
     */
     //查詢訂單身檔列表++++
      public Response queryOrderDetailListService(String orderHeadId,int pageNo) {
-        OrderDetailDAO oddao = new OrderDetailDAO(emf);
-        OrderHeadDAO ohdao = new OrderHeadDAO(emf);
+        //OrderDetailDAO oddao = new OrderDetailDAO(emf);
+        //OrderHeadDAO ohdao = new OrderHeadDAO(emf);
         //調用OrderHeadDAO中通過orderHeadId查詢orderHead實體的方法查詢到OrderHead實體
         OrderHead oh = ohdao.queryOrderHeadByOrderHeadId(orderHeadId);
 
@@ -140,7 +153,7 @@ public class OrderService {
      */
     public Response getCustomerListService(String customerId) {
 
-        return new CustomerDAO(emf).queryCustomer(customerId);
+        return cdao.queryCustomer(customerId);
     }
 
     /**
@@ -154,13 +167,13 @@ public class OrderService {
     public Response addOrderHeadService(String customerId) throws Exception {
         // CustomerDAO cdao=new CustomerDAO(emf);
         // Customer customer=cdao.findCustomerByCustomerId(customerId).getData();
-        Customer customer = (Customer) new CustomerDAO(emf).findCustomerByCustomerId(customerId).getData();
+        Customer customer = (Customer)cdao.findCustomerByCustomerId(customerId).getData();
         OrderHead oh = new OrderHead();
         oh.setCustomerMasterId(customer);
         oh.setOrderDate(new Date());
         oh.setOrdheadMasterId(UUID.randomUUID().toString().toUpperCase());
 
-        OrderHeadDAO ohdao = new OrderHeadDAO(emf);
+        //OrderHeadDAO ohdao = new OrderHeadDAO(emf);
         oh.setOrderHeadId(ohdao.generateOrderHeadId());
         oh.setDeleteStatus(false);
 
@@ -179,11 +192,11 @@ public class OrderService {
      * @return
      */
     public Response addOrderDetailService(String productId, int orderQty, String orderHeadId) throws Exception {
-        ProductDAO pdao = new ProductDAO(emf);
+        //ProductDAO pdao = new ProductDAO(emf);
         //通過產品id查找到product實體，此處的調用方法是Saulden寫的，因爲讓我寫也是一樣的函數
         Product product = (Product) pdao.findProductByProductId(productId).getData();
         //通過訂單頭檔，查詢到OrderHead實體
-        OrderHeadDAO ohdao = new OrderHeadDAO(emf);
+        //OrderHeadDAO ohdao = new OrderHeadDAO(emf);
         OrderHead oh = ohdao.queryOrderHeadByOrderHeadId(orderHeadId);
         //實例化一個訂單身檔實體OrderDetail，用於存放新增的數據
         OrderDetail od = new OrderDetail();
@@ -193,7 +206,7 @@ public class OrderService {
         od.setOrddetailMasterId(UUID.randomUUID().toString().toUpperCase());
         //如果通過傳入的產品ID查到的產品的優惠狀態是true，即此產品有優惠，獲取的通過傳入的產品ID和數量，查詢到的在客戶產品單價表中的價格
         if (product.getDiscountStatus() == true) {
-            CustomerPriceDAO cpdao = new CustomerPriceDAO(emf);
+            //CustomerPriceDAO cpdao = new CustomerPriceDAO(emf);
             CustomerPrice customerPrice = (CustomerPrice) cpdao.queryCustomerPriceByOrderQty(orderQty, product,oh.getCustomerMasterId()).getData();
             if(customerPrice != null){
                 od.setOrderPrice(customerPrice.getRangePrice());
@@ -204,7 +217,7 @@ public class OrderService {
         } else {//否則，就是按標準售價做下單單價
             od.setOrderPrice(product.getProductStandardPrice());
         }
-        OrderDetailDAO oddao = new OrderDetailDAO(emf);
+        //OrderDetailDAO oddao = new OrderDetailDAO(emf);
         od.setOrderDetailId(oddao.generateOrderDetailId());
         od.setDeleteStatus(false);
 
@@ -219,7 +232,7 @@ public class OrderService {
      * @return
      */
     public Response getProductListService(String productId) {
-        return new ProductDAO(emf).findProducts(productId);
+        return pdao.findProducts(productId);
     }
 
     /**
@@ -231,7 +244,7 @@ public class OrderService {
      * @throws PreexistingEntityException
      */
     public Response deleteOrderHeadService(String orderHeadId,String versionNumber) throws PreexistingEntityException, NonexistentEntityException {
-        OrderHeadDAO ohdao = new OrderHeadDAO(emf);
+        //OrderHeadDAO ohdao = new OrderHeadDAO(emf);
         OrderHead oh = ohdao.queryOrderHeadByOrderHeadId(orderHeadId);
         if (oh==null) {
             throw new NonexistentEntityException("編號爲:"+oh.getOrderHeadId()+" 的訂單頭檔已不存在！");
@@ -250,7 +263,7 @@ public class OrderService {
      * @throws iot.dao.repository.exceptions.NonexistentEntityException
      */
     public Response deleteOrderDetailService(String orderDetailId,String versionNumber) throws PreexistingEntityException, NonexistentEntityException {
-        OrderDetailDAO oddao = new OrderDetailDAO(emf);
+        //OrderDetailDAO oddao = new OrderDetailDAO(emf);
         OrderDetail od = (OrderDetail) oddao.queryOrderDetailByOrderDetailId(orderDetailId).getData();
          if (od==null) {
             throw new NonexistentEntityException("編號爲:"+od.getOrderDetailId()+" 的訂單身檔已不存在！");
@@ -263,7 +276,7 @@ public class OrderService {
     //獲取訂單身檔信息爲修改做準備
     public Response getOrderDetailForUpdateService(String orderDetailId) {
 
-        return new OrderDetailDAO(emf).queryOrderDetailByOrderDetailId(orderDetailId);
+        return oddao.queryOrderDetailByOrderDetailId(orderDetailId);
     }
 
     //通過前臺傳入的產品ID和產品數量，查詢出產品價格
@@ -272,11 +285,11 @@ public class OrderService {
     //把兩個價格傳給產品實體的價格中，把產品實體傳出去
     public Product getPriceByQtyForUpdateService(String orderDetailId,String productId, int orderQty) throws Exception {
 
-        OrderDetail od = (OrderDetail) new OrderDetailDAO(emf).queryOrderDetailByOrderDetailId(orderDetailId).getData();
-        ProductDAO pdao = new ProductDAO(emf);
+        OrderDetail od = (OrderDetail)oddao.queryOrderDetailByOrderDetailId(orderDetailId).getData();
+        //ProductDAO pdao = new ProductDAO(emf);
         Product product = (Product) pdao.findProductByProductId(productId).getData();
         if (product.getDiscountStatus() == true) {
-            CustomerPriceDAO cpdao = new CustomerPriceDAO(emf);
+            //CustomerPriceDAO cpdao = new CustomerPriceDAO(emf);
             /************ 沒有客戶資訊***************/
             Response cprResponse = cpdao.queryCustomerPriceByOrderQty(orderQty, product, od.getOrdheadMasterId().getCustomerMasterId());
             CustomerPrice cp = (CustomerPrice) cprResponse.getData();
@@ -294,7 +307,7 @@ public class OrderService {
     //如果輸入的用戶自定義下單單價  不爲空  時調用
     public Response updateOrderDetailService(String orderDetailId, int orderQty, float userDefinedPrice,int versionNumber) throws Exception {
 
-        OrderDetailDAO oddao = new OrderDetailDAO(emf);
+        //OrderDetailDAO oddao = new OrderDetailDAO(emf);
         //通過訂單身檔編號，插到訂單身檔實體
         OrderDetail od = (OrderDetail) oddao.queryOrderDetailByOrderDetailId(orderDetailId).getData();
         //將前臺啊傳入的下單數量和單價填入該訂單身檔
@@ -308,17 +321,17 @@ public class OrderService {
     //如果輸入的用戶自定義下單單價  爲空  時調用
     public Response updateOrderDetailService(String orderDetailId, String productId, int orderQty,int versionNumber) throws Exception {
 
-        OrderDetailDAO oddao = new OrderDetailDAO(emf);
+        //OrderDetailDAO oddao = new OrderDetailDAO(emf);
         //通過訂單身檔編號，插到訂單身檔實體
         OrderDetail od = (OrderDetail) oddao.queryOrderDetailByOrderDetailId(orderDetailId).getData();
 
-        ProductDAO pdao = new ProductDAO(emf);
+        //ProductDAO pdao = new ProductDAO(emf);
         //通過產品編號查找到產品實體
         Product product = (Product) pdao.findProductByProductId(productId).getData();
 
         od.setOrderQty(orderQty);
 
-        CustomerPriceDAO cpdao = new CustomerPriceDAO(emf);
+        //CustomerPriceDAO cpdao = new CustomerPriceDAO(emf);
 
         //如果輸入的產品是有優惠的產品
         if (product.getDiscountStatus() == true) {

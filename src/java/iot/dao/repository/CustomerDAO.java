@@ -31,13 +31,17 @@ import iot.response.Response;
 import java.util.Iterator;
 import javax.persistence.NoResultException;
 import javax.persistence.OptimisticLockException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author hatanococoro
  */
+@Repository
 public class CustomerDAO implements Serializable {
 
+    @Autowired
     public CustomerDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }

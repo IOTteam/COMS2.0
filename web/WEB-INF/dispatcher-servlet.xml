@@ -31,6 +31,7 @@
     <!--设置使用了注解的类所在的包，可自动创建Bean和自动依赖注入-->
     <context:component-scan base-package="iot.controller" />
     <context:component-scan base-package="iot.service" />
+    <context:component-scan base-package="iot.dao" />
     <context:component-scan base-package="iot.exceptionHandle" />
     <context:component-scan base-package="iot.validate" />
     

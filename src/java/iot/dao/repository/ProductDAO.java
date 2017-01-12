@@ -26,13 +26,17 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import iot.response.Response;
 import javax.persistence.NoResultException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author hatanococoro
  */
+@Repository
 public class ProductDAO implements Serializable {
 
+    @Autowired
     public ProductDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }

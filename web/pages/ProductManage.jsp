@@ -78,7 +78,7 @@
                 </ul>
                 <ul>
                     <li>
-                        <a href="#">訂單管理</a>
+                        <a href="<%=basePath%>OrderManage/queryOrderHeadList">訂單管理</a>
                     </li>
                 </ul>
                 <ul>

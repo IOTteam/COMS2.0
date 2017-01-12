@@ -23,7 +23,10 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
     
     @Autowired
-    private EntityManagerFactory emf;
+    private CustomerDAO customerDAO;
+    
+    @Autowired
+    private ProductDAO productDAO;
     
     /*******************************************************************************
      * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
@@ -38,7 +41,7 @@ public class CustomerService {
      ********************************************************************************/
     public Response customerQueryService(String customerIdMin, String customerIdMax ,String customerName,int pageNo) throws JPAQueryException{
     
-        CustomerDAO customerDAO = new CustomerDAO(emf);
+        //CustomerDAO customerDAO = new CustomerDAO(emf);
         Response<List<Customer>> customerQueryResult = customerDAO.queryCustomerByCondition(customerIdMin, customerIdMax, customerName, pageNo);
         return customerQueryResult;
     }
@@ -56,7 +59,7 @@ public class CustomerService {
      ********************************************************************************/
     public Response getCustomerIdAndCustomerNameListService(String inputId, String customerName,  String customerIdMin, String customerIdMax) throws NoSuchFieldException{
     
-        CustomerDAO customerDAO = new CustomerDAO(emf);
+        //CustomerDAO customerDAO = new CustomerDAO(emf);
         
         if("customer_name_input".equals(inputId)){//輸入框為客戶姓名輸入框
             List customerNameList = (List) customerDAO.findCustomerNameListByCustomerName(customerName, false, 0, 10).getData();
@@ -81,7 +84,7 @@ public class CustomerService {
      ********************************************************************************/
     public Response addCustomerService(Customer customer) throws Exception{
     
-        CustomerDAO customerDAO = new CustomerDAO(emf);
+        //CustomerDAO customerDAO = new CustomerDAO(emf);
         
         customer.setCustomerMasterId(UUID.randomUUID().toString().toUpperCase());
         customer.setCustomerId(customerDAO.getCustomerId());
@@ -98,7 +101,7 @@ public class CustomerService {
      ********************************************************************************/
     public Response getProductListService(String productId){
 
-        return new ProductDAO(emf).findProductListByProductId(productId);
+        return productDAO.findProductListByProductId(productId);
     }
     
     
@@ -112,7 +115,7 @@ public class CustomerService {
      ********************************************************************************/
     public Response getCustomerForUpdateService(String customerId) throws NonexistentEntityException{
         
-        Response result =  new CustomerDAO(emf).findCustomerByCustomerId(customerId);
+        Response result =  customerDAO.findCustomerByCustomerId(customerId);
         
         if(result.isEmpty()){
             throw new NonexistentEntityException("要修改的客戶資料不存在");
@@ -131,7 +134,7 @@ public class CustomerService {
      ********************************************************************************/
     public Response updateCustomerService(Customer customer) throws NonexistentEntityException, Exception{
 
-        CustomerDAO customerDAO = new CustomerDAO(emf);
+        //CustomerDAO customerDAO = new CustomerDAO(emf);
         
         Response queryCustomer = customerDAO.findCustomerByCustomerId(customer.getCustomerId());
         
@@ -158,7 +161,7 @@ public class CustomerService {
      ********************************************************************************/
     public Response deleteCustomer(String customerId,int versionNumber) throws NonexistentEntityException, Exception{
 
-        CustomerDAO customerDAO = new CustomerDAO(emf);
+        //CustomerDAO customerDAO = new CustomerDAO(emf);
         
         Response queryCustomer = customerDAO.findCustomerByCustomerId(customerId);
         
@@ -171,7 +174,7 @@ public class CustomerService {
             throw new ValidationException("該客戶有訂單，不能刪除");
         }
         customer.setVersionNumber(versionNumber);
-        return new CustomerDAO(emf).deleteCustomer(customer);
+        return customerDAO.deleteCustomer(customer);
     }
    
 }

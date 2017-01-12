@@ -8,8 +8,6 @@ package iot.service;
 import iot.dao.entity.User;
 import iot.dao.repository.UserDAO;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,14 +20,14 @@ import org.springframework.stereotype.Service;
 public class LoginService {
 
     @Autowired
-    private EntityManagerFactory emf;
+    private UserDAO umdao;
 
     //判斷輸入的賬號密碼各種情況
     public String UserLogin(String username, String userpass) throws Exception {
 //        //創建loginService對象，便於訪問類內的方法
 //        LoginService loginservice = new LoginService();
 
-        UserDAO umdao = new UserDAO(emf);
+        //UserDAO umdao = new UserDAO(emf);
         //調用方法，根據帳戶名查詢數據,數據存在於對象 userMaster中
         User umn = umdao.getUserByUserName(username);
         //如果帳號不存在
@@ -93,14 +91,14 @@ public class LoginService {
 
     //通過賬號密碼匹配數據
     public User getUserInfo(String username, String userpass) {
-        UserDAO umdao = new UserDAO(emf);
+        //UserDAO umdao = new UserDAO(emf);
         User um = umdao.getUserByNameAndPassword(username, userpass);
         return um;
     }
 
     //修改賬號的密碼
     public void editPasswordService(User user) throws Exception {
-        UserDAO umdao = new UserDAO(emf);
+        //UserDAO umdao = new UserDAO(emf);
         umdao.edit(user);
     }
 }

@@ -26,7 +26,13 @@ import org.springframework.stereotype.Service;
 public class CustomerPriceService {
 
     @Autowired
-    private EntityManagerFactory emf;
+    private CustomerDAO customerDAO;
+    
+    @Autowired
+    private ProductDAO productDAO;
+    
+    @Autowired
+    private CustomerPriceDAO customerPriceDAO;
     
     /*******************************************************************************
      * 建立者：Saulden  建立日期：-  最後修訂日期：2017/01/09
@@ -45,15 +51,15 @@ public class CustomerPriceService {
     public Response queryCustomerPriceService(String customerName, String productName, String priceMin,String priceMax, String rangeMin, String rangeMax, int pageNo) throws JPAQueryException{
     
         //模糊查詢客戶實體
-        CustomerDAO customerDAO = new CustomerDAO(emf);
+        //CustomerDAO customerDAO = new CustomerDAO(emf);
         List<Customer> customerList = (List<Customer>) customerDAO.findCustomerByCustomerName(customerName).getData();
         
         //模糊查詢產品實體
-        ProductDAO productDAO = new ProductDAO(emf);
+        //ProductDAO productDAO = new ProductDAO(emf);
         List<Product> productList = (List<Product>) productDAO.findProductByProductName(productName).getData();
         
         
-        CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
+        //CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
         Response customerPriceQueryResult = customerPriceDAO.findCustomerPricesByCondition(customerList,productList,priceMin,priceMax,rangeMin,rangeMax,pageNo);
 
         return customerPriceQueryResult;
@@ -88,7 +94,7 @@ public class CustomerPriceService {
      ********************************************************************************/
     public Response queryCustomerPriceService(String customerId,int pageNo, boolean isCross,String productId,String rangeMin,String rangeMax) throws NonexistentEntityException{
     
-        CustomerDAO customerDAO = new CustomerDAO(emf);
+        //CustomerDAO customerDAO = new CustomerDAO(emf);
         Response response = customerDAO.findCustomerByCustomerId(customerId);
         
         if(response.isEmpty()){//未查詢到客戶，拋出異常
@@ -164,13 +170,13 @@ public class CustomerPriceService {
     public Response getCustomerAndProductListService(String inputId, String customerName, String productName) throws NoSuchFieldException{
     
         if("customer_name_input".equals(inputId)){//輸入框為客戶姓名輸入框
-            CustomerDAO customerDAO = new CustomerDAO(emf);
+            //CustomerDAO customerDAO = new CustomerDAO(emf);
             List customerNameList = (List) customerDAO.findCustomerNameListByCustomerName(customerName, false, 0, 10).getData();
             return new Response().success("查詢產品名列表成功", customerNameList);
         }
         
         if("product_name_input".equals(inputId)){//輸入框為產品名稱輸入框
-            ProductDAO productDAO = new ProductDAO(emf);
+            //ProductDAO productDAO = new ProductDAO(emf);
             List productNameList = (List) productDAO.findProductNameListByProductName(productName, false, 0, 10).getData();
             return new Response().success("查詢產品名列表成功", productNameList);
         }
@@ -193,13 +199,13 @@ public class CustomerPriceService {
      ********************************************************************************/
     public Response getRangesAndPriceListService(String inputId, String customerName, String productName, String priceMin, String rangeMin, String rangeMax) throws NoSuchFieldException{
         
-        CustomerDAO customerDAO = new CustomerDAO(emf);
+        //CustomerDAO customerDAO = new CustomerDAO(emf);
         List<Customer> customerList = (List<Customer>) customerDAO.findCustomerByCustomerName(customerName).getData();
         
-        ProductDAO productDAO = new ProductDAO(emf);
+        //ProductDAO productDAO = new ProductDAO(emf);
         List<Product> productList = (List<Product>) productDAO.findProductByProductName(productName).getData();
         
-        return new CustomerPriceDAO(emf).findRangesAndPriceListByCondition(inputId, customerList, productList, priceMin, rangeMin, rangeMax, false, 0, 10);
+        return customerPriceDAO.findRangesAndPriceListByCondition(inputId, customerList, productList, priceMin, rangeMin, rangeMax, false, 0, 10);
     }
     
     /*******************************************************************************
@@ -211,7 +217,7 @@ public class CustomerPriceService {
      ********************************************************************************/
     public Response getCustomerPriceForUpdateService(String customerPriceId) throws NonexistentEntityException{
         
-        Response response = new CustomerPriceDAO(emf).findCustomerPriceByCustomerPriceId(customerPriceId);
+        Response response = customerPriceDAO.findCustomerPriceByCustomerPriceId(customerPriceId);
         
         if(response.isEmpty()){
             throw new NonexistentEntityException("要修改的客戶產品單價資訊不存在");
@@ -232,15 +238,15 @@ public class CustomerPriceService {
      ********************************************************************************/
     public Response addCustomerPriceService(String customerId,String productId, CustomerPrice customerPrice) throws Exception{
     
-        Customer customer = (Customer)new CustomerDAO(emf).findCustomerByCustomerId(customerId).getData();
+        Customer customer = (Customer)customerDAO.findCustomerByCustomerId(customerId).getData();
         if(customer == null){
             throw new NonexistentEntityException("編號為【"+ customerId +"】的客戶不存在");
         }
-        Product product = (Product)new ProductDAO(emf).findProductByProductId(productId).getData();
+        Product product = (Product)productDAO.findProductByProductId(productId).getData();
         if(product == null){
             throw new NonexistentEntityException("編號為【"+ productId +"】的產品不存在");
         }
-        CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
+        //CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
         //檢驗區間是否有交叉或覆蓋
         customerPriceDAO.validateRanges(customer, product, customerPrice.getRangeMin(), customerPrice.getRangeMax());
         
@@ -266,7 +272,7 @@ public class CustomerPriceService {
      ********************************************************************************/
     public Response updateCustomerPriceService(CustomerPrice customerPrice) throws NonexistentEntityException, Exception{
 
-        CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
+        //CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
         Response response = customerPriceDAO.findCustomerPriceByCustomerPriceId(customerPrice.getCustomerPriceId());
         
         if(response.isEmpty()){
@@ -292,7 +298,7 @@ public class CustomerPriceService {
      ********************************************************************************/
     public Response deleteCustomerPriceService(String customerPriceId,int versionNumber) throws NonexistentEntityException, Exception{
 
-        CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
+        //CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
          
         Response response= customerPriceDAO.findCustomerPriceByCustomerPriceId(customerPriceId);
                 
@@ -312,7 +318,7 @@ public class CustomerPriceService {
     }
     
     public List<CustomerPrice> modifyCustomerPrice(Product productMasterId, Customer customerMasterId, Integer rangeMin, Integer rangeMax, float rangePrice) throws Exception {
-        CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
+        //CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
         //根據前台傳遞的productMasterId，customerMasterId查詢客戶產品單價表的信息，並且信息根據rangeMin升序排列
         List<CustomerPrice> customerPriceList = customerPriceDAO.findCustomerPriceByProductMasterId(productMasterId,customerMasterId);
         //如果客戶產品單價表沒有信息，則表明修改的數據是全新的，此時進行新增操作
@@ -438,7 +444,7 @@ public class CustomerPriceService {
     }
 
     public CustomerPrice setCustomerPrice(Product productMasterId,Customer customerMasterId, Integer rangeMin, Integer rangeMax, float rangePrice) throws Exception {
-        CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
+        //CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
         CustomerPrice customerPrice = new CustomerPrice();
         customerPrice.setCustomerMasterId(customerMasterId);
         customerPrice.setProductMasterId(productMasterId);

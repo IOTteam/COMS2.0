@@ -30,13 +30,17 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author hatanococoro
  */
+@Repository
 public class OrderHeadDAO implements Serializable {
 
+    @Autowired
     public OrderHeadDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +30,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductService {
 
-    //創建實體管理工廠的對象
     @Autowired
-    private EntityManagerFactory emf;
+    private ProductDAO productDAO;
+    
+    @Autowired
+    private OrderDetailDAO orderDetailDAO;
+    
+    @Autowired
+    private CustomerPriceDAO customerPriceDAO;
     
     /*******************************************************************************
      * 建立者：Guardp  建立日期：-  最後修訂日期：-
@@ -52,7 +56,7 @@ public class ProductService {
     public Response ProductQuery(String productIdMin, String productIdMax, String productName, 
             String productPriceMin, String productPriceMax, String productSpec,String pageNo) {
         //創建productDAO對象
-        ProductDAO productDAO = new ProductDAO(emf);
+        //ProductDAO productDAO = new ProductDAO(emf);
         //調用productDAO對象中的queryProductByCondition方法查詢數據，並存入Response對象productQueryResponseList中
         Response productQueryResponseList = productDAO.queryProductByCondition(productIdMin,productIdMax,productName,
                 productPriceMin,productPriceMax,productSpec,pageNo);
@@ -63,7 +67,7 @@ public class ProductService {
     public Response ProductCountQuery(String productIdMin, String productIdMax, String productName, 
             String productPriceMin, String productPriceMax, String productSpec) {
         //創建productDAO對象
-        ProductDAO productDAO = new ProductDAO(emf);
+        //ProductDAO productDAO = new ProductDAO(emf);
         //調用productDAO對象中的queryProductCountByCondition方法查詢數據，並存入Response對象productQueryResponseList中
         Response productCountResponseList = productDAO.queryProductCountByCondition(productIdMin,productIdMax,productName,
                 productPriceMin,productPriceMax,productSpec);
@@ -73,7 +77,7 @@ public class ProductService {
 
     public HashMap<String, String> addProductMasterService(float productStandardPrice,String productName,boolean discountStatus,
             String productSpec) {
-        ProductDAO productDAO = new ProductDAO(emf);
+        //ProductDAO productDAO = new ProductDAO(emf);
         Product product = new Product();
         product.setDiscountStatus(discountStatus);
         product.setProductName(productName);
@@ -110,7 +114,7 @@ public class ProductService {
     
     //創建HashMap，將需要傳遞的數據存入map中
     public HashMap<String,String> modifyHashMap(String productId){
-        ProductDAO productDAO = new ProductDAO(emf);
+        //ProductDAO productDAO = new ProductDAO(emf);
         Product newProduct = (Product)productDAO.findProductByProductId(productId).getData();
         HashMap<String,String> product = new HashMap<>();
         product.put("productId", newProduct.getProductId());
@@ -122,7 +126,7 @@ public class ProductService {
     }
 
     public HashMap<String, String> modifyProduct(String productId,float productStandardPrice,boolean discountStatus) throws NonexistentEntityException, Exception {
-        ProductDAO productDAO = new ProductDAO(emf);
+        //ProductDAO productDAO = new ProductDAO(emf);
         Product oldProduct = (Product)productDAO.findProductByProductId(productId).getData();
         oldProduct.setDiscountStatus(discountStatus);
         oldProduct.setProductStandardPrice(productStandardPrice);
@@ -142,9 +146,9 @@ public class ProductService {
     }
 
     public HashMap<String, String> deleteProductByProductId(String productId) throws Exception {
-        ProductDAO productDAO = new ProductDAO(emf);
+        //ProductDAO productDAO = new ProductDAO(emf);
         Product product = (Product)productDAO.findProductByProductId(productId).getData();
-        OrderDetailDAO orderDetailDAO = new OrderDetailDAO(emf);
+        //OrderDetailDAO orderDetailDAO = new OrderDetailDAO(emf);
         List<OrderDetail> OrderDetail = orderDetailDAO.findOrderDetailByProductMasterId(product);
         HashMap<String,String> deleteMap = new HashMap<>();
         if (OrderDetail.isEmpty()) {
@@ -152,7 +156,7 @@ public class ProductService {
             productDAO.edit(product);
             Integer count =Integer.parseInt(productDAO.getProductCountByStatus());
             String totalPages = String.valueOf((count -1)/10 + 1);
-            CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
+            //CustomerPriceDAO customerPriceDAO = new CustomerPriceDAO(emf);
             List<CustomerPrice> customerPriceList = customerPriceDAO.findCustomerPriceByProductMasterId(product);
             for (int i = 0; i < customerPriceList.size(); i++) {
                 CustomerPrice customerPrice = customerPriceDAO.findCustomerPriceByCusPriceMasterId(customerPriceList.get(i).getCusPriceMasterId());
